@@ -3,29 +3,6 @@
 mateinx.py
 author: Raul Saavedra ( raul.saavedra@gmail.com )
 date  : 2022.11.18
-
-This is a programming problem idea I came up with for myself
-to get into Rust.
-
-Problem: given a starting chess board game setup, find out
-all mate-in-X combination of moves for the player that moves
-first.
-
-The implementation will exhaustively brute-force its way through
-absolutely all valid combination of moves, to find out
-absolutely all possible outcomes of the game (wins or draws)
-down to a given max number of moves (depth) to be explored from
-the start. In doing so, identify (if there are any) the desirable
-mate-in-X sequence of moves for the starting player.
-
-The plan is to write first a single-threaded python version,
-making sure we are modeling the chess game correctly and completely
-(e.g. including also castle moves, and pawn promotions,) and
-making sure we correctly find the mate-in-X solution(s).
-
-After that, the real goal is to write two equivalent implementations
-in the Rust language: one single-threaded, another multi-threaded.
-
 """
 
 import sys
