@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: invalid pawn positions",
+        "date" : "2022-11-29",
+        "wpcs" : ["Ka1", "b1"],
+        "bpcs" : ["Kf7", "d7", "e1"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

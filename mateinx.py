@@ -283,7 +283,7 @@ class ChessGame:
             strplayer = str(player)
             for w in pieces:
                 piece = w[0:1]
-                if (piece>='a' and piece<='h'):
+                if piece>='a' and piece<='h':
                     # Here's a pawn
                     x = w[0:1]
                     y = w[1:2]
@@ -301,8 +301,11 @@ class ChessGame:
                         return
                     x = w[1:2]
                     y = w[2:3]
-                if (x < 'a' or x > 'h' or y < '1' or y > '8'):
+                if x < 'a' or x > 'h' or y < '1' or y > '8':
                     self.__status[player] = "ERROR: invalid position ({0},{1}) in {2}".format(x,y,w)
+                    return
+                if piece == "p" and (y == '1' or y == '8'):
+                    self.__status[player] = "ERROR: invalid pawn position ({0},{1})".format(x,y)
                     return
                 #x,y are text "a"-"h","1"-"8" coordinates
                 #i,j are the corresponding 0-7 numeric coordinates
