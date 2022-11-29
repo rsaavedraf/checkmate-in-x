@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: Both players checking simultanously",
+        "date" : "2022-11-18",
+        "wpcs" : ["Kh2", "Qg4"],
+        "bpcs" : ["Ke4", "g3", "Qh8"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

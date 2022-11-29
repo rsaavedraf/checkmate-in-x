@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "game 04",
+        "date" : "2022-11-21",
+        "wpcs" : ["Ka1"],
+        "bpcs" : ["Kd2", "a3"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

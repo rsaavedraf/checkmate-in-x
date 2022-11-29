@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: two pieces on same position",
+        "date" : "2022-11-18",
+        "wpcs" : ["Kh4", "Qa4", "Rf3", "Rh5", "Bg1", "Bg2", "Nb7", "Ne7", "b4"],
+        "bpcs" : ["Ke4", "Qd5", "Rc6", "e5", "g2", "Kh8"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

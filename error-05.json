@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: Too many checks",
+        "date" : "2022-11-18",
+        "wpcs" : ["Kh2"],
+        "bpcs" : ["Ke4", "g3", "Nf1", "Ra2", "Qh8"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

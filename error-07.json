@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: Player that made last move remains in check",
+        "date" : "2022-11-23",
+        "wpcs" : ["Ka4", "Qd4"],
+        "bpcs" : ["Ka1"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

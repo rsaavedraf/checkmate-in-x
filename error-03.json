@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: too many pieces",
+        "date" : "2022-11-22",
+        "wpcs" : ["Ke1", "Qd1", "a2", "b2", "c2", "d3", "e6", "f3", "g2", "h2", "h5" ],
+        "bpcs" : ["Ke8"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}
