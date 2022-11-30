@@ -314,7 +314,16 @@ class ChessGame:
                             + x + y
                     self._status[player] = st
                     return
-                self._set_piece_from_json(player, piece+strplayer, i, j)
+                if piece == "B":
+                    # Check that bishops are in different color squares
+                    sqcolor = "b" if ((i + j) % 2 == 0) else "w"
+                    if counts.get("B"+sqcolor, 0) != 0:
+                        st = "ERROR: Bishops in same square colors"
+                        self._status[player] = st
+                        return
+                    else:
+                        counts["B"+sqcolor] = 1
+                self._set_piece_from_json(player, piece + strplayer, i, j)
             if counts.get("K", 0) != 1:
                 st = "ERROR: "+str(counts.get("K",0))+" King pieces" \
                         " for " + color + " player"

@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: two bishops of a player on same square color",
+        "date" : "2022-11-29",
+        "wpcs" : ["Ka1", "Bh1", "Bg2"],
+        "bpcs" : ["Kf7", "d7"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}
