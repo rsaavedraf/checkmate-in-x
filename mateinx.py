@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#---*----1----*----2----*----3----*----4----*----5----*----6----*----7----*----8
 """
 mateinx.py
 author: Raul Saavedra ( raul.saavedra@gmail.com )
@@ -13,47 +14,38 @@ import copy
 import hashlib
 import numpy as np
 import time
-import zlib
+#import zlib
 from pathlib import Path
 
 class GamesRecord:
     def __init__(self):
-        self.__dict = dict()
+        self._dict = dict()
 
-    def hasBoard(self, board_key):
-        bkey = self.__getKey(board_key)
-        if bkey in self.__dict: return True
-        return False
-
-    def put(self, board_key, node):
-        bkey = self.__getKey(board_key)
-        self.__dict[bkey] = node
+    def put(self, board_key, data):
+        self._dict[board_key] = data
 
     def get(self, board_key):
-        bkey = self.__getKey(board_key)
-        return self.__dict.get(bkey, max_depth)
-
-    def __getKey(self, board_key):
-        #kobj = hashlib.md5(board_key.encode('utf-8'))
-        #return "k"+str(kobj.hexdigest())
-        return "k"+board_key
+        return self._dict.get(board_key, max_depth_p1)
 
     def keys(self):
-        return self.__dict.keys()
+        return self._dict.keys()
 
-showEndGames = False
+show_end_games = False
 chatty = True
-show_attack_footprints=False
-recurse=False
-max_depth=4
-wins_per_depth = [0]*(max_depth+1)
-draws_per_depth = [0]*(max_depth+1)
+show_attack_footprints = False
+recurse = False
+max_depth = 4
+max_depth_p1 = max_depth + 1
+wins_per_depth = [0]*(max_depth_p1)
+draws_per_depth = [0]*(max_depth_p1)
 input_file = 'game-01.json'
-nGame = 0
-nGamesRevisited = 0
-nRecCalls = 0
-debugShow = False
-gamesSeenAtDepth = GamesRecord()
+ngame = 0
+ngames_rev = 0
+nrec_calls = 0
+debug_show = False
+games_seen_at_depth = GamesRecord()
+
+ORD_CAP_A = ord('A')
 ORD_A = ord('a')
 ORD_1 = ord('1')
 NOPAWN="KQRBN"
@@ -77,12 +69,14 @@ PIECE_ENCODE = {"K0": "A",
                 "p1": "L"}
 PIECE_DECODE = {v: k for k, v in PIECE_ENCODE.items()}
 
+KNIGHTS = PIECE_ENCODE["N0"] + PIECE_ENCODE["N1"]
 EK0 = PIECE_ENCODE["K0"]
 EK1 = PIECE_ENCODE["K1"]
 EP0 = PIECE_ENCODE["p0"]
 EP1 = PIECE_ENCODE["p1"]
 
 KINGS=(EK0, EK1)
+PAWNS=(EP0, EP1)
 
 # Pawn attacks from perspective of an attacked king
 PATTACKS = {
@@ -93,17 +87,17 @@ PATTACKS = {
 PAWN_MOVES = {          # Conditional moves for pawns
     # White pawns
     "p0":   (
-            ((-1,1),),   # Only when capturing
-            ((0,1),),    # Only when no piece in destination
-            ((0,2),),    # Only when at their starting row, and no piece in dest
-            ((1,1),)     # Only when capturing
+            ((-1,1),),  # Only when capturing
+            ((0,1),),   # Only when no piece in dest
+            ((0,2),),   # Only when at starting row, and no piece in dest
+            ((1,1),)    # Only when capturing
             ),
     # Black pawns
     "p1":   (
-            ((-1,-1),),  # Only when capturing
-            ((0,-1),),   # Only when no piece in destination
-            ((0,-2),),   # Only when at their starting row, and no piece in dest
-            ((1,-1),)    # Only when capturing
+            ((-1,-1),), # Only when capturing
+            ((0,-1),),  # Only when no piece in destination
+            ((0,-2),),  # Only when at starting row, and no piece in dest
+            ((1,-1),)   # Only when capturing
             ),
     }
 
@@ -123,10 +117,10 @@ NATTACKS = ((-2,1),(-1,2),(1,2),(2, 1),(2,-1),(1,-2),(-1,-2),(-2,-1))
 
 # Attacks from perspective of the attacking pieces
 '''
-For each piece type, the valid attacks are stored as a list of lists.
-Each sublist explores a given direction from the piece's position
+For each piece type, the valid attacks are stored as a tuple of tuples.
+Each subtuple explores a given direction from the piece's position
 outwards. Can therefore be scanned until a piece on the board is found
-(blocking or getting the attack), then jump to next direction sublist
+(blocking or getting the attack), then jump to next direction subtuple
 '''
 ATTACK_MOVES = {
     # White pawns
@@ -156,14 +150,14 @@ ATTACK_MOVES = {
             ((0,1), (0,2), (0,3), (0,4), (0,5), (0,6), (0,7)),
             ((0,-1), (0,-2), (0,-3), (0,-4), (0,-5), (0,-6), (0,-7)),
             # Horiz L-R
-            ((-1,0), (-2,0), (-3,0), (-4,0), (-5,0), (-6,0), (-7,0)),
             ((1,0), (2,0), (3,0), (4,0), (5,0), (6,0), (7,0)),
+            ((-1,0), (-2,0), (-3,0), (-4,0), (-5,0), (-6,0), (-7,0)),
             # Diag NW-SE
             ((-1,1), (-2,2), (-3,3), (-4,4), (-5,5), (-6,6), (-7,7)),
             ((1,-1), (2,-2), (3,-3), (4,-4), (5,-5), (6,-6), (7,-7)),
             # Diag SW-NE
-            ((-1,-1), (-2,-2), (-3,-3), (-4,-4), (-5,-5), (-6,-6), (-7,-7)),
             ((1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7)),
+            ((-1,-1), (-2,-2), (-3,-3), (-4,-4), (-5,-5), (-6,-6), (-7,-7)),
             ),
     # Rooks
     "R":    (
@@ -171,8 +165,8 @@ ATTACK_MOVES = {
             ((0,1), (0,2), (0,3), (0,4), (0,5), (0,6), (0,7)),
             ((0,-1), (0,-2), (0,-3), (0,-4), (0,-5), (0,-6), (0,-7)),
             # Horiz L-R
-            ((-1,0), (-2,0), (-3,0), (-4,0), (-5,0), (-6,0), (-7,0)),
             ((1,0), (2,0), (3,0), (4,0), (5,0), (6,0), (7,0)),
+            ((-1,0), (-2,0), (-3,0), (-4,0), (-5,0), (-6,0), (-7,0)),
             ),
     # Bishops
     "B":    (
@@ -180,8 +174,8 @@ ATTACK_MOVES = {
             ((-1,1), (-2,2), (-3,3), (-4,4), (-5,5), (-6,6), (-7,7)),
             ((1,-1), (2,-2), (3,-3), (4,-4), (5,-5), (6,-6), (7,-7)),
             # Diag SW-NE
-            ((-1,-1), (-2,-2), (-3,-3), (-4,-4), (-5,-5), (-6,-6), (-7,-7)),
             ((1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7,7)),
+            ((-1,-1), (-2,-2), (-3,-3), (-4,-4), (-5,-5), (-6,-6), (-7,-7)),
             ),
     # Knights
     "N":    (
@@ -196,8 +190,14 @@ ATTACK_MOVES = {
             )
     }
 
+def get_piece_player(epc):
+    # Return the player (0 or 1) for a given encoded piece
+    return 1 if epc >= EK1 else 0
+
 def compress(orig):
     '''
+    # A very simple "compression", replacing consecutive spaces
+    # (ZIPSTR) with a special character ZIPCHAR
     s = ""
     cursor = 0
     ps = orig.find(ZIPSTR, cursor)
@@ -208,6 +208,7 @@ def compress(orig):
     s = s + orig[cursor:]
     return s
     '''
+    #return zlib.compress(orig.encode())
     return orig
 
 def test_compress(orig):
@@ -217,63 +218,54 @@ def test_compress(orig):
 class ChessGame:
 
     def __init__(self):
-        self.__num = 0
-        self.__status = ["OK", "OK", "OK", "EMPTY"]
-        self.__turn = "w"
-        self.__nextTurn = "b"
-        self.__movep = 0
-        self.__waitp = 1
-        self.__smovep = "0"
-        self.__swaitp = "1"
-        self.__board = self.__empty_board()
-        self.__npcs = [0, 0]
-        self.__nchks = [0, 0]
-        self.__pcs = [[], []]
-        self.__parent = None
-        self.__lastMove = None
-        self.__attackfp = [self.__no_attackfp(), self.__no_attackfp()]
-        self.__key = ""
+        self._num = 0
+        self._status = ["OK", "OK", "OK", "EMPTY"]
+        self._movep = 0     # moving player
+        self._waitp = 1     # waiting player
+        self._board = self._empty_board()
+        self._npcs = [0, 0]
+        self._nchks = [0, 0]
+        self._pcs = [[], []]
+        self._parent = None
+        self._last_move = None
+        self._attackfp = [self._no_attackfp(), self._no_attackfp()]
+        self._key = ""
 
-    def initFromJson(self, game_json):
-        self.__num = 0
-        self.__status = ["OK", "OK", "OK", "VALIDATING"]
-        self.__turn = "w"
-        self.__nextTurn = "b"
-        self.__movep = 0   # moving player
-        self.__waitp = 1   # waiting player
-        self.__smovep = "0"
-        self.__swaitp = "1"
-        self.__board = self.__empty_board()
-        self.__npcs = [0, 0]
-        self.__nchks = [0, 0]
-        self.__pcs = [[], []]
-        self.__parent = None
-        self.__lastMove = None
-        self.__depth = 0
-        self.__key = ""
-        self.__attackfp = [self.__no_attackfp(), self.__no_attackfp()]
-        self.__set_board_from_json(game_json)
-        self.__gen_key()
+    def init_from_json(self, game_json):
+        self._num = 0
+        self._status = ["OK", "OK", "OK", "VALIDATING"]
+        self._movep = 0
+        self._waitp = 1
+        self._board = self._empty_board()
+        self._npcs = [0, 0]
+        self._nchks = [0, 0]
+        self._pcs = [[], []]
+        self._parent = None
+        self._last_move = None
+        self._depth = 0
+        self._key = ""
+        self._attackfp = [self._no_attackfp(), self._no_attackfp()]
+        self._set_board_from_json(game_json)
+        self._gen_key()
 
-    def __set_piece_from_json(self, player, piece, i, j):
-        epiece = self.__encode_piece(player, piece)
+    def _set_piece_from_json(self, player, piece, i, j):
+        epiece = self._encode_piece(player, piece)
         index = i + j*8
-        self.__board = self.__board[0:index] + epiece + self.__board[index+1:]
-        self.__pcs[player].append([epiece, i, j])
-        self.__npcs[player] = self.__npcs[player] + 1
+        self._board = self._board[0:index] + epiece + self._board[index+1:]
+        self._pcs[player].append([epiece, i, j])
+        self._npcs[player] += 1
 
-    def __set_board_from_json(self, game_json):
-        self.__num = 0
-        self.__parent = None
-        self.__depth = 0
-        self.__nchks = [0, 0]
-        self.__lastMove = game_json.get('lastMove', "")
+    def _set_board_from_json(self, game_json):
+        self._num = 0
+        self._parent = None
+        self._depth = 0
+        self._nchks = [0, 0]
+        self._last_move = game_json.get('lastMove', "")
         turn = game_json.get('turn', "?").lower()
-        self.__turn = "w" if turn=="w" or turn=="?" else "b"
-        moving_player = 0 if self.__turn=="w" else 1
-        moving_king = KINGS[moving_player]
+        self.set_turn("w" if (turn == "w" or turn == "?") else "b")
+        moving_king = KINGS[self._movep]
         for player in range(2):
-            color = "w" if player==0 else "b"
+            color = "w" if player == 0 else "b"
             pieces = game_json.get(color+"pcs", [])
             x = 0
             y = 0
@@ -283,99 +275,106 @@ class ChessGame:
             strplayer = str(player)
             for w in pieces:
                 piece = w[0:1]
-                if piece>='a' and piece<='h':
+                if piece >= 'a' and piece <= 'h':
                     # Here's a pawn
                     x = w[0:1]
                     y = w[1:2]
                     piece = "p"
-                    counts["p"] = counts["p"] + 1
+                    # Watch out
+                    counts["p"] += 1
                 else:
                     if piece in NOPAWN:
                          # Valid non-pawn piece
                          counts[piece] = counts.get(piece, 0) + 1
                          if piece != "K":
                              # Count any promoted pieces
-                             promoted = promoted + (1 if (counts[piece] > (1 if piece=="Q" else 2)) else 0)
+                             promoted += (1 if (counts[piece] >
+                                            (1 if piece == "Q" else 2))
+                                            else 0)
                     else:
-                        self.__status[player] = "ERROR: invalid piece "+piece+" in "+w
+                        self._status[player] = "ERROR: invalid piece " \
+                                                + piece+" in "+w
                         return
                     x = w[1:2]
                     y = w[2:3]
                 if x < 'a' or x > 'h' or y < '1' or y > '8':
-                    self.__status[player] = "ERROR: invalid position ({0},{1}) in {2}".format(x,y,w)
+                    self._status[player] = "ERROR: invalid position " \
+                                            + "("+x+","+y+") in "+w
                     return
                 if piece == "p" and (y == '1' or y == '8'):
-                    self.__status[player] = "ERROR: invalid pawn position ({0},{1})".format(x,y)
+                    self._status[player] = "ERROR: invalid pawn position " \
+                                            + "("+x+","+y+")"
                     return
-                #x,y are text "a"-"h","1"-"8" coordinates
-                #i,j are the corresponding 0-7 numeric coordinates
+                #x,y are text ("a"-"h","1"-"8") coordinates
+                #i,j are the corresponding (0-7,0-7) numeric coordinates
                 i = ord(x) - ORD_A
                 j = int(y) - 1
-                if self.__read_board(i, j) != " ":
-                    self.__status[player] = "ERROR: two pieces detected in same position {0}{1}".format(x,y)
+                if self._read_board(i, j) != " ":
+                    st = "ERROR: two pieces detected in same position " \
+                            + x + y
+                    self._status[player] = st
                     return
-                self.__set_piece_from_json(player, piece+strplayer, i, j)
+                self._set_piece_from_json(player, piece+strplayer, i, j)
             if counts.get("K", 0) != 1:
-                self.__status[player] = "ERROR: {0} King pieces for {1} player".format(counts.get("K", 0), color)
+                st = "ERROR: "+str(counts.get("K",0))+" King pieces" \
+                        " for " + color + " player"
+                self._status[player] = st
                 return
             if counts["p"] > 8:
-                self.__status[player] = "ERROR: {0} pawns for {1} player".format(counts["p"], color)
+                st = "ERROR: "+str(counts["p"])+" pawns for " \
+                        + color + " player"
+                self._status[player] = st
                 return
-            if promoted > 8 - counts["p"]:
-                self.__status[player] = "ERROR: {0} pawns + {1} promoted pieces, too many for ".format(counts["p"], promoted)+color+" player"
+            if promoted > (8 - counts["p"]):
+                st = "ERROR: "+str(counts["p"])+" pawns " \
+                        + str(promoted) + " promoted pieces, " \
+                        + "too many for " + color + " player"
+                self._status[player] = st
                 return
-            self.__sort_pieces(player)
-        self.__gen_attack_footprints()
+            self._sort_pieces(player)
+        self._gen_all_attack_footps()
 
-    def __gen_attack_footprints(self):
+    def _gen_all_attack_footps(self):
         # All pieces now on board, generate their attack foot prints
         for player in range(2):
-            for pxy in self.__pcs[player]:
+            for pxy in self._pcs[player]:
                 epc = pxy[0]                # Encoded piece
                 dpc = PIECE_DECODE[epc]     # Decoded piece
-                self.__update_attack_footps(player, dpc, pxy[1], pxy[2])
+                self._gen_piece_attack_footp(player, dpc, pxy[1], pxy[2])
 
-    def __update_attack_footps(self, player, dpc, i, j):
-        #print("Updating attack footprint for player", str(player), ", piece", dpc, "@", str(i),",",str(j),"delta=", delta)
-        vp = dpc if dpc[0:1]=="p" else dpc[0:1]
+    def _gen_piece_attack_footp(self, player, dpc, i, j):
+        vp = dpc if dpc[0:1] == "p" else dpc[0:1]
         vmoves = ATTACK_MOVES.get(vp, [])
-        #print("vp:",vp, "moves:", vmoves)
-        afp = self.__attackfp[player]
+        afp = self._attackfp[player]
         for movedir in vmoves:
             for m in movedir:
-                #print("Processing",m)
                 ii = i + m[0]
-                if (ii<0 or ii>7): break
+                if ii < 0 or ii > 7: break
                 jj = j + m[1]
-                if (jj<0 or jj>7): break
-                #print("\t Marking "+str(ii)+", "+str(jj)+" under "+str(player)+" attack")
-                nattacks = afp[ii][jj]
-                afp[ii][jj] = nattacks + 1
+                if jj < 0 or jj > 7: break
+                afp[ii][jj] += 1
                 # Here check if board has a piece here, and if so
                 # stop checking any further in this attacking direction
-                if self.__read_board(ii, jj) != " ": break
+                if self._read_board(ii, jj) != " ": break
 
-    def __read_board(self, i, j):
+    def _read_board(self, i, j):
         index = i + j*8
-        return self.__board[index:index+1]
+        return self._board[index:index+1]
 
-    def __sort_pieces(self, player):
-        self.__pcs[player].sort()
+    def _sort_pieces(self, player):
+        self._pcs[player].sort()
 
-    def initFromParentGame(self, pgame, pmove, childBoard, childKey):
+    def init_from_parent_game(self, pgame, pmove, child_board, child_key):
         # Generate ChildGame's board from parent one + move
-        #print("Running __init__ from Parent game with move", pmove)
-        self.__status = ["OK", "OK", "OK", "EMPTY"]
-        #self.setTurn(childKey[0:1])
-        self.setTurn(pgame.__turn) # At first keep the same moving player as from parent game
-        self.__parent = pgame
-        self.__depth = pgame.__depth+1
-        self.__lastMove = pmove
-        #print("\nchildBoard:", childBoard)
-        #print("childKey  :", childKey)
-        self.__board = childBoard
-        self.__pcs = [[], []]
-        #self.__attackfp = np.copy(pgame.__attackfp)
+        self._status = ["OK", "OK", "OK", "EMPTY"]
+        # For now keep the same moving player as from parent game
+        self.set_turn(pgame.get_turn())
+        self._parent = pgame
+        self._depth = pgame._depth + 1
+        self._last_move = pmove
+        self._board = child_board
+        self._key = child_key
+        self._pcs = [[], []]
         # from square
         fromsq = pmove[0]
         i0 = fromsq[0]
@@ -385,417 +384,356 @@ class ChessGame:
         i1 = destsq[0]
         j1 = destsq[1]
         # moving piece
-        empc = self.__read_board(i1, j1)    # Encoded moved piece
-        if (empc == " "):
-            self.show()
-            print("         "+RULER)
-            print("Parent: '"+pgame.getBoard()+"'")
-            print("Child : '"+self.getBoard()+"'")
-            print("ERROR: This should never happen. The previously moved piece should be there")
-            exit()
-
-        pcpc = pgame.__read_board(i1, j1)
-        if pcpc == pgame.__pcs[pgame.__waitp][0][0]:
-            self.show()
-            print("         "+RULER)
-            print("Parent: '"+pgame.getBoard()+"'")
-            print("P.move:", pmove)
-            print("Child : '"+self.getBoard()+"'")
-            print("ERROR: This should never happen: a King getting captured?")
-            exit()
-
-        dmpc = PIECE_DECODE[empc]           # Decoded moved piece
-        # Clone pieces for our soon moving player from parent game's waiting player
-        # except that one piece (if any) which might have been in the destination square
-        # (which would be getting captured by this move)
+        empc = self._read_board(i1, j1)    # Encoded moved piece
+        pcpc = pgame._read_board(i1, j1)
+        dmpc = PIECE_DECODE[empc]
+        # Clone pieces for our soon moving player from parent game's
+        # waiting player, except that one piece (if any) which might have
+        # been in the destination square (which would be getting captured
+        # by this move)
         capture = 0
-        for p in pgame.__pcs[pgame.__waitp]:
+        for p in pgame._pcs[pgame._waitp]:
             #print(p)
             px = p[1]
             py = p[2]
-            if (px==i1 and py==j1):
+            if px == i1 and py == j1:
                 # The piece we had there in that square just got captured
                 capture = 1
                 continue
             new_p = [p[0], px, py]
-            self.__pcs[pgame.__waitp].append(new_p)
-        # Clone pieces for our soon waiting player from parent's game moving player,
-        for p in pgame.__pcs[pgame.__movep]:
+            self._pcs[pgame._waitp].append(new_p)
+        # Clone pieces for our soon waiting player from parent's game
+        # moving player,
+        for p in pgame._pcs[pgame._movep]:
             px = p[1]
             py = p[2]
-            if (px==i0 and py==j0):
-                # This is the moving piece, update coordinates with move's destination
+            if px == i0 and py == j0:
+                # This is the moving piece, update coordinates with
+                # move's destination
                 new_p = [p[0], i1, j1]
             else:
                 new_p = [p[0], px, py]
-            self.__pcs[pgame.__movep].append(new_p)
-        self.__npcs[pgame.__movep] = pgame.__npcs[pgame.__movep]
-        self.__npcs[pgame.__waitp] = pgame.__npcs[pgame.__waitp] - capture
-        self.__attackfp = [self.__no_attackfp(), self.__no_attackfp()]
-        self.__gen_attack_footprints()
-        #self.__gen_key()
-        self.__key = childKey
+            self._pcs[pgame._movep].append(new_p)
+        self._npcs[pgame._movep] = pgame._npcs[pgame._movep]
+        self._npcs[pgame._waitp] = pgame._npcs[pgame._waitp] - capture
+        self._attackfp = [self._no_attackfp(), self._no_attackfp()]
+        self._gen_all_attack_footps()
 
-    def getParentGame(self):
-        return self.__parent
+    def get_parent_game(self):
+        return self._parent
 
-    def __empty_board(self):
+    def _empty_board(self):
         return EMPTY_BOARD
 
-    def getBoard(self):
-        return self.__board
+    def get_board(self):
+        return self._board
 
-    def __no_attackfp(self):
+    def _no_attackfp(self):
         return np.zeros([8,8])
 
-    def simulateMove(self, m):
-        #print(m)
+    def simulate_move(self, m):
         index_from = m[0][0] + m[0][1]*8
         index_to = m[1][0] + m[1][1]*8
-        empc = self.__board[index_from:index_from+1]
-        newBoard = self.__board[0:index_from] + " " + self.__board[index_from+1:]
-        newBoard = newBoard[0:index_to] + empc + newBoard[index_to+1:]
-        #if (debugShow):
-        #    print(self.__board)
-        #    print(newBoard)
-        return (newBoard, compress(self.__nextTurn + newBoard))
+        empc = self._board[index_from:index_from+1]
+        newBoard = self._board[0:index_from] + " " \
+                    + self._board[index_from+1:]
+        newBoard = newBoard[0:index_to] + empc \
+                    + newBoard[index_to+1:]
+        #return (newBoard, compress(self.get_next_turn() + newBoard))
+        return (newBoard, self.get_next_turn() + newBoard)
 
-    def setNum(self, num, depth):
-        self.__num = num
-        self.__depth = depth
+    def set_num(self, num, depth):
+        self._num = num
+        self._depth = depth
 
-    def getNum(self):
-        return self.__num
+    def get_num(self):
+        return self._num
 
-    def getDepth(self):
-        return self.__depth
+    def get_depth(self):
+        return self._depth
 
-    def __gen_key(self):
-        #self.__key = self.__turn+self.__board
-        #self.__key = zlib.compress((self.__turn+self.__board).encode())
-        self.__key = compress(self.__turn + self.__board)
+    def _gen_key(self):
+        #self._key = compress(self.get_turn() + self._board)
+        self._key = self.get_turn() + self._board
 
-    def getKey(self):
-        return self.__key
-        #return zlib.decompress(self.__key).decode()
+    def get_key(self):
+        return self._key
 
-    def dumpAttackFps(self):
-        print(self.__attackfp[0])
-        print(self.__attackfp[1])
-
-    def isAttacked(self, i, j):
-        index = i + j*8
-        return "x" == self.__attacks[index:index+1]
-
-    def __encode_piece(self, player, piece):
+    def _encode_piece(self, player, piece):
         return PIECE_ENCODE[piece]
 
-    def __decode_piece_from_board(self, i, j):
-        p = self.__read_board(i,j)
+    def _decode_piece_from_board(self, i, j):
+        p = self._read_board(i,j)
         if p == " ": return "  "
         return PIECE_DECODE[p]
 
-    def setTurn(self, turn):
+    def set_turn(self, turn):
         if turn == "b":
-            self.setMovingPlayer(1)
+            self.set_mover(1)
         else:
-            self.setMovingPlayer(0)
+            self.set_mover(0)
 
-    def setMovingPlayer(self, movep):
-        if movep == 1:
-            self.__turn     = "b"
-            self.__nextTurn = "w"
-            self.__movep  = 1     # moving player
-            self.__smovep = "1"
-            self.__waitp  = 0     # waiting player
-            self.__swaitp = "0"
+    def set_mover(self, p):
+        if p == 1:
+            self._movep = 1     # moving player
+            self._waitp = 0     # waiting player
         else:
-            self.__turn     = "w"
-            self.__nextTurn = "b"
-            self.__movep  = 0
-            self.__smovep = "0"
-            self.__waitp  = 1
-            self.__swaitp = "1"
+            self._movep = 0
+            self._waitp = 1
 
-    def getMovingPlayer(self):
-        return self.__movep
+    def get_mover(self):
+        return self._movep
 
-    def getWaitingPlayer(self):
-        return self.__waitp
+    def get_waiter(self):
+        return self._waitp
 
-    def flipTurn(self):
-        if self.__movep == 0:
-            self.setMovingPlayer(1)
+    def flip_turn(self):
+        if self._movep == 0:
+            self.set_mover(1)
         else:
-            self.setMovingPlayer(0)
+            self.set_mover(0)
 
-    def getTurn(self):
-        return self.__turn
+    def get_turn(self):
+        return "w" if self._movep == 0 else "b"
 
-    def getNextTurn(self):
-        return self.__nextTurn
+    def get_next_turn(self):
+        return "b" if self._movep == 0 else "w"
 
-    def getNpcs(self, player):
-        if (player < 0 or player > 1): return 0
-        return self.__npcs[player]
+    def get_npcs(self, player):
+        return self._npcs[player]
 
-    def getNumChecks(self, player):
-        if (player < 0 or player > 1): return 0
-        return self.__nchks[player]
+    def get_num_checks(self, player):
+        return self._nchks[player]
 
-    def getStatus(self):
-        if (self.__status[0]=="OK" and self.__status[1]=="OK" and self.__status[2]=="OK"):
-            self.__status[3] = "VALID"
+    def get_status(self):
+        if (self._status[0] == "OK"
+            and self._status[1] == "OK"
+            and self._status[2] == "OK"):
+            self._status[3] = "VALID"
             return "OK"
-        self.__status[3] = "INVALID"
-        return  "Whites  : "+self.__status[0]+"\n" \
-                "Blacks  : "+self.__status[1]+"\n" \
-                "Gameplay: "+self.__status[2]
-    '''
-    def printPathFromRoot(self):
-        if (self.__parent == None):
-            print("\tStart (", ("-" if self.__lastMove==None else self.__lastMove), ")")
-        else:
-            self.__parent.printPathFromRoot()
-            print("\t", end="")
-            print(self.__lastMove)
-    '''
+        self._status[3] = "INVALID"
+        return ("Whites  : "+self._status[0] + "\n"
+                + "Blacks  : "+self._status[1] + "\n"
+                + "Gameplay: "+self._status[2] + "\n"
+                + "Overall : "+self._status[3])
 
-    def getPathFromRoot(self):
-        if (self.__parent == None):
-            return ([] if self.__lastMove==None else self.__lastMove)
+    def get_path_from_root(self):
+        if self._parent is None:
+            return ([] if self._last_move is None else self._last_move)
         else:
-            path = self.__parent.getPathFromRoot()
-            path.append(self.__lastMove)
+            path = self._parent.get_path_from_root()
+            path.append(self._last_move)
             return path
 
-    def updateAttackFootps(self, processMoves):
-        # Scan all attacks from the playing King's point of view
-        king = self.__pcs[self.__movep][0]
-        eking = king[0]
-        if eking != EK0 and eking != EK1:
-            print("Last move was:", self.__lastMove)
-            print("Last board:")
-            self.show()
-            print("ERROR: The piece that should be the king is now", king, "("+PIECE_DECODE[eking]+")", \
-                  "This should never happen. The program should have detected the", \
-                  "end of game before. Exiting.")
-            exit()
-        dking = PIECE_DECODE[eking]
-        #print("\nScanning attacks for player", self.__smovep, "King is", king, "(", dking, "), GenMoves:", processMoves)
-        kx = king[1]
-        ky = king[2]
-        #print ("King's position: ", end="")
-        #print ([dking, kx, ky])
-        pinnedPcs = {}
-        # Scanning possible pawn attacks
-        pattacks = PATTACKS[king[0]]
+    def _get_pawn_checks(self, eking, kx, ky):
+        pattacks = PATTACKS[eking]
         epawn = pattacks[0]
         la = pattacks[1]
-        nchks = 0
         for pos in la:
             x = kx + pos[0]
             y = ky + pos[1]
-            if (x >= 0 and x < 8 and y >= 0 and y < 8):
-                square = self.__read_board(x, y)
-                if square == epawn:
-                    # Pawn checking this king
-                    #print("p"+self.__swaitp+" at "+chr(ORD_A+x)+","+chr(ORD_1+y)+" CHECKING "+dking)
-                    nchks = 1
-                    # We can break from this loop already, not
-                    # possible to have more than 1 enemy pawn checking us
-                    break
-        # Scanning all linear attacks to find all pinned pieces and checks
+            if x >= 0 and x < 8 and y >= 0 and y < 8:
+                if self._read_board(x, y) == epawn:
+                    # Enemy pawn checking this king
+                    # print("p"+self._swaitp+" at "+chr(ORD_A+x)+",",
+                    #           chr(ORD_1+y)+" CHECKING "+dking)
+                    return 1
+        return 0
+
+    def _get_long_checks(self, eking, kx, ky):
+        nla_chks = 0
         for adir, ainfo in LATTACKS.items():
             xdelta = ainfo[0]
             ydelta = ainfo[1]
             apieces = ainfo[2]
             scanx = kx + xdelta
             scany = ky + ydelta
-            ourpiece = []
-            First = True
-            while (scanx >= 0 and scanx < 8 and scany >= 0 and scany < 8):
-                square = self.__read_board(scanx, scany)
-                if (square != " "):
-                    piece = PIECE_DECODE[square]
-                    #print("\tPiece "+piece+" found in linear-scan at "+str(scanx)+","+str(scany))
-                    if piece[1:2]==self.__swaitp:
-                        ptype = piece[0:1]
-                        # It's enemy
-                        if ptype in apieces:
-                            if First:
-                                #print(piece+" at "+chr(ORD_A+scanx)+","+chr(ORD_1+scany)+" CHECKING "+dking)
-                                nchks = nchks + 1
-                            else:
-                                # Our piece we found first is pinned by this enemy piece
-                                #print(piece+" at "+chr(ORD_A+scanx)+","+chr(ORD_1+scany)+" PINNING ", end="")
-                                #print(PIECE_DECODE[ourpiece[0]])
-                                pinnedPcs[ourpiece]="1"
-                        #else: Enemy piece there, but it does not attack our king in this direction,
-                        #      so we can move on to the next scan direction
-                        break
-                    else:
-                        if not First: break
-                        First = False
-                        ourpiece = square+str(scanx)+str(scany)
-                scanx = scanx + xdelta
-                scany = scany + ydelta
-        # Scanning all knight attacks
+            while scanx >= 0 and scanx < 8 and scany >= 0 and scany < 8:
+                square = self._read_board(scanx, scany)
+                if square == " ":
+                    scanx = scanx + xdelta
+                    scany = scany + ydelta
+                    continue
+                # Piece found in this attack direction
+                if get_piece_player(square) == self._movep: break
+                # It's an enemy piece
+                piece = PIECE_DECODE[square]
+                ptype = piece[0:1]
+                if ptype in apieces:
+                    # And it attacks in this direction, checking our king
+                    nla_chks += 1
+                #else: Enemy piece there, but does not attack our
+                # king in this dir -> fine to move on to next dir
+                break
+        return nla_chks
+
+    def _get_knight_checks(self, eking, kx, ky):
         lnpos = NATTACKS
-        #print(lnpos)
+        nk_chks = 0
         for pos in lnpos:
-            #print(pos)
             scanx = kx + pos[0]
             scany = ky + pos[1]
-            if (scanx >= 0 and scanx < 8 and scany >= 0 and scany < 8):
-                square = self.__read_board(scanx, scany)
-                if (square != " "):
-                    piece = PIECE_DECODE[square]
-                    if piece[0:1]=="N" and piece[1:2]==self.__swaitp:
-                        #print(piece+" at "+chr(ORD_A+scanx)+","+chr(ORD_1+scany)+" CHECKING "+dking)
-                        nchks = nchks + 1
-        self.__nchks[self.__movep] = nchks
-        if (nchks > 0):
-            #print("King "+dking+" attacked by "+str(nchks)+" check(s)")
-            if (nchks > 2):
-                self.__status[2] = "ERROR: invalid scenario with 3 or more simultaneous checks on "+dking
-                self.__status[3] = "INVALID"
-                return []
+            if scanx < 0 or scanx > 7 or scany < 0 or scany > 7: continue
+            square = self._read_board(scanx, scany)
+            if square == " ": continue
+            if get_piece_player(square) == self._movep: continue
+            if square in KNIGHTS:
+                # There's an enemy knight there checking our king
+                nk_chks += 1
+        return nk_chks
 
-        if not processMoves: return []
+    def get_all_checks(self):
+        # Scan all attacks from the playing King's point of view
+        king = self._pcs[self._movep][0]
+        eking = king[0]
+        kx = king[1]
+        ky = king[2]
+        nchks = (self._get_pawn_checks(eking, kx, ky)
+                + self._get_long_checks(eking, kx, ky)
+                + self._get_knight_checks(eking, kx, ky))
+        self._nchks[self._movep] = nchks
+        return nchks
 
+    def get_other_moves(self, moves, ptype, i, j):
+        # Get moves for all non-pawn pieces
+        amoves = ATTACK_MOVES.get(ptype)
+        for movedir in amoves:
+            for m in movedir:
+                ii = i + m[0]
+                if ii < 0 or ii > 7: break
+                jj = j + m[1]
+                if jj < 0 or jj > 7: break
+                square = self._read_board(ii, jj)
+                if square != " ":
+                    if get_piece_player(square) == self._movep:
+                        # A piece of ours is there, move on to next dir
+                        break
+                if (ptype == "K") and \
+                    self._attackfp[self._waitp][ii][jj] > 0:
+                    # Square is out of bounds for our king, skip
+                    continue
+                # Otherwise add the move as valid
+                newmove = ((i,j), (ii,jj))
+                moves.append(newmove)
+                if square != " ":
+                    # Destination square is occupied, no point exploring
+                    # this moving direction any further
+                    break
+        return moves
+
+    def get_pawn_moves(self, moves, dp, i, j):
+        # Pawns require very special movement considerations
+        pmoves = PAWN_MOVES.get(dp)
+        for movedir in pmoves:
+            for m in movedir:
+                ii = i + m[0]
+                if ii < 0 or ii > 7: break
+                jj = j + m[1]
+                if jj < 0 or jj > 7: break
+                square = self._read_board(ii, jj)
+                if m[0] == 0:
+                    # Only move vertically if path to dest square is free
+                    if square != " ": continue
+                    m1 = m[1]
+                    if m1 == 2:
+                        if j != 1 and self._movep == 0:
+                            # Our pawn is not in its starting raw so
+                            # it can't do a 2-step move
+                            continue
+                        if self._read_board(ii, j + 1) != " ":
+                            # Path is not clear for the pawn to move 2 sq
+                            continue
+                    elif m1 == -2:
+                        if j != 6 and self._movep == 1:
+                            continue
+                        if self._read_board(ii, j - 1) != " ":
+                            continue
+                    #else
+                        # Pawn is just moving 1 square forward
+                else:
+                    # Moving diagonally
+                    if square != " ":
+                        # The square is occupied
+                        if get_piece_player(square) == self._movep:
+                            # A piece of ours is in that square, so
+                            # skip this move
+                            continue
+                    else:
+                        # Moving diagonally into an empty square is only
+                        # valid when capturing a 2-square moving enemy
+                        # pawn that just moved next to ours. We have to
+                        # identify this possibility here
+                        if ((jj != 5 and self._movep == 0) or
+                            (jj != 2 and self._movep == 1)):
+                            # Our pawn is not in the right raw to be able
+                            # to capture a 2-moving pawn
+                            continue
+                        squareAdj = self._read_board(ii, j)
+                        if squareAdj == " ":
+                            # The square right next to our pawn is free
+                            continue
+                        if squareAdj != PAWNS[self._waitp]:
+                            # There is a piece there, but it's not
+                            # an enemy pawn
+                            continue
+                        # Here our pawn was in the right row, and next
+                        # to it there is an enemy pawn!
+                        if (self._last_move == []
+                            or self._last_move[1] != ii
+                            or self._last_move[2] != j):
+                            # Last move was not made by that pawn
+                            continue
+                        # This enemy pawn did make the very last move
+                        epoy = self._last_move[0][2]
+                        if ((enemy == 1 and epoy != 6)
+                            or (enemy == 0 and epoy != 1)):
+                            # But it was not a 2-square pawn move
+                            continue
+                        # Last move was made by that enemy pawn, and
+                        # it was a 2-square move, so our pawn can
+                        # indeed capture it
+                newmove = ((i,j), (ii,jj))
+                moves.append(newmove)
+        return moves
+
+    def get_all_moves(self, nchecks):
         # Generate list of valid moves to consider
-        movablePcs = []
-        if (nchks < 2):
-            # Not under a double check, so consider non-king piece movements
-            npieces = len(self.__pcs[self.__movep])
-            for i in range(1,npieces,1):
-                p = self.__pcs[self.__movep][i]
-                key = p[0] + str(p[1]) + str(p[2])
-                movablePcs.append( p )
-        # The king is always among the pieces to consider
-        movablePcs.append( self.__pcs[self.__movep][0] )
-        #print("Movable pieces:", movablePcs)
-        # Generate all valid moves for the movable pieces
         player_moves = []
-        for p in movablePcs:
+        movable_pcs = []
+        if nchecks < 2:
+            # Not under double check, so consider non-king piece movements
+            npieces = len(self._pcs[self._movep])
+            for i in range(1,npieces,1):
+                p = self._pcs[self._movep][i]
+                key = p[0] + str(p[1]) + str(p[2])
+                movable_pcs.append( p )
+        # The king is always among the pieces to consider
+        movable_pcs.append(self._pcs[self._movep][0])
+        # Generate all valid moves for the movable pieces
+        for p in movable_pcs:
             dp = PIECE_DECODE[p[0]]
             ptype = dp[0:1]
             i = p[1]
             j = p[2]
-            #print("Generating valid moves for", p, "("+dp+") at ", i, ",", j)
             if ptype == "p":
-                # Pawns require very special movement considerations
-                vmoves = PAWN_MOVES.get(dp)
-                for movedir in vmoves:
-                    for m in movedir:
-                        ii = i + m[0]
-                        if (ii<0 or ii>7): break
-                        jj = j + m[1]
-                        if (jj<0 or jj>7): break
-                        square = self.__read_board(ii, jj)
-                        if m[0] == 0:
-                            # Only move vertically if path to destination square is free
-                            if square != " ":
-                                continue
-                            m1 = m[1]
-                            #print("j is "+str(j)+" player is "+splayer+" m[1] is "+str(m[1]))
-                            # If trying to move 2-squares only valid if from the starting raw
-                            if m1 == 2:
-                                if (j!=1 and self.__movep==0):
-                                    # Our pawn is not in its starting raw so it can't do a 2-step move
-                                    continue
-                                if self.__read_board(ii, j+1) != " ":
-                                    # Path is not clear for the pawn to move 2 sq
-                                    continue
-                            elif m1 == -2:
-                                if j!=6 and self.__movep==1:
-                                    continue
-                                if self.__read_board(ii, j-1) != " ":
-                                    # Path is not free for the pawn to move 2 sq
-                                    continue
-                        else:
-                            # Moving diagonally
-                            if square != " ":
-                                # The square is occupied
-                                if PIECE_DECODE[square][1:2] == self.__smovep:
-                                    # A piece of ours is in that square, so skip this move
-                                    continue
-                            else:
-                                # Moving diagonally into an empty square is only valid when
-                                # capturing a 2-square moving enemy pawn that just moved next
-                                # to ours. We have to identify this possibility here
-                                if (jj!=5 and self.__movep==0) or (jj!=2 and self.__movep==1):
-                                    # Our pawn is not in the right raw to be able to capture
-                                    # a 2-moving pawn
-                                    continue
-                                squareAdj = self.__read_board(ii, j)
-                                if squareAdj == " ":
-                                    # The square next to our pawn is free
-                                    continue
-                                if (PIECE_DECODE[squareAdj] != "p"+self.__swaitp):
-                                    # There is a piece there, but it's not an enemy pawn
-                                    continue
-                                # Here our pawn was in the right raw, and next to it there
-                                # is an enemy pawn!
-                                #print("Generating moves: p"+self.__smovep+" possibly capturing a 2-square enemy pawn!!!")
-                                if (self.__lastMove==[] or self.__lastMove[1]!=ii or self.__lastMove[2]!=j):
-                                    # Last move was not made by that pawn
-                                    continue
-                                # This enemy pawn actually made the very last move
-                                epoy = self.__lastMove[0][2]
-                                if ((enemy==1 and epoy!=6) or (enemy==0 and epoy!=1)):
-                                    # But it was not a 2-square pawn move
-                                    continue
-                                # If we reached this point, we identified the case in which
-                                # last move was that enemy pawn making its first move, and it
-                                # was a 2-square move, and our pawn can capture it
-                                #print("Generating moves: p"+self.__smovep+" CAPTURING a 2-square enemy pawn!!!!")
-                        newmove = ((i,j), (ii,jj))
-                        #print("Adding pawn move:", newmove)
-                        player_moves.append( newmove )
+                player_moves = \
+                    self.get_pawn_moves(player_moves, dp, i, j)
             else:
-                # Non-pawn piece
-                vmoves = ATTACK_MOVES.get(dp[0:1])
-                for movedir in vmoves:
-                    for m in movedir:
-                        ii = i + m[0]
-                        if (ii<0 or ii>7): break
-                        jj = j + m[1]
-                        if (jj<0 or jj>7): break
-                        #print("Move possibility:", m)
-                        square = self.__read_board(ii, jj)
-                        if square != " ":
-                            posWhiteQueen = self.getBoard().find("B",0)
-                            #if (posWhiteQueen==56):
-                            #    print("square", square, "Decoded square", PIECE_DECODE[square], "Moving player", self.__smovep)
-                            if PIECE_DECODE[square][1:2] == self.__smovep:
-                                # A piece of ours in that square, move on to next attack direction
-                                break
-                            #if (posWhiteQueen==56):
-                            #    print("Generating moves:", dp,"at",chr(ORD_A+i)+","+chr(ORD_1+j),"can CAPTURE",PIECE_DECODE[square])
-                        if (ptype=="K") and self.__attackfp[self.__waitp][ii][jj] > 0:
-                            # Square is out of bounds for our king, skip
-                            continue
-                        # Otherwise add the move as valid
-                        newmove = ((i,j), (ii,jj))
-                        #print("Adding non-pawn move:", newmove)
-                        player_moves.append( newmove )
-                        if square != " ":
-                            # Destination square is occupied, no point exploring this moving direction any further
-                            break
-        #print(player_moves)
-        #exit()
+                player_moves = \
+                    self.get_other_moves(player_moves, ptype, i, j)
         return player_moves
 
-    def applyMove(self, player, move):
+    def apply_move(self, player, move):
         return childGame
 
     def show(self):
-        nums   ="        0      1      2      3      4      5      6      7"
-        letters="        a      b      c      d      e      f      g      h"
-        horiz=  "    +------+------+------+------+------+------+------+------+"
-        print("\nGame #:", self.__num, "(depth "+str(self.__depth)+")")
+        nums = \
+            "        0      1      2      3      4      5      6      7"
+        letters = \
+            "        a      b      c      d      e      f      g      h"
+        horiz = \
+            "    +------+------+------+------+------+------+------+------+"
+        print("\nGame #:", self._num, "(depth "+str(self._depth)+")")
         print(letters)
         for j in range(8):
             print(horiz)
@@ -805,13 +743,12 @@ class ChessGame:
                 if whitesq:
                     print("|      ", end="")
                 else:
-                    #print("|///\\\\\\", end="")
                     print("|######", end="")
                 whitesq = not whitesq
             print("|")
             print("  {0} ".format(8-j), end="")
             for i in range(8):
-                piece = self.__decode_piece_from_board(i, 7-j)
+                piece = self._decode_piece_from_board(i, 7-j)
                 if whitesq:
                     print("|  "+piece+"  ", end="")
                 else:
@@ -820,16 +757,16 @@ class ChessGame:
             print("| {0}".format(7-j))
             print("    ", end="")
             for i in range(8):
-                if (show_attack_footprints):
+                if show_attack_footprints:
                     print("|", end="")
-                    wattacks = int(self.__attackfp[0][i][7-j])
-                    if (wattacks != 0):
+                    wattacks = int(self._attackfp[0][i][7-j])
+                    if wattacks != 0:
                         print(f"{wattacks:02d}", end="")
                     else:
                         print("  ", end="")
                     print("  ", end="")
-                    battacks = int(self.__attackfp[1][i][7-j])
-                    if (battacks != 0):
+                    battacks = int(self._attackfp[1][i][7-j])
+                    if battacks != 0:
                         print(f"{battacks:02d}", end="")
                     else:
                         print("  ", end="")
@@ -837,27 +774,23 @@ class ChessGame:
                     if whitesq:
                         print("|      ", end="")
                     else:
-                        print("|\\\\\\///", end="")
-                #print(f"{self.__attackfp[0][i][j]:02d}", end="")
-                #print("  {:2d}".format(self.__attackfp[1][i][j]), end="")
+                        print("|######", end="")
                 whitesq = not whitesq
             print("|")
         print(horiz)
         print(nums)
         print(letters)
-        print("\tTo play: "+self.getTurn()+"    ", end="")
-        print("Checks: w="+str(self.__nchks[0])+" b="+str(self.__nchks[1])+"      ", end="")
+        print("\tTo play: "+self.get_turn()+"    ", end="")
+        print("Checks: w="+str(self._nchks[0])+" b=" \
+                + str(self._nchks[1]) + "      ", end="")
         print("Move history:\n\t", end="")
-        print(self.getPathFromRoot())
-        #print("wpcs (", self.__npcs[0], "):", self.__pcs[0])
-        #print("bpcs (", self.__npcs[1], "):", self.__pcs[1])
-        #print("0-------1-------2-------3-------4-------5-------6-------7-------")
-        #print(self.__board)
+        print(self.get_path_from_root())
+
 
 BAR = '='*48
 
 def starting_banner():
-     print(BAR)
+     print("\n"+BAR)
      print('|      mateinx.py                              |')
      print('|      By Raul Saavedra F., 2022-Nov-18        |');
      print(BAR)
@@ -872,126 +805,98 @@ def load_game_from_json():
     return g
 
 def evaluate_recursively(parent, parent_move, game, depth):
-    global nGame
-    global gamesSeenAtDepth
-    global nGamesRevisited
-    global nRecCalls
-    global debugShow
-    nRecCalls = nRecCalls + 1
-    #if (depth > max_depth):
-    #    return "Too deep"
-    nGame += 1
-    game.setNum(nGame, depth)
-    if chatty and nGame % 2000 == 0:
-        print("Games Processed:", nGame)
-    #path = game.getPathFromRoot()
-    #if (path != []):
-    #    print(path)
-    #    ((ox, oy), (dx, dy)) = path[0]
-    #    if dx == 0 and dy >= 5:
-    #        debugShow = True
-    gkey = game.getKey()
-    #node = (game, parent, parent_move)
-    gamesSeenAtDepth.put(gkey, depth)
-    moves = game.updateAttackFootps(True)
-    #if debugShow:
-    #    game.show()
-    #    print("depth=", depth, "Parent move:", parent_move)
-    #    print(game.getBoard())
+    global ngame
+    global games_seen_at_depth
+    global ngames_rev
+    global nrec_calls
+    global debug_show
+    nrec_calls += 1
+    if depth > max_depth:
+        return "Too deep"
+    ngame += 1
+    game.set_num(ngame, depth)
+    if chatty and ngame % 2000 == 0:
+        print("Games Processed:", ngame)
+    gkey = game.get_key()
+    games_seen_at_depth.put(gkey, depth)
+    nchks = game.get_all_checks()
+    moves = game.get_all_moves(nchks)
+    if debug_show:
+        game.show()
+        print("depth=", depth, "Parent move:", parent_move)
+        print(game.get_board())
     ve = verify(game, moves)
     if ve != "ok":
-        #if debugShow:
-        #    print("Verification was not ok????", "depth=", depth, "player:", game.getMovingPlayer())
-        #    exit()
         return "Done here"
-    if (depth >= max_depth):
+    if depth >= max_depth:
         return "Deep enough"
-    #if debugShow:
-    #    print("Moves found:", moves)
-    #exit()
-    thisPlayer = game.getMovingPlayer()
-    nextGameNum = nGame + 1
-    nextDepth = depth + 1
+    this_player = game.get_mover()
+    next_ngame = ngame + 1
+    next_depth = depth + 1
     lmoves = len(moves)
-    nbadmoves = 0
+    nbad_moves = 0
     for m in moves:
-        #nm = nm + 1
-        #print("Depth", depth, "Move #", nm, "Player", game.getTurn(), "Creating child game with move:", m)
-        # Simulate move to check if resulting board has already been seen
-        (childBoard, childKey) = game.simulateMove(m)
-        dLastSeen = gamesSeenAtDepth.get(childKey)
-        if (dLastSeen < depth):
-            #if (debugShow):
-            #    print("childBoard (from simulated move)")
-            #    print(childBoard)
-            #    print("childKey", childKey)
-            #    print("Revisiting that one, really?")
-            #    exit()
-            nGamesRevisited = nGamesRevisited + 1
-            if chatty and nGamesRevisited % 10000 == 0:
-                print("Games Revisited:", nGamesRevisited)
+        # Simulate move and check if resulting board has already been seen
+        (child_board, child_key) = game.simulate_move(m)
+        d_last_seen = games_seen_at_depth.get(child_key)
+        if d_last_seen <= depth:
+            ngames_rev += 1
+            if chatty and ngames_rev % 10000 == 0:
+                print("Games Revisited:", ngames_rev)
             continue
-        # First time seeing this game, or we might have seen this game before,
-        # but if so, it was at a deeper depth. So we need to explore it further
-        # down from up here.
+        # First time seeing this game, or we might have seen this game
+        # before, but if so, it was at a deeper depth. So we need to
+        # explore it further down from up here.
+        # To-do: This can be optimized further if that last time
+        # seen wasn't at the max depth.
         # Generate new child game and do apply move to explore further
-        childGame = ChessGame()
-        childGame.setNum(nextGameNum, nextDepth)
-        childGame.initFromParentGame(game, m, childBoard, childKey)
-        childGame.updateAttackFootps(False)
-        if childGame.getNumChecks(thisPlayer) > 0:
-            #print("Move", m, "is NOT valid, skipping")
-            nbadmoves = nbadmoves + 1   # Bad move, discard
+        child_game = ChessGame()
+        child_game.set_num(next_ngame, next_depth)
+        child_game.init_from_parent_game(game, m, child_board, child_key)
+        nchks_in_child = child_game.get_all_checks()
+        if nchks_in_child > 0:
+            nbad_moves += 1
             continue
-        # Valid move
-        #if debugShow:
-        #    print("Move", m, "is valid, recursing")
-        childGame.flipTurn()
-        evaluate_recursively(game, m, childGame, nextDepth)
-    if (nbadmoves == lmoves):
-        # We ultimately had no valid moves in this game, looks like Game over
+        child_game.flip_turn()
+        evaluate_recursively(game, m, child_game, next_depth)
+    if nbad_moves == lmoves:
         result = verify(game, [])
-        #exit()
     return "Subtree processed"
 
 def verify(game, moves):
-    global nGame
+    global ngame
     global wins_per_depth
     global draws_per_depth
-    global showEndGames
-    depth = game.getDepth()
-    if (game.getNpcs(0) + game.getNpcs(1) == 2):
-        draws_per_depth[depth] = draws_per_depth[depth] + 1
-        if showEndGames:
+    global show_end_games
+    depth = game.get_depth()
+    if game.get_npcs(0) + game.get_npcs(1) == 2:
+        draws_per_depth[depth] += 1
+        if show_end_games:
             game.show()
-        print(nGame, "DRAW (only both Kings remain) found at game #", game.getNum(), "depth", depth)
+        print("DRAW (only both Kings remain) found at game #",
+                ngame, "depth", depth)
         return "GAME OVER: DRAW"
-    if (moves == []):
-        nchks = game.getNumChecks(game.getMovingPlayer())
-        if (nchks > 0):
-            if (nchks > 2):
-                error_msg = "ERROR: invalid scenario: more than two checks simultaneously on "+game.getTurn()
+    if moves == []:
+        nchks = game.get_num_checks(game.get_mover())
+        if nchks > 0:
+            if nchks > 2:
+                error_msg = "ERROR: invalid scenario: more than two" \
+                            + "checks simultaneously on "+game.get_turn()
                 print(error_msg)
                 exit()
-                #return error_msg
-            # No moves and the player to move is under Check -> Game over: LOST the game
-            winner = game.getNextTurn()
-            wins_per_depth[depth] = wins_per_depth[depth] + 1
-            #posWhiteQueen = game.getBoard().find("B",0)
-            #if (posWhiteQueen==56):
-            #    game.show()
-            #    print(nGame, "WIN for", winner, "found at game #", game.getNum(), "depth", depth)
-            #    exit()
-            print(nGame, "WIN for", winner, "found at game #", game.getNum(), "depth", depth)
+            # No moves and the player to move is under Check ->
+            #   Game over: LOST the game
+            winner = game.get_next_turn()
+            wins_per_depth[depth] += 1
+            print("WIN for", winner, "found at game #",
+                    ngame, "depth", depth)
             return "GAME OVER: Player", winner, "WINS!"
         else:
             # No moves and not under check -> Game over: DRAW
-            #game.setDraw()
-            #print("DRAW-------------------------!")
-            draws_per_depth[depth] = draws_per_depth[depth] + 1
-            if showEndGames:
+            draws_per_depth[depth] += 1
+            if show_end_games:
                 game.show()
-            print(nGame, "DRAW found at game #", game.getNum(), "depth", depth)
+            print("DRAW found at game #", ngame, "depth", depth)
             return "GAME OVER: DRAW"
     return "ok"
 
@@ -1000,7 +905,7 @@ def process_options(argv):
     global recurse
     global show_attack_footprints
     global chatty
-    global max_depth, wins_per_depth, draws_per_depth
+    global max_depth, max_depth_p1, wins_per_depth, draws_per_depth
     for opt in argv:
         if opt == "-h":
             # Display help
@@ -1024,9 +929,10 @@ def process_options(argv):
             # Set maximum depth to explore
             n=opt[2:]
             if n.isdecimal():
-                max_depth=int(n)
-                wins_per_depth = [0]*(max_depth+1)
-                draws_per_depth = [0]*(max_depth+1)
+                max_depth = int(n)
+                max_depth_p1 = max_depth + 1
+                wins_per_depth = [0]*(max_depth_p1)
+                draws_per_depth = [0]*(max_depth_p1)
             else:
                 print("Invalid max depth parameter:", n)
             print("Using", max_depth, "as maximum depth")
@@ -1042,58 +948,69 @@ def process_options(argv):
                 print("ERROR: file '"+fname+"' not found, exiting")
                 exit(-2)
             continue
-        print("ERROR: {0} is not an option, use -h for usage details".format(opt))
+        print("ERROR: "+opt+" is not an option, use -h for usage details")
         exit(-1)
 
 def mateinx_solver(argv):
-    global nGame
+    global ngame
     global chatty
+    global nrec_calls
+    global ngames_rev
     starting_banner()
     process_options(argv)
     start = load_game_from_json()
     game = ChessGame()
-    game.initFromJson(start)
-    vResults = game.getStatus()
-    if (vResults != "OK"):
-        print(vResults)
+    game.init_from_json(start)
+    vst = game.get_status()
+    if vst != "OK":
+        print(vst)
         exit()
     # Aditional validations before starting recursive calls
-    origTurn = game.getTurn()
-    game.setTurn("w")
-    game.updateAttackFootps(False)
-    vResults = game.getStatus()
-    if (vResults != "OK"):
+    orig_turn = game.get_turn()
+    game.set_turn("w")
+    nchk0 = game.get_all_checks()
+    vst = game.get_status()
+    if vst != "OK":
         game.show()
-        print(vResults)
+        print(vst)
         exit()
-    game.setTurn("b")
-    game.updateAttackFootps(False)
-    vResults = game.getStatus()
-    if (vResults != "OK"):
+    game.set_turn("b")
+    nchk1 = game.get_all_checks()
+    vst = game.get_status()
+    if vst != "OK":
         game.show()
-        print(vResults)
+        print(vst)
         exit()
-    if game.getNumChecks(0) > 0 and game.getNumChecks(1) > 0:
+    if nchk0 > 0 and nchk1 > 0:
         game.show()
-        print("ERROR: invalid scenario: both players are under check simultaneously")
+        print("ERROR: invalid scenario: both players are under check" \
+                + " simultaneously")
         exit()
-    game.setTurn(origTurn) # Reset original player moving next
-    if (game.getNumChecks(0) > 0 and origTurn=="b") or (game.getNumChecks(1) > 0 and origTurn=="w"):
+    game.set_turn(orig_turn) # Reset original player moving next
+    if ((nchk0 > 0 and orig_turn == "b")
+        or (nchk1 > 0 and orig_turn == "w")):
         game.show()
-        print("ERROR: invalid scenario. Player "+origTurn+" will move next -> player "+game.getNextTurn()+" can't be in check")
+        print("ERROR: invalid scenario. Player "+orig_turn+" will move" \
+                + " next -> player "+game.get_next_turn() \
+                + " can't be in check")
+        exit()
+    if nchk0 > 2 or nchk1 >2:
+        game.show()
+        print("ERROR: more than 2 checks simultaneously on", \
+                "w" if nchk0 > 2 else "b", "King")
         exit()
     # At this point, the Game setup was found to be valid
     ngame = 0
     if chatty:
-        print("Initial Game configuration is valid\n")
+        print("Initial Game configuration is valid:")
         game.show()
         print(BAR)
-    if (recurse):
+    if recurse:
         evaluate_recursively(None, (), game, 0)
     end_time = time.time()
-    print("\nTotal recursive calls:", nRecCalls)
-    print("Total games processed:", nGame)
-    print("Total games revisited:", nGamesRevisited)
+    print("\nTotal recursive calls:", nrec_calls)
+    print("Total games processed:", ngame)
+    print("Total games revisited:", ngames_rev)
     print("Win-in-X  games found per depth:", wins_per_depth)
     print("Draw-in-X games found per depth:", draws_per_depth)
 
