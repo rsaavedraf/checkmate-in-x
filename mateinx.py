@@ -34,7 +34,7 @@ show_end_games = False
 chatty = True
 show_attack_footprints = False
 recurse = False
-max_depth = 4
+max_depth = 3
 max_depth_p1 = max_depth + 1
 wins_per_depth = [0]*(max_depth_p1)
 draws_per_depth = [0]*(max_depth_p1)
@@ -74,9 +74,15 @@ EK0 = PIECE_ENCODE["K0"]
 EK1 = PIECE_ENCODE["K1"]
 EP0 = PIECE_ENCODE["p0"]
 EP1 = PIECE_ENCODE["p1"]
+EQ0 = PIECE_ENCODE["Q0"]
+EQ1 = PIECE_ENCODE["Q1"]
+EN0 = PIECE_ENCODE["N0"]
+EN1 = PIECE_ENCODE["N1"]
 
 KINGS=(EK0, EK1)
 PAWNS=(EP0, EP1)
+QUEENS=(EQ0, EQ1)
+KNIGHTS=(EN0, EN1)
 
 # Pawn attacks from perspective of an attacked king
 PATTACKS = {
@@ -280,7 +286,6 @@ class ChessGame:
                     x = w[0:1]
                     y = w[1:2]
                     piece = "p"
-                    # Watch out
                     counts["p"] += 1
                 else:
                     if piece in NOPAWN:
@@ -373,6 +378,9 @@ class ChessGame:
     def _sort_pieces(self, player):
         self._pcs[player].sort()
 
+    def clone_for_knight_promotion():
+        return child_game_2
+
     def init_from_parent_game(self, pgame, pmove, child_board, child_key):
         # Generate ChildGame's board from parent one + move
         self._status = ["OK", "OK", "OK", "EMPTY"]
@@ -384,23 +392,22 @@ class ChessGame:
         self._board = child_board
         self._key = child_key
         self._pcs = [[], []]
-        # from square
-        fromsq = pmove[0]
-        i0 = fromsq[0]
-        j0 = fromsq[1]
-        # to square
-        destsq = pmove[1]
-        i1 = destsq[0]
-        j1 = destsq[1]
+        # moving piece from old square at i0, j0
+        oldsq = pmove[0]
+        i0 = oldsq[0]
+        j0 = oldsq[1]
+        # to new square at i1, j1
+        newsq = pmove[1]
+        i1 = newsq[0]
+        j1 = newsq[1]
         # moving piece
         empc = self._read_board(i1, j1)    # Encoded moved piece
-        pcpc = pgame._read_board(i1, j1)
-        dmpc = PIECE_DECODE[empc]
         # Clone pieces for our soon moving player from parent game's
-        # waiting player, except that one piece (if any) which might have
-        # been in the destination square (which would be getting captured
-        # by this move)
+        # waiting player, except that one piece (if any) which might
+        # have been in the destination square (such a piece would be
+        # getting captured by this move)
         capture = 0
+        promotion = False
         for p in pgame._pcs[pgame._waitp]:
             #print(p)
             px = p[1]
@@ -417,16 +424,26 @@ class ChessGame:
             px = p[1]
             py = p[2]
             if px == i0 and py == j0:
-                # This is the moving piece, update coordinates with
-                # move's destination
-                new_p = [p[0], i1, j1]
+                # This is the moving piece. Use the piece encoded
+                # in the new board, which will be different from the
+                # original in the case of a pawn promotion
+                new_p = [empc, i1, j1]
+                if empc != p[0]:
+                    promotion = True
             else:
                 new_p = [p[0], px, py]
+            #print ("Adding piece", new_p, "to child game")
             self._pcs[pgame._movep].append(new_p)
         self._npcs[pgame._movep] = pgame._npcs[pgame._movep]
         self._npcs[pgame._waitp] = pgame._npcs[pgame._waitp] - capture
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._gen_all_attack_footps()
+        if promotion:
+        #    self.show()
+            print("After game " + str(pgame.get_num()) \
+                    + " a promotion into "+PIECE_DECODE[empc] \
+                    + " took place at "+str(i1)+","+str(j1))
+        #    exit()
 
     def get_parent_game(self):
         return self._parent
@@ -440,16 +457,51 @@ class ChessGame:
     def _no_attackfp(self):
         return np.zeros([8,8])
 
+    def _gen_new_board(self, oldboard, piece, idx_from, idx_to):
+        newBoard = oldboard[0:idx_from] \
+                    + " " \
+                    + oldboard[idx_from+1:]
+        newBoard = newBoard[0:idx_to] \
+                    + piece \
+                    + newBoard[idx_to+1:]
+        return newBoard
+
+
     def simulate_move(self, m):
-        index_from = m[0][0] + m[0][1]*8
-        index_to = m[1][0] + m[1][1]*8
-        empc = self._board[index_from:index_from+1]
-        newBoard = self._board[0:index_from] + " " \
-                    + self._board[index_from+1:]
-        newBoard = newBoard[0:index_to] + empc \
-                    + newBoard[index_to+1:]
-        #return (newBoard, compress(self.get_next_turn() + newBoard))
-        return (newBoard, self.get_next_turn() + newBoard)
+        ''' Returns a list of children boards given a move.
+        Typically just 1 board inside, but 2 when promoting a pawn:
+        one for promoting into queen, and one into knight.
+        (Never promoting into rooks or bishops, since they are never
+        preferable over a Queen.)
+        '''
+        ydest = m[1][1]
+        index_old = m[0][0] + m[0][1]*8
+        index_new = m[1][0] + ydest*8
+        # Encoded moving piece
+        empc = self._board[index_old:index_old+1]
+        if empc in PAWNS and (ydest == 0 or ydest == 7):
+            # Pawn reaching a final row, so a promotion applies.
+            prom_q = QUEENS[self._movep]
+            prom_n = KNIGHTS[self._movep]
+            ch_board_q = self._gen_new_board(
+                            self._board,
+                            prom_q,
+                            index_old,
+                            index_new)
+            ch_board_n = self._gen_new_board(
+                            self._board,
+                            prom_n,
+                            index_old,
+                            index_new)
+            return [ch_board_q, ch_board_n]
+        else:
+            # Just move the piece from old to new position
+            ch_board = self._gen_new_board(
+                            self._board,
+                            empc,
+                            index_old,
+                            index_new)
+            return [ch_board]
 
     def set_num(self, num, depth):
         self._num = num
@@ -464,6 +516,9 @@ class ChessGame:
     def _gen_key(self):
         #self._key = compress(self.get_turn() + self._board)
         self._key = self.get_turn() + self._board
+
+    def get_child_key(self, child_board):
+        return self.get_next_turn() + child_board
 
     def get_key(self):
         return self._key
@@ -822,8 +877,8 @@ def evaluate_recursively(parent, parent_move, game, depth):
     nrec_calls += 1
     if depth > max_depth:
         return "Too deep"
-    ngame += 1
     game.set_num(ngame, depth)
+    ngame += 1
     if chatty and ngame % 2000 == 0:
         print("Games Processed:", ngame)
     gkey = game.get_key()
@@ -840,35 +895,42 @@ def evaluate_recursively(parent, parent_move, game, depth):
     if depth >= max_depth:
         return "Deep enough"
     this_player = game.get_mover()
-    next_ngame = ngame + 1
     next_depth = depth + 1
     lmoves = len(moves)
-    nbad_moves = 0
+    nvalid_moves = 0
     for m in moves:
         # Simulate move and check if resulting board has already been seen
-        (child_board, child_key) = game.simulate_move(m)
-        d_last_seen = games_seen_at_depth.get(child_key)
-        if d_last_seen <= depth:
-            ngames_rev += 1
-            if chatty and ngames_rev % 10000 == 0:
-                print("Games Revisited:", ngames_rev)
-            continue
-        # First time seeing this game, or we might have seen this game
-        # before, but if so, it was at a deeper depth. So we need to
-        # explore it further down from up here.
-        # To-do: This can be optimized further if that last time
-        # seen wasn't at the max depth.
-        # Generate new child game and do apply move to explore further
-        child_game = ChessGame()
-        child_game.set_num(next_ngame, next_depth)
-        child_game.init_from_parent_game(game, m, child_board, child_key)
-        nchks_in_child = child_game.get_all_checks()
-        if nchks_in_child > 0:
-            nbad_moves += 1
-            continue
-        child_game.flip_turn()
-        evaluate_recursively(game, m, child_game, next_depth)
-    if nbad_moves == lmoves:
+        child_boards = game.simulate_move(m)
+        for ch_brd in child_boards:
+            ch_key = game.get_child_key(ch_brd)
+            d_last_seen = games_seen_at_depth.get(ch_key)
+            if d_last_seen <= depth:
+                ngames_rev += 1
+                if chatty and ngames_rev % 10000 == 0:
+                    print("Games Revisited:", ngames_rev)
+                continue
+            # First time seeing this game, or we might have seen this game
+            # before, but if so, it was at a deeper depth. So we need to
+            # explore it further down from up here.
+            # To-do: This can be optimized further if that last time
+            # seen wasn't at the max depth.
+
+            # Generate new child game and do apply move to explore further
+            child_game = ChessGame()
+            child_game.init_from_parent_game(game, m, ch_brd, ch_key)
+            nchks_in_child = child_game.get_all_checks()
+            if nchks_in_child > 0:
+                # Our King is left in check with this move: invalid
+                #continue
+                # We can break from the inner for alread since it has a
+                # second loop only when promoting a pawn, but regardless
+                # of Queen or Knight, if the first promotion is invalid
+                # the second will be as well
+                break
+            nvalid_moves += 1
+            child_game.flip_turn()
+            evaluate_recursively(game, m, child_game, next_depth)
+    if nvalid_moves == 0:
         result = verify(game, [])
     return "Subtree processed"
 
