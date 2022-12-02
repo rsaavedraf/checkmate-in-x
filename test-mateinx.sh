@@ -12,5 +12,7 @@ python3 mateinx.py error-07.json -r -q
 python3 mateinx.py error-08.json -r -q
 python3 mateinx.py error-09.json -r -q
 python3 mateinx.py error-10.json -r -q
+python3 mateinx.py error-11.json -r -q
 python3 mateinx.py game-01.json -r
 python3 mateinx.py game-10.json -r -d1
+python3 mateinx.py game-11.json -r -d1

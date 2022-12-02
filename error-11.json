@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Error: last move incompatible with pieces on board, or with turn",
+        "date" : "2022-12-02",
+        "wpcs" : ["Ka1"],
+        "bpcs" : ["Kf7"],
+        "lastMove": "a2a1",
+        "turn" : "w"
+    }
+}

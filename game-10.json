@@ -3,7 +3,7 @@
         "name" : "Pawn to get promoted",
         "date" : "2022-12-01",
         "wpcs" : ["Kg7", "h7"],
-        "bpcs" : ["Ke1"],
+        "bpcs" : ["Ke1", "f2"],
         "lastMove": null,
         "turn" : "w"
     }

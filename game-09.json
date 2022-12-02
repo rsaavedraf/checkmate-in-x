@@ -1,6 +1,6 @@
 {
     "chess-game": {
-        "name" : "Chessify Mate in 3",
+        "name" : "Another DRAW example",
         "date" : "2022-11-26",
         "wpcs" : ["Kd8", "Re7", "Ra3", "Ba1", "a7", "b6", "e4"],
         "bpcs" : ["Ka8", "b7", "a2"],

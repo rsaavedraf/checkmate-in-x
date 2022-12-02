@@ -48,7 +48,8 @@ games_seen_at_depth = GamesRecord()
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
 ORD_1 = ord('1')
-NOPAWN="KQRBN"
+NOPAWN = "KQRNB"
+QRNB = "QRNB"
 EMPTY_BOARD = " "*64
 ZIPSTR  = "     "
 ZIPSTRL = len(ZIPSTR)
@@ -69,7 +70,6 @@ PIECE_ENCODE = {"K0": "A",
                 "p1": "L"}
 PIECE_DECODE = {v: k for k, v in PIECE_ENCODE.items()}
 
-KNIGHTS = PIECE_ENCODE["N0"] + PIECE_ENCODE["N1"]
 EK0 = PIECE_ENCODE["K0"]
 EK1 = PIECE_ENCODE["K1"]
 EP0 = PIECE_ENCODE["p0"]
@@ -79,10 +79,10 @@ EQ1 = PIECE_ENCODE["Q1"]
 EN0 = PIECE_ENCODE["N0"]
 EN1 = PIECE_ENCODE["N1"]
 
-KINGS=(EK0, EK1)
-PAWNS=(EP0, EP1)
-QUEENS=(EQ0, EQ1)
-KNIGHTS=(EN0, EN1)
+EKINGS=(EK0, EK1)
+EPAWNS=(EP0, EP1)
+EQUEENS=(EQ0, EQ1)
+EKNIGHTS=(EN0, EN1)
 
 # Pawn attacks from perspective of an attacked king
 PATTACKS = {
@@ -254,8 +254,66 @@ class ChessGame:
         self._set_board_from_json(game_json)
         self._gen_key()
 
-    def _set_piece_from_json(self, player, piece, i, j):
-        epiece = self._encode_piece(player, piece)
+    def _parse_coords(self, xystr):
+        if len(xystr) != 2:
+            st = "ERROR: invalid board coordinates '"+xystr+"' " \
+                    + "(must be xy, x=a-h, y=1-8)"
+            self._status[2] = st
+            return None
+        x = xystr[0:1]
+        y = xystr[1:2]
+        if x < 'a' or x > 'h' or y < '1' or y > '8':
+            st = "ERROR: invalid board coordinates ("+x+","+y+") in "+xystr
+            self._status[2] = st
+            return None
+        #x,y are text ("a"-"h", "1"-"8") board coordinates
+        #i,j are the corresponding (0-7, 0-7) numeric coordinates
+        i = ord(x) - ORD_A
+        j = int(y) - 1
+        return (i, j)
+
+    def _parse_piece(self, pcstr):
+        ptype = pcstr[0:1]
+        if ptype >= 'a' and ptype <= 'h':
+            # Here's a pawn
+            ptype = 'p'
+            coords = self._parse_coords(pcstr[0:2])
+            if coords is None: return None
+            y = coords[1]
+            if y == 0 or y == 7:
+                self._status[2] = "ERROR: invalid pawn position "+pcstr
+                return None
+        else:
+            if not ptype in NOPAWN:
+                self._status[2] = "ERROR: invalid piece "+ptype+" in "+pcstr
+                return None
+            coords = self._parse_coords(pcstr[1:3])
+        if coords is None: return None
+        return (ptype, coords[0], coords[1])
+
+    def _parse_last_move(self, lastmv_str):
+        # Last move needs two board coordinates (origin and dest squares)
+        # in order to be able to tell whether a pawn had moved 2 squares
+        # as last move right before our input board setup
+        c1 = self._parse_coords(lastmv_str[0:2])
+        c2 = self._parse_coords(lastmv_str[2:])
+        if c1 is None or c2 is None:
+            self._status[2] = "ERROR: invalid last move '" \
+                                + lastmv_str+"' (should be of the form 'cRcR')"
+            return
+        elmpc = self._read_board(c2[0], c2[1])
+        if (elmpc == ' ' or PIECE_DECODE[elmpc][1:2] != str(self._waitp)):
+            st = "ERROR: conflict between last move '"+lastmv_str \
+                    + "' and existing pieces, or turn"
+            self._status[2] = st
+        # Possible to-do: validate that the move is compatible with the
+        # piece standing there in c2. It must be either a move doable by
+        # the piece itself, or if c2 is at row 7, doable by a pawn
+        # promoting into that piece. Otherwise the move is invalid.
+        self._last_move = (c1, c2)
+
+    def _set_piece_from_json(self, player, ptype, i, j):
+        epiece = PIECE_ENCODE[ptype + str(player)]
         index = i + j*8
         self._board = self._board[0:index] + epiece + self._board[index+1:]
         self._pcs[player].append([epiece, i, j])
@@ -266,86 +324,63 @@ class ChessGame:
         self._parent = None
         self._depth = 0
         self._nchks = [0, 0]
-        self._last_move = game_json.get('lastMove', "")
         turn = game_json.get('turn', "?").lower()
         self.set_turn("w" if (turn == "w" or turn == "?") else "b")
-        moving_king = KINGS[self._movep]
+        moving_king = EKINGS[self._movep]
         for player in range(2):
             color = "w" if player == 0 else "b"
             pieces = game_json.get(color+"pcs", [])
-            x = 0
-            y = 0
             counts = {}
-            counts["p"] = 0
             promoted = 0
-            strplayer = str(player)
             for w in pieces:
-                piece = w[0:1]
-                if piece >= 'a' and piece <= 'h':
-                    # Here's a pawn
-                    x = w[0:1]
-                    y = w[1:2]
-                    piece = "p"
-                    counts["p"] += 1
-                else:
-                    if piece in NOPAWN:
-                         # Valid non-pawn piece
-                         counts[piece] = counts.get(piece, 0) + 1
-                         if piece != "K":
-                             # Count any promoted pieces
-                             promoted += (1 if (counts[piece] >
-                                            (1 if piece == "Q" else 2))
-                                            else 0)
-                    else:
-                        self._status[player] = "ERROR: invalid piece " \
-                                                + piece+" in "+w
-                        return
-                    x = w[1:2]
-                    y = w[2:3]
-                if x < 'a' or x > 'h' or y < '1' or y > '8':
-                    self._status[player] = "ERROR: invalid position " \
-                                            + "("+x+","+y+") in "+w
-                    return
-                if piece == "p" and (y == '1' or y == '8'):
-                    self._status[player] = "ERROR: invalid pawn position " \
-                                            + "("+x+","+y+")"
-                    return
-                #x,y are text ("a"-"h","1"-"8") coordinates
-                #i,j are the corresponding (0-7,0-7) numeric coordinates
-                i = ord(x) - ORD_A
-                j = int(y) - 1
+                piece = self._parse_piece(w)
+                if piece == None: return
+                ptype = piece[0]
+                i = piece[1]
+                j = piece[2]
+                counts[ptype] = counts.get(ptype, 0) + 1
+                if ptype in QRNB:
+                    # Count any promoted pieces
+                    promoted += (1 if (counts[ptype] >
+                                    (1 if ptype == "Q" else 2)) else 0)
                 if self._read_board(i, j) != " ":
-                    st = "ERROR: two pieces detected in same position " \
-                            + x + y
+                    x = chr(ORD_A + i)
+                    y = chr(ORD_1 + j)
+                    st = "ERROR: two pieces in same position "+x+","+y
                     self._status[player] = st
                     return
-                if piece == "B":
+                if ptype == "B":
                     # Check that bishops are in different color squares
                     sqcolor = "b" if ((i + j) % 2 == 0) else "w"
                     if counts.get("B"+sqcolor, 0) != 0:
-                        st = "ERROR: Bishops in same square colors"
+                        st = "ERROR: Two Bishops on same-colored squares"
                         self._status[player] = st
                         return
                     else:
                         counts["B"+sqcolor] = 1
-                self._set_piece_from_json(player, piece + strplayer, i, j)
+                self._set_piece_from_json(player, ptype, i, j)
             if counts.get("K", 0) != 1:
                 st = "ERROR: "+str(counts.get("K",0))+" King pieces" \
                         " for " + color + " player"
                 self._status[player] = st
                 return
-            if counts["p"] > 8:
+            if counts.get("p", 0) > 8:
                 st = "ERROR: "+str(counts["p"])+" pawns for " \
                         + color + " player"
                 self._status[player] = st
                 return
-            if promoted > (8 - counts["p"]):
-                st = "ERROR: "+str(counts["p"])+" pawns " \
+            if promoted > (8 - counts.get("p", 0)):
+                st = "ERROR: "+str(counts.get("p", 0))+" pawns " \
                         + str(promoted) + " promoted pieces, " \
                         + "too many for " + color + " player"
                 self._status[player] = st
                 return
             self._sort_pieces(player)
+        self._last_move = None
+        lastmv_str = game_json.get('lastMove', "")
+        if (not lastmv_str is None) and lastmv_str != "":
+            self._parse_last_move(lastmv_str)
+            if self._last_move is None: return
         self._gen_all_attack_footps()
 
     def _gen_all_attack_footps(self):
@@ -387,6 +422,7 @@ class ChessGame:
         # For now keep the same moving player as from parent game
         self.set_turn(pgame.get_turn())
         self._parent = pgame
+        self._num = -1 # -pgame._num
         self._depth = pgame._depth + 1
         self._last_move = pmove
         self._board = child_board
@@ -407,7 +443,6 @@ class ChessGame:
         # have been in the destination square (such a piece would be
         # getting captured by this move)
         capture = 0
-        promotion = False
         for p in pgame._pcs[pgame._waitp]:
             #print(p)
             px = p[1]
@@ -420,6 +455,7 @@ class ChessGame:
             self._pcs[pgame._waitp].append(new_p)
         # Clone pieces for our soon waiting player from parent's game
         # moving player,
+        promotion = False
         for p in pgame._pcs[pgame._movep]:
             px = p[1]
             py = p[2]
@@ -439,11 +475,9 @@ class ChessGame:
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._gen_all_attack_footps()
         if promotion:
-        #    self.show()
-            print("After game " + str(pgame.get_num()) \
+            print("***** After game " + str(pgame.get_num()) \
                     + " a promotion into "+PIECE_DECODE[empc] \
-                    + " took place at "+str(i1)+","+str(j1))
-        #    exit()
+                    + " took place at "+str(i1)+","+str(j1)+" *****")
 
     def get_parent_game(self):
         return self._parent
@@ -479,10 +513,10 @@ class ChessGame:
         index_new = m[1][0] + ydest*8
         # Encoded moving piece
         empc = self._board[index_old:index_old+1]
-        if empc in PAWNS and (ydest == 0 or ydest == 7):
+        if empc in EPAWNS and (ydest == 0 or ydest == 7):
             # Pawn reaching a final row, so a promotion applies.
-            prom_q = QUEENS[self._movep]
-            prom_n = KNIGHTS[self._movep]
+            prom_q = EQUEENS[self._movep]
+            prom_n = EKNIGHTS[self._movep]
             ch_board_q = self._gen_new_board(
                             self._board,
                             prom_q,
@@ -523,8 +557,8 @@ class ChessGame:
     def get_key(self):
         return self._key
 
-    def _encode_piece(self, player, piece):
-        return PIECE_ENCODE[piece]
+    #def _encode_piece(self, ptype, strplayer):
+    #    return PIECE_ENCODE[ptype+strplayer]
 
     def _decode_piece_from_board(self, i, j):
         p = self._read_board(i,j)
@@ -583,7 +617,7 @@ class ChessGame:
 
     def get_path_from_root(self):
         if self._parent is None:
-            return ([] if self._last_move is None else self._last_move)
+            return (() if self._last_move is None else self._last_move)
         else:
             path = self._parent.get_path_from_root()
             path.append(self._last_move)
@@ -641,13 +675,14 @@ class ChessGame:
             square = self._read_board(scanx, scany)
             if square == " ": continue
             if get_piece_player(square) == self._movep: continue
-            if square in KNIGHTS:
+            if square in EKNIGHTS:
                 # There's an enemy knight there checking our king
                 nk_chks += 1
         return nk_chks
 
     def get_all_checks(self):
         # Scan all attacks from the playing King's point of view
+        #print("get_all_checks: running for game #", self._num, "turn", self.get_turn())
         king = self._pcs[self._movep][0]
         eking = king[0]
         kx = king[1]
@@ -658,8 +693,7 @@ class ChessGame:
         self._nchks[self._movep] = nchks
         return nchks
 
-    def get_other_moves(self, moves, ptype, i, j):
-        # Get moves for all non-pawn pieces
+    def _append_nonpawn_moves(self, moves, ptype, i, j):
         amoves = ATTACK_MOVES.get(ptype)
         for movedir in amoves:
             for m in movedir:
@@ -683,9 +717,8 @@ class ChessGame:
                     # Destination square is occupied, no point exploring
                     # this moving direction any further
                     break
-        return moves
 
-    def get_pawn_moves(self, moves, dp, i, j):
+    def _append_pawn_moves(self, moves, dp, i, j):
         # Pawns require very special movement considerations
         pmoves = PAWN_MOVES.get(dp)
         for movedir in pmoves:
@@ -736,19 +769,20 @@ class ChessGame:
                         if squareAdj == " ":
                             # The square right next to our pawn is free
                             continue
-                        if squareAdj != PAWNS[self._waitp]:
+                        if squareAdj != EPAWNS[self._waitp]:
                             # There is a piece there, but it's not
                             # an enemy pawn
                             continue
                         # Here our pawn was in the right row, and next
                         # to it there is an enemy pawn!
-                        if (self._last_move == []
-                            or self._last_move[1] != ii
-                            or self._last_move[2] != j):
+                        if (self._last_move == ()
+                            or self._last_move[1][0] != ii
+                            or self._last_move[1][1] != j):
                             # Last move was not made by that pawn
                             continue
                         # This enemy pawn did make the very last move
-                        epoy = self._last_move[0][2]
+                        enemy = get_piece_player(squareAdj)
+                        epoy = self._last_move[0][1]
                         if ((enemy == 1 and epoy != 6)
                             or (enemy == 0 and epoy != 1)):
                             # But it was not a 2-square pawn move
@@ -756,13 +790,13 @@ class ChessGame:
                         # Last move was made by that enemy pawn, and
                         # it was a 2-square move, so our pawn can
                         # indeed capture it
+                        print("***** Detected pawn capturing " \
+                                + "2-square moving pawn *****")
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
-        return moves
 
     def get_all_moves(self, nchecks):
-        # Generate list of valid moves to consider
-        player_moves = []
+        # Generate list of all valid moves to consider
         movable_pcs = []
         if nchecks < 2:
             # Not under double check, so consider non-king piece movements
@@ -774,21 +808,17 @@ class ChessGame:
         # The king is always among the pieces to consider
         movable_pcs.append(self._pcs[self._movep][0])
         # Generate all valid moves for the movable pieces
+        player_moves = []
         for p in movable_pcs:
             dp = PIECE_DECODE[p[0]]
-            ptype = dp[0:1]
+            dpt = dp[0:1]
             i = p[1]
             j = p[2]
-            if ptype == "p":
-                player_moves = \
-                    self.get_pawn_moves(player_moves, dp, i, j)
+            if dpt == "p":
+                self._append_pawn_moves(player_moves, dp, i, j)
             else:
-                player_moves = \
-                    self.get_other_moves(player_moves, ptype, i, j)
+                self._append_nonpawn_moves(player_moves, dpt, i, j)
         return player_moves
-
-    def apply_move(self, player, move):
-        return childGame
 
     def show(self):
         nums = \
@@ -845,8 +875,8 @@ class ChessGame:
         print(nums)
         print(letters)
         print("\tTo play: "+self.get_turn()+"    ", end="")
-        print("Checks: w="+str(self._nchks[0])+" b=" \
-                + str(self._nchks[1]) + "      ", end="")
+        print("Checked: w="+str(self._nchks[0])+" b=" \
+                + str(self._nchks[1]) + "     ", end="")
         print("Move history:\n\t", end="")
         print(self.get_path_from_root())
 
@@ -888,15 +918,15 @@ def evaluate_recursively(parent, parent_move, game, depth):
     if debug_show:
         game.show()
         print("depth=", depth, "Parent move:", parent_move)
-        print(game.get_board())
+        #print(game.get_board())
+        #print("Moves:\n", moves)
+        #exit()
     ve = verify(game, moves)
     if ve != "ok":
         return "Done here"
     if depth >= max_depth:
         return "Deep enough"
-    this_player = game.get_mover()
     next_depth = depth + 1
-    lmoves = len(moves)
     nvalid_moves = 0
     for m in moves:
         # Simulate move and check if resulting board has already been seen
@@ -921,8 +951,7 @@ def evaluate_recursively(parent, parent_move, game, depth):
             nchks_in_child = child_game.get_all_checks()
             if nchks_in_child > 0:
                 # Our King is left in check with this move: invalid
-                #continue
-                # We can break from the inner for alread since it has a
+                # We can break from the inner for already since it has a
                 # second loop only when promoting a pawn, but regardless
                 # of Queen or Knight, if the first promotion is invalid
                 # the second will be as well
