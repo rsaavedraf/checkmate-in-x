@@ -413,9 +413,6 @@ class ChessGame:
     def _sort_pieces(self, player):
         self._pcs[player].sort()
 
-    def clone_for_knight_promotion():
-        return child_game_2
-
     def init_from_parent_game(self, pgame, pmove, child_board, child_key):
         # Generate ChildGame's board from parent one + move
         self._status = ["OK", "OK", "OK", "EMPTY"]
@@ -455,7 +452,6 @@ class ChessGame:
             self._pcs[pgame._waitp].append(new_p)
         # Clone pieces for our soon waiting player from parent's game
         # moving player,
-        promotion = False
         for p in pgame._pcs[pgame._movep]:
             px = p[1]
             py = p[2]
@@ -465,19 +461,16 @@ class ChessGame:
                 # original in the case of a pawn promotion
                 new_p = [empc, i1, j1]
                 if empc != p[0]:
-                    promotion = True
+                    print("***** After game " + str(pgame.get_num()) \
+                            + " a promotion into "+PIECE_DECODE[empc] \
+                            + " took place at "+str(i1)+","+str(j1)+" *****")
             else:
                 new_p = [p[0], px, py]
-            #print ("Adding piece", new_p, "to child game")
             self._pcs[pgame._movep].append(new_p)
         self._npcs[pgame._movep] = pgame._npcs[pgame._movep]
         self._npcs[pgame._waitp] = pgame._npcs[pgame._waitp] - capture
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._gen_all_attack_footps()
-        if promotion:
-            print("***** After game " + str(pgame.get_num()) \
-                    + " a promotion into "+PIECE_DECODE[empc] \
-                    + " took place at "+str(i1)+","+str(j1)+" *****")
 
     def get_parent_game(self):
         return self._parent
@@ -527,7 +520,7 @@ class ChessGame:
                             prom_n,
                             index_old,
                             index_new)
-            return [ch_board_q, ch_board_n]
+            return (ch_board_q, ch_board_n)
         else:
             # Just move the piece from old to new position
             ch_board = self._gen_new_board(
@@ -535,7 +528,7 @@ class ChessGame:
                             empc,
                             index_old,
                             index_new)
-            return [ch_board]
+            return (ch_board,)
 
     def set_num(self, num, depth):
         self._num = num
@@ -915,15 +908,15 @@ def evaluate_recursively(parent, parent_move, game, depth):
     games_seen_at_depth.put(gkey, depth)
     nchks = game.get_all_checks()
     moves = game.get_all_moves(nchks)
-    if debug_show:
-        game.show()
-        print("depth=", depth, "Parent move:", parent_move)
-        #print(game.get_board())
-        #print("Moves:\n", moves)
-        #exit()
-    ve = verify(game, moves)
-    if ve != "ok":
-        return "Done here"
+    #if debug_show:
+    #    game.show()
+    #    print("depth=", depth, "Parent move:", parent_move)
+    #    #print(game.get_board())
+    #    #print("Moves:\n", moves)
+    #    #exit()
+    #ve = verify(game, moves)
+    #if ve != "ok":
+    #    return "Done here"
     if depth >= max_depth:
         return "Deep enough"
     next_depth = depth + 1
@@ -971,8 +964,8 @@ def verify(game, moves):
     depth = game.get_depth()
     if game.get_npcs(0) + game.get_npcs(1) == 2:
         draws_per_depth[depth] += 1
-        if show_end_games:
-            game.show()
+        #if show_end_games:
+        #    game.show()
         print("DRAW (only both Kings remain) found at game #",
                 ngame, "depth", depth)
         return "GAME OVER: DRAW"
@@ -994,8 +987,8 @@ def verify(game, moves):
         else:
             # No moves and not under check -> Game over: DRAW
             draws_per_depth[depth] += 1
-            if show_end_games:
-                game.show()
+            #if show_end_games:
+            #    game.show()
             print("DRAW found at game #", ngame, "depth", depth)
             return "GAME OVER: DRAW"
     return "ok"
