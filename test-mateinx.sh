@@ -16,3 +16,9 @@ python3 mateinx.py error-11.json -r -q
 python3 mateinx.py game-01.json -r
 python3 mateinx.py game-10.json -r -d1
 python3 mateinx.py game-11.json -r -d1
+python3 mateinx.py game-12.json -r -d4
+
+# The following can take a few minutes
+# (more than 1.1M combinations to explore)
+# but it displays nicely
+#python3 mateinx.py game-03.json -r -d4

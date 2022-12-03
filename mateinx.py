@@ -30,7 +30,7 @@ class GamesRecord:
     def keys(self):
         return self._dict.keys()
 
-show_end_games = False
+show_end_games = True
 chatty = True
 show_attack_footprints = False
 recurse = False
@@ -234,8 +234,10 @@ class ChessGame:
         self._pcs = [[], []]
         self._parent = None
         self._last_move = None
+        self._depth = 0
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._key = ""
+        self._winning_children = {}
 
     def init_from_json(self, game_json):
         self._num = 0
@@ -253,6 +255,23 @@ class ChessGame:
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._set_board_from_json(game_json)
         self._gen_key()
+        self._winning_children = {}
+
+        ''' For a given game, the player who plays has a mate-in-2
+        move if for that move all possible grandchildren games have at
+        least one mate-in-1 move. So generalizing:
+
+        At any given point a player has a mate-in-X move if there is
+        at least one move K for which all grand-children have at least
+        one mate-in-[X-1] move.
+
+        So for a given game G and player at turn, and move M,
+        we need to answer the question:
+        do all my grand-children (from this specific move M)
+        have at least one mate-in-X move?
+        If so, then this game G at his depth has a mate-in-[X+1]
+        move, which is M
+        '''
 
     def _parse_coords(self, xystr):
         if len(xystr) != 2:
@@ -306,7 +325,7 @@ class ChessGame:
             st = "ERROR: conflict between last move '"+lastmv_str \
                     + "' and existing pieces, or turn"
             self._status[2] = st
-        # Possible to-do: validate that the move is compatible with the
+        # Possible todo: validate that the move is compatible with the
         # piece standing there in c2. It must be either a move doable by
         # the piece itself, or if c2 is at row 7, doable by a pawn
         # promoting into that piece. Otherwise the move is invalid.
@@ -415,7 +434,7 @@ class ChessGame:
 
     def init_from_parent_game(self, pgame, pmove, child_board, child_key):
         # Generate ChildGame's board from parent one + move
-        self._status = ["OK", "OK", "OK", "EMPTY"]
+        self._status = ["OK", "OK", "OK", "Exploring all combinations of moves"]
         # For now keep the same moving player as from parent game
         self.set_turn(pgame.get_turn())
         self._parent = pgame
@@ -425,6 +444,7 @@ class ChessGame:
         self._board = child_board
         self._key = child_key
         self._pcs = [[], []]
+        self._winning_children = {}
         # moving piece from old square at i0, j0
         oldsq = pmove[0]
         i0 = oldsq[0]
@@ -600,17 +620,19 @@ class ChessGame:
         if (self._status[0] == "OK"
             and self._status[1] == "OK"
             and self._status[2] == "OK"):
-            self._status[3] = "VALID"
+            self._status[3] = "Starting game"
             return "OK"
         self._status[3] = "INVALID"
         return ("Whites  : "+self._status[0] + "\n"
                 + "Blacks  : "+self._status[1] + "\n"
                 + "Gameplay: "+self._status[2] + "\n"
                 + "Overall : "+self._status[3])
+    def set_ending(self, msg):
+        self._status[3] = msg
 
     def get_path_from_root(self):
         if self._parent is None:
-            return (() if self._last_move is None else self._last_move)
+            return ([] if self._last_move is None else self._last_move)
         else:
             path = self._parent.get_path_from_root()
             path.append(self._last_move)
@@ -675,7 +697,8 @@ class ChessGame:
 
     def get_all_checks(self):
         # Scan all attacks from the playing King's point of view
-        #print("get_all_checks: running for game #", self._num, "turn", self.get_turn())
+        #print("get_all_checks: running for game #",
+        #   self._num, "turn", self.get_turn())
         king = self._pcs[self._movep][0]
         eking = king[0]
         kx = king[1]
@@ -705,6 +728,8 @@ class ChessGame:
                     continue
                 # Otherwise add the move as valid
                 newmove = ((i,j), (ii,jj))
+                #if ptype == "K" and i == 4 and j == 0:
+                #    print(newmove)
                 moves.append(newmove)
                 if square != " ":
                     # Destination square is occupied, no point exploring
@@ -813,15 +838,39 @@ class ChessGame:
                 self._append_nonpawn_moves(player_moves, dpt, i, j)
         return player_moves
 
+    def tell_parent_iam_awin(self):
+        pgame = self._parent
+        if not pgame is None:
+           pgame._winning_children[self] = self._depth
+
+    def get_winning_children(self):
+        return self._winning_children
+
+    def print_winning_tree(self, tabs):
+        lm = self._last_move
+        empc = "?" if lm == None else self._read_board(lm[1][0], lm[1][1])
+        dmove = "?" if empc == "?" else \
+                    PIECE_DECODE[empc] \
+                    + chr(ORD_A + lm[0][0]) + str(lm[0][1]+1) \
+                    + chr(ORD_A + lm[1][0]) + str(lm[1][1]+1)
+        if self._status[3].startswith("WIN"):
+            dmove += "#"
+        # Todo: Show checks when they apply, using the + character
+        print(tabs + dmove)
+        for kchild in self._winning_children.keys():
+            kchild.print_winning_tree(tabs+"    ")
+
+    def has_winning_children(self):
+        return len(self._winning_children.keys()) > 0
+
     def show(self):
         nums = \
             "        0      1      2      3      4      5      6      7"
         letters = \
             "        a      b      c      d      e      f      g      h"
         horiz = \
-            "    +------+------+------+------+------+------+------+------+"
-        print("\nGame #:", self._num, "(depth "+str(self._depth)+")")
-        print(letters)
+            " +------+------+------+------+------+------+------+------+"
+        print("\n" + letters)
         for j in range(8):
             print(horiz)
             print("    ", end="")
@@ -870,8 +919,9 @@ class ChessGame:
         print("\tTo play: "+self.get_turn()+"    ", end="")
         print("Checked: w="+str(self._nchks[0])+" b=" \
                 + str(self._nchks[1]) + "     ", end="")
-        print("Move history:\n\t", end="")
-        print(self.get_path_from_root())
+        print("Move history:\n", end="")
+        print(self.get_path_from_root(), end="")
+        print("\nGame #"+str(self._num), self._status[3])
 
 
 BAR = '='*48
@@ -887,7 +937,7 @@ def load_game_from_json():
         game_json = json.load(f)
     g = game_json['chess-game']
     if chatty:
-        print("Starting game (.json input):")
+        print("Starting game (json input):")
         print(json.dumps(game_json, indent=4)+"\n")
     return g
 
@@ -898,48 +948,25 @@ def evaluate_recursively(parent, parent_move, game, depth):
     global nrec_calls
     global debug_show
     nrec_calls += 1
-    if depth > max_depth:
-        return "Too deep"
     game.set_num(ngame, depth)
+    if chatty and ngame % 2500 == 0 and ngame > 0:
+        game.show()
     ngame += 1
-    if chatty and ngame % 2000 == 0:
-        print("Games Processed:", ngame)
     gkey = game.get_key()
     games_seen_at_depth.put(gkey, depth)
     nchks = game.get_all_checks()
     moves = game.get_all_moves(nchks)
-    #if debug_show:
-    #    game.show()
-    #    print("depth=", depth, "Parent move:", parent_move)
-    #    #print(game.get_board())
-    #    #print("Moves:\n", moves)
-    #    #exit()
-    #ve = verify(game, moves)
-    #if ve != "ok":
-    #    return "Done here"
     if depth >= max_depth:
         return "Deep enough"
     next_depth = depth + 1
-    nvalid_moves = 0
+    valid_children = []
     for m in moves:
         # Simulate move and check if resulting board has already been seen
         child_boards = game.simulate_move(m)
         for ch_brd in child_boards:
-            ch_key = game.get_child_key(ch_brd)
-            d_last_seen = games_seen_at_depth.get(ch_key)
-            if d_last_seen <= depth:
-                ngames_rev += 1
-                if chatty and ngames_rev % 10000 == 0:
-                    print("Games Revisited:", ngames_rev)
-                continue
-            # First time seeing this game, or we might have seen this game
-            # before, but if so, it was at a deeper depth. So we need to
-            # explore it further down from up here.
-            # To-do: This can be optimized further if that last time
-            # seen wasn't at the max depth.
-
             # Generate new child game and do apply move to explore further
             child_game = ChessGame()
+            ch_key = game.get_child_key(ch_brd)
             child_game.init_from_parent_game(game, m, ch_brd, ch_key)
             nchks_in_child = child_game.get_all_checks()
             if nchks_in_child > 0:
@@ -949,14 +976,24 @@ def evaluate_recursively(parent, parent_move, game, depth):
                 # of Queen or Knight, if the first promotion is invalid
                 # the second will be as well
                 break
-            nvalid_moves += 1
+            valid_children.append(child_game)
+            d_last_seen = games_seen_at_depth.get(ch_key)
+            if d_last_seen <= depth:
+                ngames_rev += 1
+                #if chatty and ngames_rev % 50000 == 0:
+                #    print("Games Revisited:", ngames_rev)
+                continue
+            # First time seeing this game, or we might have seen this game
+            # before, but if so, it was at a deeper depth. So we need to
+            # explore it further down from up here.
+            # Todo: This can be optimized further if that last time
+            # seen wasn't at the max depth.
             child_game.flip_turn()
             evaluate_recursively(game, m, child_game, next_depth)
-    if nvalid_moves == 0:
-        result = verify(game, [])
+    result = verify(game, valid_children)
     return "Subtree processed"
 
-def verify(game, moves):
+def verify(game, children):
     global ngame
     global wins_per_depth
     global draws_per_depth
@@ -964,33 +1001,48 @@ def verify(game, moves):
     depth = game.get_depth()
     if game.get_npcs(0) + game.get_npcs(1) == 2:
         draws_per_depth[depth] += 1
-        #if show_end_games:
-        #    game.show()
-        print("DRAW (only both Kings remain) found at game #",
-                ngame, "depth", depth)
-        return "GAME OVER: DRAW"
-    if moves == []:
+        msg = "GAME OVER: DRAW (only both Kings remain)," \
+            +" game #" + str(game.get_num()) + ", depth " + str(depth)
+        game.set_ending(msg)
+        if show_end_games: game.show()
+        return msg
+    if children == []:
         nchks = game.get_num_checks(game.get_mover())
         if nchks > 0:
-            if nchks > 2:
-                error_msg = "ERROR: invalid scenario: more than two" \
-                            + "checks simultaneously on "+game.get_turn()
-                print(error_msg)
-                exit()
-            # No moves and the player to move is under Check ->
-            #   Game over: LOST the game
+            '''If no moves, and under check, the moving player has
+            lost. Notify the parent game that this game is the
+            result of a winning move (in fact a mate-in-1 move.)
+            Parent game then will know that at least one of
+            his moves was a winning one.
+            '''
             winner = game.get_next_turn()
             wins_per_depth[depth] += 1
-            print("WIN for", winner, "found at game #",
-                    ngame, "depth", depth)
-            return "GAME OVER: Player", winner, "WINS!"
-        else:
-            # No moves and not under check -> Game over: DRAW
-            draws_per_depth[depth] += 1
-            #if show_end_games:
-            #    game.show()
-            print("DRAW found at game #", ngame, "depth", depth)
-            return "GAME OVER: DRAW"
+            msg = "WIN for " + winner + ", game #" \
+                    + str(game.get_num()) + ", depth " + str(depth)
+            game.set_ending(msg)
+            game.tell_parent_iam_awin()
+            if show_end_games: game.show()
+            return msg
+        # No moves and not under check -> Game over: DRAW
+        draws_per_depth[depth] += 1
+        msg = "DRAW found at game #" + str(ngame) \
+                + ", depth " + str(depth)
+        game.set_ending(msg)
+        if show_end_games: game.show()
+        return msg
+    # Reaching this point means player had move options
+    for child in children:
+        if len(child._winning_children.keys()) == 0:
+            return "ok"
+    # Reaching this point means absolutely all children
+    # had at least one winning move (for the opponent's
+    # win.) So notify parent of this game that this game
+    # itself is the result of a winning move. Then also
+    # notify this game itself that all of its children
+    # have at least one winning move for the opponent
+    game.tell_parent_iam_awin()
+    for child in children:
+        child.tell_parent_iam_awin()
     return "ok"
 
 def process_options(argv):
@@ -1099,13 +1151,18 @@ def mateinx_solver(argv):
         game.show()
         print(BAR)
     if recurse:
+        print("Starting brute-force exploration of all combinations of moves:")
         evaluate_recursively(None, (), game, 0)
-    end_time = time.time()
+    #game.show()
+    print(BAR)
     print("\nTotal recursive calls:", nrec_calls)
     print("Total games processed:", ngame)
     print("Total games revisited:", ngames_rev)
     print("Win-in-X  games found per depth:", wins_per_depth)
     print("Draw-in-X games found per depth:", draws_per_depth)
+    if (game.has_winning_children()):
+        print("\nMate-in-"+str(max_depth/2)+" tree of moves:")
+        game.print_winning_tree("")
 
 if __name__ == '__main__':
     mateinx_solver(sys.argv[1:])
