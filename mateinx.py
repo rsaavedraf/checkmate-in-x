@@ -785,17 +785,27 @@ class ChessGame:
             ny = lm[1][1]
             empc = self._read_board(nx, ny)
             # Add final piece with old coordinates
-            dmove = PIECE_DECODE[empc] \
-                    + chr(ORD_A + ox) + str(oy + 1)
+            #dmove = PIECE_DECODE[empc]
+            dmove = chr(ORD_A + ox) + str(oy + 1)
             if self._parent != None:
-                if empc != self._parent._read_board(ox, oy):
+                eopc = self._parent._read_board(ox, oy)
+                if eopc != empc:
                     # Different piece, so move had a pawn promotion
-                    dmove = "p=>" + dmove
+                    dmove = PIECE_DECODE[eopc] + dmove
+                else:
+                    dmove = PIECE_DECODE[empc] + dmove
                 if " " != self._parent._read_board(nx, ny):
                     # Move had a capture involved
                     dmove += "x"
-            # Add new coordinates after the move
-            dmove = dmove + chr(ORD_A + nx) + str(ny + 1)
+                # Add new coordinates after the move
+                dmove = dmove + chr(ORD_A + nx) + str(ny + 1)
+                if eopc != empc:
+                    # Show the new promoted piece
+                    dmove += "=>" + PIECE_DECODE[empc]
+            else:
+                # Add piece and new coordinates
+                dmove = PIECE_DECODE[empc] + dmove \
+                    + chr(ORD_A + nx) + str(ny + 1)
             if self._status[3].startswith("WIN"):
                 # Checkmate caused by the move
                 dmove += "#"
@@ -814,8 +824,8 @@ class ChessGame:
             "        0      1      2      3      4      5      6      7"
         letters = \
             "        a      b      c      d      e      f      g      h"
-        horiz = \
-            " +------+------+------+------+------+------+------+------+"
+        horiz = "    " \
+            + "+------+------+------+------+------+------+------+------+"
         print("\n" + letters)
         for j in range(8):
             print(horiz)
@@ -1088,8 +1098,8 @@ def mateinx_solver(argv):
 
     print("\nTotal recursive calls:", nrec_calls)
     print("Total games processed:", ngame)
-    print("Win-in-X  games found per depth:", wins_per_depth)
-    print("Draw-in-X games found per depth:", draws_per_depth)
+    print("Wins  found per depth:", wins_per_depth)
+    print("Draws found per depth:", draws_per_depth)
     if (game.has_winning_children()):
         print("\nMate-in-"+str(max_depth/2)+" tree of moves:")
         game.print_winning_tree("")
