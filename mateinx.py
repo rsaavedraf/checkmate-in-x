@@ -480,10 +480,10 @@ class ChessGame:
                 # in the new board, which will be different from the
                 # original in the case of a pawn promotion
                 new_p = [empc, i1, j1]
-                if empc != p[0]:
-                    print("***** After game " + str(pgame.get_num()) \
-                            + " a promotion into "+PIECE_DECODE[empc] \
-                            + " took place at "+str(i1)+","+str(j1)+" *****")
+                #if empc != p[0]:
+                #    print("***** After game " + str(pgame.get_num()) \
+                #            + " a promotion into "+PIECE_DECODE[empc] \
+                #            + " took place at "+str(i1)+","+str(j1)+" *****")
             else:
                 new_p = [p[0], px, py]
             self._pcs[pgame._movep].append(new_p)
@@ -853,6 +853,10 @@ class ChessGame:
                     PIECE_DECODE[empc] \
                     + chr(ORD_A + lm[0][0]) + str(lm[0][1]+1) \
                     + chr(ORD_A + lm[1][0]) + str(lm[1][1]+1)
+        if dmove != "?":
+            eompc = self._parent._read_board(lm[0][0], lm[0][1])
+            if eompc != empc:
+                dmove = "p->" + dmove
         if self._status[3].startswith("WIN"):
             dmove += "#"
         # Todo: Show checks when they apply, using the + character
