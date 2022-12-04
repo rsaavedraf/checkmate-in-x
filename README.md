@@ -25,7 +25,7 @@ Once the python version is done as baseline/point of reference,
 the idea is to then write two functionally equivalent implementations
 in the Rust language: one single-threaded, then another multi-threaded.
 Then finally compare their performance, i.e. fill out a table like the
-following with their (relative?) executing times for specific Mate-in-X
+following with their (relative?) execution times for specific Mate-in-X
 problems, all running on the same machine:
 
 
@@ -44,3 +44,4 @@ Only pending tasks for it:
 - Support castle moves
 - Write up usage/help for the it
 - Change recursive scheme to iterative (this will likely be convenient for a multithreaded rewrite)
+
