@@ -434,7 +434,7 @@ class ChessGame:
 
     def init_from_parent_game(self, pgame, pmove, child_board, child_key):
         # Generate ChildGame's board from parent one + move
-        self._status = ["OK", "OK", "OK", "Exploring all combinations of moves"]
+        self._status = ["OK", "OK", "OK", "Exploring"]
         # For now keep the same moving player as from parent game
         self.set_turn(pgame.get_turn())
         self._parent = pgame
@@ -848,18 +848,32 @@ class ChessGame:
 
     def print_winning_tree(self, tabs):
         lm = self._last_move
-        empc = "?" if lm == None else self._read_board(lm[1][0], lm[1][1])
-        dmove = "?" if empc == "?" else \
-                    PIECE_DECODE[empc] \
-                    + chr(ORD_A + lm[0][0]) + str(lm[0][1]+1) \
-                    + chr(ORD_A + lm[1][0]) + str(lm[1][1]+1)
-        if dmove != "?":
-            eompc = self._parent._read_board(lm[0][0], lm[0][1])
-            if eompc != empc:
-                dmove = "p->" + dmove
-        if self._status[3].startswith("WIN"):
-            dmove += "#"
-        # Todo: Show checks when they apply, using the + character
+        if lm == None:
+            dmove = "?"
+        else:
+            ox = lm[0][0]
+            oy = lm[0][1]
+            nx = lm[1][0]
+            ny = lm[1][1]
+            empc = self._read_board(nx, ny)
+            # Add final piece with old coordinates
+            dmove = PIECE_DECODE[empc] \
+                    + chr(ORD_A + ox) + str(oy + 1)
+            if self._parent != None:
+                if empc != self._parent._read_board(ox, oy):
+                    # Different piece, so move had a pawn promotion
+                    dmove = "p=>" + dmove
+                if " " != self._parent._read_board(nx, ny):
+                    # Move had a capture involved
+                    dmove += "x"
+            # Add new coordinates after the move
+            dmove = dmove + chr(ORD_A + nx) + str(ny + 1)
+            if self._status[3].startswith("WIN"):
+                # Checkmate caused by the move
+                dmove += "#"
+            elif self._nchks[self._movep] > 0:
+                # Check caused by the move
+                dmove += "+"
         print(tabs + dmove)
         for kchild in self._winning_children.keys():
             kchild.print_winning_tree(tabs+"    ")
@@ -1038,12 +1052,13 @@ def verify(game, children):
     for child in children:
         if len(child._winning_children.keys()) == 0:
             return "ok"
-    # Reaching this point means absolutely all children
-    # had at least one winning move (for the opponent's
-    # win.) So notify parent of this game that this game
-    # itself is the result of a winning move. Then also
-    # notify this game itself that all of its children
-    # have at least one winning move for the opponent
+    ''' Reaching this point means absolutely all children
+    had at least one winning move (for the opponent's
+    win.) So notify parent of this game that this game
+    itself is the result of a winning move. Then also
+    notify this game itself that all of its children
+    have at least one winning move for the opponent
+    '''
     game.tell_parent_iam_awin()
     for child in children:
         child.tell_parent_iam_awin()
@@ -1053,7 +1068,7 @@ def process_options(argv):
     global input_file
     global recurse
     global show_attack_footprints
-    global chatty
+    global chatty, show_end_games
     global max_depth, max_depth_p1, wins_per_depth, draws_per_depth
     for opt in argv:
         if opt == "-h":
@@ -1073,6 +1088,7 @@ def process_options(argv):
         if opt == "-q":
             # Run in quiet mode
             chatty = False
+            show_end_games = False
             continue
         if opt[0:2] == "-d":
             # Set maximum depth to explore
@@ -1150,15 +1166,12 @@ def mateinx_solver(argv):
         exit()
     # At this point, the Game setup was found to be valid
     ngame = 0
-    if chatty:
-        print("Initial Game configuration is valid:")
-        game.show()
-        print(BAR)
+    print("Initial game configuration is valid:")
+    game.show()
     if recurse:
-        print("Starting brute-force exploration of all combinations of moves:")
+        print("Starting brute-force exploration of all combinations of moves...")
         evaluate_recursively(None, (), game, 0)
-    #game.show()
-    print(BAR)
+
     print("\nTotal recursive calls:", nrec_calls)
     print("Total games processed:", ngame)
     print("Total games revisited:", ngames_rev)
@@ -1167,6 +1180,7 @@ def mateinx_solver(argv):
     if (game.has_winning_children()):
         print("\nMate-in-"+str(max_depth/2)+" tree of moves:")
         game.print_winning_tree("")
+    print(BAR)
 
 if __name__ == '__main__':
     mateinx_solver(sys.argv[1:])
