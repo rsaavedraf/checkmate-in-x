@@ -50,8 +50,8 @@ Brute-forcing our way through all combinations of moves...
 
 Total recursive calls: 1167245
 Total games processed: 1167245
-Win-in-X  games found per depth: [0, 0, 0, 594, 0]
-Draw-in-X games found per depth: [0, 0, 0, 9, 0]
+Wins  found per depth: [0, 0, 0, 594, 0]
+Draws found per depth: [0, 0, 0, 9, 0]
 
 Mate-in-2.0 tree of moves:
 ?
