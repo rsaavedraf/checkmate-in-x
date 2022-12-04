@@ -42,6 +42,6 @@ problems, all running on the same machine:
 The python script is working well and almost done now.
 Only pending tasks for it:
 - Support castle moves
-- Write up usage/help for the it
+- Write up usage/help for the script
 - Change recursive scheme to iterative (this will likely be convenient for a multithreaded rewrite)
 
