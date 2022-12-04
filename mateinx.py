@@ -14,21 +14,7 @@ import copy
 import hashlib
 import numpy as np
 import time
-#import zlib
 from pathlib import Path
-
-class GamesRecord:
-    def __init__(self):
-        self._dict = dict()
-
-    def put(self, board_key, data):
-        self._dict[board_key] = data
-
-    def get(self, board_key):
-        return self._dict.get(board_key, max_depth_p1)
-
-    def keys(self):
-        return self._dict.keys()
 
 show_end_games = True
 chatty = True
@@ -36,14 +22,13 @@ show_attack_footprints = False
 recurse = False
 max_depth = 3
 max_depth_p1 = max_depth + 1
-wins_per_depth = [0]*(max_depth_p1)
-draws_per_depth = [0]*(max_depth_p1)
+wins_per_depth = [0]*(max_depth)
+draws_per_depth = [0]*(max_depth)
 input_file = 'game-01.json'
 ngame = 0
 ngames_rev = 0
 nrec_calls = 0
 debug_show = False
-games_seen_at_depth = GamesRecord()
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -200,27 +185,6 @@ def get_piece_player(epc):
     # Return the player (0 or 1) for a given encoded piece
     return 1 if epc >= EK1 else 0
 
-def compress(orig):
-    '''
-    # A very simple "compression", replacing consecutive spaces
-    # (ZIPSTR) with a special character ZIPCHAR
-    s = ""
-    cursor = 0
-    ps = orig.find(ZIPSTR, cursor)
-    while ps >= 0:
-        s = s + orig[cursor:ps] + ZIPCHAR
-        cursor = ps + ZIPSTRL
-        ps = orig.find(ZIPSTR, cursor)
-    s = s + orig[cursor:]
-    return s
-    '''
-    #return zlib.compress(orig.encode())
-    return orig
-
-def test_compress(orig):
-    print("\norig : '"+orig+"'")
-    print("compr: '"+compress(orig)+"'")
-
 class ChessGame:
 
     def __init__(self):
@@ -236,7 +200,6 @@ class ChessGame:
         self._last_move = None
         self._depth = 0
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
-        self._key = ""
         self._winning_children = {}
 
     def init_from_json(self, game_json):
@@ -251,27 +214,9 @@ class ChessGame:
         self._parent = None
         self._last_move = None
         self._depth = 0
-        self._key = ""
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._set_board_from_json(game_json)
-        self._gen_key()
         self._winning_children = {}
-
-        ''' For a given game, the player who plays has a mate-in-2
-        move if for that move all possible grandchildren games have at
-        least one mate-in-1 move. So generalizing:
-
-        At any given point a player has a mate-in-X move if there is
-        at least one move K for which all grand-children have at least
-        one mate-in-[X-1] move.
-
-        So for a given game G and player at turn, and move M,
-        we need to answer the question:
-        do all my grand-children (from this specific move M)
-        have at least one mate-in-X move?
-        If so, then this game G at his depth has a mate-in-[X+1]
-        move, which is M
-        '''
 
     def _parse_coords(self, xystr):
         if len(xystr) != 2:
@@ -432,7 +377,7 @@ class ChessGame:
     def _sort_pieces(self, player):
         self._pcs[player].sort()
 
-    def init_from_parent_game(self, pgame, pmove, child_board, child_key):
+    def init_from_parent_game(self, pgame, pmove, child_board):
         # Generate ChildGame's board from parent one + move
         self._status = ["OK", "OK", "OK", "Exploring"]
         # For now keep the same moving player as from parent game
@@ -442,7 +387,6 @@ class ChessGame:
         self._depth = pgame._depth + 1
         self._last_move = pmove
         self._board = child_board
-        self._key = child_key
         self._pcs = [[], []]
         self._winning_children = {}
         # moving piece from old square at i0, j0
@@ -560,19 +504,6 @@ class ChessGame:
     def get_depth(self):
         return self._depth
 
-    def _gen_key(self):
-        #self._key = compress(self.get_turn() + self._board)
-        self._key = self.get_turn() + self._board
-
-    def get_child_key(self, child_board):
-        return self.get_next_turn() + child_board
-
-    def get_key(self):
-        return self._key
-
-    #def _encode_piece(self, ptype, strplayer):
-    #    return PIECE_ENCODE[ptype+strplayer]
-
     def _decode_piece_from_board(self, i, j):
         p = self._read_board(i,j)
         if p == " ": return "  "
@@ -627,6 +558,7 @@ class ChessGame:
                 + "Blacks  : "+self._status[1] + "\n"
                 + "Gameplay: "+self._status[2] + "\n"
                 + "Overall : "+self._status[3])
+
     def set_ending(self, msg):
         self._status[3] = msg
 
@@ -697,8 +629,6 @@ class ChessGame:
 
     def get_all_checks(self):
         # Scan all attacks from the playing King's point of view
-        #print("get_all_checks: running for game #",
-        #   self._num, "turn", self.get_turn())
         king = self._pcs[self._movep][0]
         eking = king[0]
         kx = king[1]
@@ -728,8 +658,6 @@ class ChessGame:
                     continue
                 # Otherwise add the move as valid
                 newmove = ((i,j), (ii,jj))
-                #if ptype == "K" and i == 4 and j == 0:
-                #    print(newmove)
                 moves.append(newmove)
                 if square != " ":
                     # Destination square is occupied, no point exploring
@@ -961,7 +889,6 @@ def load_game_from_json():
 
 def evaluate_recursively(parent, parent_move, game, depth):
     global ngame
-    global games_seen_at_depth
     global ngames_rev
     global nrec_calls
     global debug_show
@@ -970,8 +897,6 @@ def evaluate_recursively(parent, parent_move, game, depth):
     if chatty and ngame % 2500 == 0 and ngame > 0:
         game.show()
     ngame += 1
-    gkey = game.get_key()
-    games_seen_at_depth.put(gkey, depth)
     nchks = game.get_all_checks()
     moves = game.get_all_moves(nchks)
     if depth >= max_depth:
@@ -979,33 +904,22 @@ def evaluate_recursively(parent, parent_move, game, depth):
     next_depth = depth + 1
     valid_children = []
     for m in moves:
-        # Simulate move and check if resulting board has already been seen
+        # Simulate move to get corresponding child(ren) board(s)
         child_boards = game.simulate_move(m)
         for ch_brd in child_boards:
-            # Generate new child game and do apply move to explore further
+            # Generate new child(ren) given the move, and explore further
             child_game = ChessGame()
-            ch_key = game.get_child_key(ch_brd)
-            child_game.init_from_parent_game(game, m, ch_brd, ch_key)
+            child_game.init_from_parent_game(game, m, ch_brd)
             nchks_in_child = child_game.get_all_checks()
             if nchks_in_child > 0:
-                # Our King is left in check with this move: invalid
-                # We can break from the inner for already since it has a
-                # second loop only when promoting a pawn, but regardless
-                # of Queen or Knight, if the first promotion is invalid
-                # the second will be as well
+                ''' Our King is left in check with this move: invalid.
+                We can break from the inner for already since it will
+                iterate a second time only when promoting a pawn, but
+                regardless of promoting into Queen or Knight, if the
+                first promotion is invalid, the second will be as well
+                '''
                 break
             valid_children.append(child_game)
-            d_last_seen = games_seen_at_depth.get(ch_key)
-            if d_last_seen <= depth:
-                ngames_rev += 1
-                #if chatty and ngames_rev % 50000 == 0:
-                #    print("Games Revisited:", ngames_rev)
-                continue
-            # First time seeing this game, or we might have seen this game
-            # before, but if so, it was at a deeper depth. So we need to
-            # explore it further down from up here.
-            # Todo: This can be optimized further if that last time
-            # seen wasn't at the max depth.
             child_game.flip_turn()
             evaluate_recursively(game, m, child_game, next_depth)
     result = verify(game, valid_children)
@@ -1169,12 +1083,11 @@ def mateinx_solver(argv):
     print("Initial game configuration is valid:")
     game.show()
     if recurse:
-        print("Starting brute-force exploration of all combinations of moves...")
+        print("Brute-forcing our way through all combinations of moves...")
         evaluate_recursively(None, (), game, 0)
 
     print("\nTotal recursive calls:", nrec_calls)
     print("Total games processed:", ngame)
-    print("Total games revisited:", ngames_rev)
     print("Win-in-X  games found per depth:", wins_per_depth)
     print("Draw-in-X games found per depth:", draws_per_depth)
     if (game.has_winning_children()):
