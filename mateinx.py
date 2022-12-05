@@ -769,7 +769,11 @@ class ChessGame:
     def tell_parent_iam_awin(self):
         pgame = self._parent
         if not pgame is None:
-           pgame._winning_children[self] = self._depth
+            pgame._winning_children[self] = self._depth
+            if pgame._parent is None:
+                # This is the root node, show the output already
+                print("Root node reached, solution found!!!")
+                self.print_winning_tree("")
 
     def get_winning_children(self):
         return self._winning_children
@@ -976,16 +980,15 @@ def verify(game, children):
     for child in children:
         if len(child._winning_children.keys()) == 0:
             return "ok"
-    ''' Reaching this point means absolutely all children
-    had at least one winning move (for the opponent's
-    win.) So notify parent of this game that this game
-    itself is the result of a winning move. Then also
-    notify this game itself that all of its children
-    have at least one winning move for the opponent
+    ''' Reaching this point means absolutely all children had
+    at least one winning move (for the opponent's win.) So
+    let this node know that all its children have at least
+    one winning move, and notify parent of this game that this
+    game itself is the result of a winning move.
     '''
-    game.tell_parent_iam_awin()
     for child in children:
         child.tell_parent_iam_awin()
+    game.tell_parent_iam_awin()
     return "ok"
 
 def process_options(argv):
@@ -1101,7 +1104,7 @@ def mateinx_solver(argv):
     print("Wins  found per depth:", wins_per_depth)
     print("Draws found per depth:", draws_per_depth)
     if (game.has_winning_children()):
-        print("\nMate-in-"+str(max_depth/2)+" tree of moves:")
+        print("\nComplete Mate-in-"+str(max_depth/2)+" tree of moves:")
         game.print_winning_tree("")
     print(BAR)
 
