@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Checking support for castle moves",
+        "date" : "2022-12-06",
+        "wpcs" : ["Ke1", "Rb1", "Rh1"],
+        "bpcs" : ["Ke8", "Ra8", "Rh6"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

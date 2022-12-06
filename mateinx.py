@@ -14,6 +14,7 @@ import copy
 import hashlib
 import numpy as np
 import time
+import random
 from pathlib import Path
 
 show_end_games = True
@@ -63,11 +64,14 @@ EQ0 = PIECE_ENCODE["Q0"]
 EQ1 = PIECE_ENCODE["Q1"]
 EN0 = PIECE_ENCODE["N0"]
 EN1 = PIECE_ENCODE["N1"]
+ER0 = PIECE_ENCODE["R0"]
+ER1 = PIECE_ENCODE["R1"]
 
 EKINGS=(EK0, EK1)
 EPAWNS=(EP0, EP1)
 EQUEENS=(EQ0, EQ1)
 EKNIGHTS=(EN0, EN1)
+EROOKS=(ER0, ER1)
 
 # Pawn attacks from perspective of an attacked king
 PATTACKS = {
@@ -195,6 +199,7 @@ class ChessGame:
         self._board = self._empty_board()
         self._npcs = [0, 0]
         self._nchks = [0, 0]
+        self._can_still_castle = [[False, False], [False, False]]
         self._pcs = [[], []]
         self._parent = None
         self._last_move = None
@@ -211,6 +216,7 @@ class ChessGame:
         self._npcs = [0, 0]
         self._nchks = [0, 0]
         self._pcs = [[], []]
+        self._can_still_castle = [[False, False], [False, False]]
         self._parent = None
         self._last_move = None
         self._depth = 0
@@ -339,6 +345,7 @@ class ChessGame:
                         + "too many for " + color + " player"
                 self._status[player] = st
                 return
+            # Why sorting the pieces here?
             self._sort_pieces(player)
         self._last_move = None
         lastmv_str = game_json.get('lastMove', "")
@@ -346,6 +353,7 @@ class ChessGame:
             self._parse_last_move(lastmv_str)
             if self._last_move is None: return
         self._gen_all_attack_footps()
+        self._check_castles()
 
     def _gen_all_attack_footps(self):
         # All pieces now on board, generate their attack foot prints
@@ -388,6 +396,9 @@ class ChessGame:
         self._last_move = pmove
         self._board = child_board
         self._pcs = [[], []]
+        self._can_still_castle = [
+            [pgame._can_still_castle[0][0], pgame._can_still_castle[0][1]],
+            [pgame._can_still_castle[1][0], pgame._can_still_castle[1][0]]]
         self._winning_children = {}
         # moving piece from old square at i0, j0
         oldsq = pmove[0]
@@ -436,6 +447,22 @@ class ChessGame:
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._gen_all_attack_footps()
 
+    def _check_castles(self):
+        for np in range(2):
+            row = np * 7
+            if self._read_board(4, row) != EKINGS[np]:
+                # King not in starting position
+                print("Player", np, "cannot do any castle move")
+                continue
+            if self._read_board(0, row) == EROOKS[np]:
+                # Rook still there, asume O-O-O still possible
+                self._can_still_castle[np][0] = True
+                print("Player", np, " can still 0-0-0")
+            if self._read_board(7, row) == EROOKS[np]:
+                # Rook still there, asume O-O still possible
+                self._can_still_castle[np][1] = True
+                print("Player", np, " can still 0-0")
+
     def get_parent_game(self):
         return self._parent
 
@@ -460,8 +487,8 @@ class ChessGame:
 
     def simulate_move(self, m):
         ''' Returns a list of children boards given a move.
-        Typically just 1 board inside, but 2 when promoting a pawn:
-        one for promoting into queen, and one into knight.
+        Typically just 1 board inside that list, but 2 when
+        promoting a pawn: one for promoting into queen, and one into knight.
         (Never promoting into rooks or bishops, since they are never
         preferable over a Queen.)
         '''
@@ -663,6 +690,16 @@ class ChessGame:
                     # Destination square is occupied, no point exploring
                     # this moving direction any further
                     break
+        if ptype == "K":
+            if self._can_still_castle[self._movep][0]:
+                # Todo: check king's castle squares are not under attack
+                #print("Here we would add 0-0-0 move")
+                pass
+            if self._can_still_castle[self._movep][1]:
+                # Todo: check king's castle squares are not under attack
+                #print("Here we would add 0-0 move")
+                pass
+
 
     def _append_pawn_moves(self, moves, dp, i, j):
         # Pawns require very special movement considerations
@@ -703,9 +740,9 @@ class ChessGame:
                             continue
                     else:
                         # Moving diagonally into an empty square is only
-                        # valid when capturing a 2-square moving enemy
-                        # pawn that just moved next to ours. We have to
-                        # identify this possibility here
+                        # valid when capturing "in passing," e.g. a 2-square
+                        # moving enemy pawn that just moved next to ours.
+                        # We have to identify this possibility here
                         if ((jj != 5 and self._movep == 0) or
                             (jj != 2 and self._movep == 1)):
                             # Our pawn is not in the right raw to be able
@@ -735,8 +772,8 @@ class ChessGame:
                             continue
                         # Last move was made by that enemy pawn, and
                         # it was a 2-square move, so our pawn can
-                        # indeed capture it
-                        print("***** Detected pawn capturing " \
+                        # indeed capture it in passing
+                        print("***** Detected 'in passing' capture of a " \
                                 + "2-square moving pawn *****")
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
@@ -766,13 +803,24 @@ class ChessGame:
                 self._append_nonpawn_moves(player_moves, dpt, i, j)
         return player_moves
 
+    def filter_worthy_moves(self, oplayer_moves):
+        '''Here we might implement some heuristics to score moves,
+        then sort and possibly discard some of the lowest scoring ones
+        from further consideration. Returning the original full list
+        of moves is the same as the original version of the program eg
+        brute-forcing our way through the full 100% search tree of all
+        possible moves for each turn
+        '''
+        fplayer_moves = oplayer_moves
+        return fplayer_moves
+
     def tell_parent_iam_awin(self):
         pgame = self._parent
         if not pgame is None:
             pgame._winning_children[self] = self._depth
             if pgame._parent is None:
                 # This is the root node, show the output already
-                print("Root node reached, solution found!!!")
+                print("Root node reached, a solution was found!")
                 self.print_winning_tree("")
 
     def get_winning_children(self):
@@ -805,7 +853,7 @@ class ChessGame:
                 dmove = dmove + chr(ORD_A + nx) + str(ny + 1)
                 if eopc != empc:
                     # Show the new promoted piece
-                    dmove += "=>" + PIECE_DECODE[empc]
+                    dmove += "=" + PIECE_DECODE[empc]
             else:
                 # Add piece and new coordinates
                 dmove = PIECE_DECODE[empc] + dmove \
@@ -876,6 +924,15 @@ class ChessGame:
         print(horiz)
         print(nums)
         print(letters)
+        print("\tPossible castle moves:", \
+                "w:" + (" 0-0-0 "
+                    if self._can_still_castle[0][0] else " ") \
+                + ("0-0"
+                    if self._can_still_castle[0][1] else "") \
+                + "  b:" + (" 0-0-0 "
+                    if self._can_still_castle[1][0] else " ") \
+                + ("0-0"
+                    if self._can_still_castle[1][1] else ""))
         print("\tTo play: "+self.get_turn()+"    ", end="")
         print("Checked: w="+str(self._nchks[0])+" b=" \
                 + str(self._nchks[1]) + "     ", end="")
@@ -908,16 +965,19 @@ def evaluate_recursively(parent, parent_move, game, depth):
     global debug_show
     nrec_calls += 1
     game.set_num(ngame, depth)
-    if chatty and ngame % 2500 == 0 and ngame > 0:
-        game.show()
+    #if chatty and ngame % 2500 == 0 and ngame > 0:
+    #    game.show()
+    if ngame % 50000 == 0:
+        print("Games explored:", ngame)
     ngame += 1
     nchks = game.get_all_checks()
     moves = game.get_all_moves(nchks)
     if depth >= max_depth:
         return "Deep enough"
+    fmoves = game.filter_worthy_moves(moves)
     next_depth = depth + 1
     valid_children = []
-    for m in moves:
+    for m in fmoves:
         # Simulate move to get corresponding child(ren) board(s)
         child_boards = game.simulate_move(m)
         for ch_brd in child_boards:
