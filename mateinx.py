@@ -40,7 +40,6 @@ EMPTY_BOARD = " "*64
 ZIPSTR  = "     "
 ZIPSTRL = len(ZIPSTR)
 ZIPCHAR = "_"
-RULER = "0-------1-------2-------3-------4-------5-------6-------7-------"
 
 PIECE_ENCODE = {"K0": "A",
                 "Q0": "B",
@@ -345,7 +344,6 @@ class ChessGame:
                         + "too many for " + color + " player"
                 self._status[player] = st
                 return
-            # Why sorting the pieces here?
             self._sort_pieces(player)
         self._last_move = None
         lastmv_str = game_json.get('lastMove', "")
@@ -359,8 +357,12 @@ class ChessGame:
         # All pieces now on board, generate their attack foot prints
         for player in range(2):
             for pxy in self._pcs[player]:
-                epc = pxy[0]                # Encoded piece
-                dpc = PIECE_DECODE[epc]     # Decoded piece
+                epc = pxy[0]                # Encoded piece (1 char)
+                if epc == ' ':
+                    self._parent.show()
+                    self.show()
+                    print("Player", player, "Pcs:", self._pcs[player])
+                dpc = PIECE_DECODE[epc]     # Decoded piece (2 chars)
                 self._gen_piece_attack_footp(player, dpc, pxy[1], pxy[2])
 
     def _gen_piece_attack_footp(self, player, dpc, i, j):
@@ -396,9 +398,6 @@ class ChessGame:
         self._last_move = pmove
         self._board = child_board
         self._pcs = [[], []]
-        self._can_still_castle = [
-            [pgame._can_still_castle[0][0], pgame._can_still_castle[0][1]],
-            [pgame._can_still_castle[1][0], pgame._can_still_castle[1][0]]]
         self._winning_children = {}
         # moving piece from old square at i0, j0
         oldsq = pmove[0]
@@ -409,14 +408,40 @@ class ChessGame:
         i1 = newsq[0]
         j1 = newsq[1]
         # moving piece
-        empc = self._read_board(i1, j1)    # Encoded moved piece
+        empc = pgame._read_board(i0, j0)    # Encoded moved piece
         # Clone pieces for our soon moving player from parent game's
         # waiting player, except that one piece (if any) which might
         # have been in the destination square (such a piece would be
         # getting captured by this move)
+        castle = False
+        deltax = i1 - i0
+        if empc in EKINGS:
+            # King moving
+            if (deltax == 2 or deltax == -2):
+                # It's a castle move
+                castle = True
+                eprook = EROOKS[pgame._movep]
+            self._can_still_castle = [[], []]
+            # Clone waiting player's castle possibilities from parent
+            self._can_still_castle[pgame._waitp] = \
+                pgame._can_still_castle[pgame._waitp]
+            # But disable castles from now on for the moving player
+            self._can_still_castle[pgame._movep] = (False, False)
+        else:
+            # Clone castle possibilities from parent game
+            self._can_still_castle = [
+                [pgame._can_still_castle[0][0],
+                 pgame._can_still_castle[0][1]],
+                [pgame._can_still_castle[1][0],
+                 pgame._can_still_castle[1][1]]]
+            if empc in EROOKS:
+                # Rook moving
+                if i0 == 0 or i0 == 7:
+                    # But disable castle on this rook's side for moving player
+                    rside = (0 if i0 == 0 else 1)
+                    self._can_still_castle[pgame._movep][rside] = False
         capture = 0
         for p in pgame._pcs[pgame._waitp]:
-            #print(p)
             px = p[1]
             py = p[2]
             if px == i1 and py == j1:
@@ -426,7 +451,7 @@ class ChessGame:
             new_p = [p[0], px, py]
             self._pcs[pgame._waitp].append(new_p)
         # Clone pieces for our soon waiting player from parent's game
-        # moving player,
+        # moving player
         for p in pgame._pcs[pgame._movep]:
             px = p[1]
             py = p[2]
@@ -434,13 +459,19 @@ class ChessGame:
                 # This is the moving piece. Use the piece encoded
                 # in the new board, which will be different from the
                 # original in the case of a pawn promotion
+                empc = self._read_board(i1, j1)
                 new_p = [empc, i1, j1]
-                #if empc != p[0]:
-                #    print("***** After game " + str(pgame.get_num()) \
-                #            + " a promotion into "+PIECE_DECODE[empc] \
-                #            + " took place at "+str(i1)+","+str(j1)+" *****")
+                if empc != p[0] and chatty:
+                    print("***** After game " + str(pgame.get_num()) \
+                        + " a promotion into "+PIECE_DECODE[empc] \
+                        + " took place at "+str(i1)+","+str(j1)+" *****")
             else:
-                new_p = [p[0], px, py]
+                if castle and p[0] == eprook and \
+                    ((deltax < 0 and px == 0) or (deltax > 0 and px == 7)):
+                    # This is the castling rook, move it accordingly
+                    new_p = [eprook, px + (3 if deltax < 0 else -2), py]
+                else:
+                    new_p = [p[0], px, py]
             self._pcs[pgame._movep].append(new_p)
         self._npcs[pgame._movep] = pgame._npcs[pgame._movep]
         self._npcs[pgame._waitp] = pgame._npcs[pgame._waitp] - capture
@@ -451,17 +482,14 @@ class ChessGame:
         for np in range(2):
             row = np * 7
             if self._read_board(4, row) != EKINGS[np]:
-                # King not in starting position
-                print("Player", np, "cannot do any castle move")
+                # King not in starting position -> moving player can't castle
                 continue
             if self._read_board(0, row) == EROOKS[np]:
-                # Rook still there, asume O-O-O still possible
+                # Rook there, asume long castle (0-0-0) still possible
                 self._can_still_castle[np][0] = True
-                print("Player", np, " can still 0-0-0")
             if self._read_board(7, row) == EROOKS[np]:
-                # Rook still there, asume O-O still possible
+                # Rook there, asume short castle (0-0) still possible
                 self._can_still_castle[np][1] = True
-                print("Player", np, " can still 0-0")
 
     def get_parent_game(self):
         return self._parent
@@ -492,8 +520,8 @@ class ChessGame:
         (Never promoting into rooks or bishops, since they are never
         preferable over a Queen.)
         '''
-        ydest = m[1][1]
         index_old = m[0][0] + m[0][1]*8
+        ydest = m[1][1]
         index_new = m[1][0] + ydest*8
         # Encoded moving piece
         empc = self._board[index_old:index_old+1]
@@ -519,6 +547,23 @@ class ChessGame:
                             empc,
                             index_old,
                             index_new)
+            if empc in EKINGS:
+                j = m[0][1]*8   # Start of king's row on the board
+                deltax = m[1][0] - m[0][0]
+                if deltax == -2:
+                    # Move was a O-O-O (long castle)
+                    # so move also this player's left rook
+                    ch_board = self._gen_new_board(
+                                ch_board,
+                                EROOKS[self._movep],
+                                j, j+3)
+                elif deltax == 2:
+                    # Move was a O-O (short castle)
+                    # so move also this player's right rook
+                    ch_board = self._gen_new_board(
+                                ch_board,
+                                EROOKS[self._movep],
+                                j+7, j+5)
             return (ch_board,)
 
     def set_num(self, num, depth):
@@ -666,7 +711,55 @@ class ChessGame:
         self._nchks[self._movep] = nchks
         return nchks
 
-    def _append_nonpawn_moves(self, moves, ptype, i, j):
+    def _append_king_moves(self, moves):
+        king = self._pcs[self._movep][0]
+        i = king[1]
+        j = king[2]
+        ''' When castling we will add here just the king's move,
+        but when applying it in a simulated move, a 2-square horiz.
+        move for a king will be detected, and the corresponding
+        rook will also be moved there to complete the castle.
+        '''
+        if self._can_still_castle[self._movep][0]:
+            if self._can_long_castle_now(j):
+                moves.append( ((i,j), (i-2,j)) )
+        if self._can_still_castle[self._movep][1]:
+            if self._can_short_castle_now(j):
+                moves.append( ((i,j), (i+2,j)) )
+        amoves = ATTACK_MOVES.get("K")
+        a = self._attackfp[self._waitp]
+        for movedir in amoves:
+            for m in movedir:
+                ii = i + m[0]
+                if ii < 0 or ii > 7: break
+                jj = j + m[1]
+                if jj < 0 or jj > 7: break
+                square = self._read_board(ii, jj)
+                if square != " ":
+                    if get_piece_player(square) == self._movep:
+                        # A piece of ours is there, move on to next dir
+                        break
+                if a[ii][jj] > 0:
+                    # Square is out of bounds for our king, skip
+                    continue
+                # Otherwise add the move as valid
+                newmove = ((i,j), (ii,jj))
+                moves.append(newmove)
+
+    def _can_long_castle_now(self, row):
+        a = self._attackfp[self._waitp]
+        return (a[2][row] == 0 and a[3][row] == 0 and a[4][row] == 0
+            and self._read_board(1,row) == ' '
+            and self._read_board(2,row) == ' '
+            and self._read_board(3,row) == ' ')
+
+    def _can_short_castle_now(self, row):
+        a = self._attackfp[self._waitp]
+        return (a[4][row] == 0 and a[5][row] == 0 and a[6][row] == 0
+            and self._read_board(5,row) == ' '
+            and self._read_board(6,row) == ' ')
+
+    def _append_opcs_moves(self, moves, ptype, i, j):
         amoves = ATTACK_MOVES.get(ptype)
         for movedir in amoves:
             for m in movedir:
@@ -679,10 +772,6 @@ class ChessGame:
                     if get_piece_player(square) == self._movep:
                         # A piece of ours is there, move on to next dir
                         break
-                if (ptype == "K") and \
-                    self._attackfp[self._waitp][ii][jj] > 0:
-                    # Square is out of bounds for our king, skip
-                    continue
                 # Otherwise add the move as valid
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
@@ -690,16 +779,6 @@ class ChessGame:
                     # Destination square is occupied, no point exploring
                     # this moving direction any further
                     break
-        if ptype == "K":
-            if self._can_still_castle[self._movep][0]:
-                # Todo: check king's castle squares are not under attack
-                #print("Here we would add 0-0-0 move")
-                pass
-            if self._can_still_castle[self._movep][1]:
-                # Todo: check king's castle squares are not under attack
-                #print("Here we would add 0-0 move")
-                pass
-
 
     def _append_pawn_moves(self, moves, dp, i, j):
         # Pawns require very special movement considerations
@@ -780,36 +859,36 @@ class ChessGame:
 
     def get_all_moves(self, nchecks):
         # Generate list of all valid moves to consider
-        movable_pcs = []
+        player_moves = []
+        # The king is always among the pieces to consider
+        self._append_king_moves(player_moves)
         if nchecks < 2:
-            # Not under double check, so consider non-king piece movements
+            # Not under double check, so consider non-king movements
+            movable_pcs = []
             npieces = len(self._pcs[self._movep])
             for i in range(1,npieces,1):
                 p = self._pcs[self._movep][i]
                 key = p[0] + str(p[1]) + str(p[2])
                 movable_pcs.append( p )
-        # The king is always among the pieces to consider
-        movable_pcs.append(self._pcs[self._movep][0])
-        # Generate all valid moves for the movable pieces
-        player_moves = []
-        for p in movable_pcs:
-            dp = PIECE_DECODE[p[0]]
-            dpt = dp[0:1]
-            i = p[1]
-            j = p[2]
-            if dpt == "p":
-                self._append_pawn_moves(player_moves, dp, i, j)
-            else:
-                self._append_nonpawn_moves(player_moves, dpt, i, j)
+            # Generate all valid moves for the movable pieces
+            for p in movable_pcs:
+                dp = PIECE_DECODE[p[0]]
+                dpt = dp[0:1]
+                i = p[1]
+                j = p[2]
+                if dpt == "p":
+                    self._append_pawn_moves(player_moves, dp, i, j)
+                else:
+                    self._append_opcs_moves(player_moves, dpt, i, j)
         return player_moves
 
     def filter_worthy_moves(self, oplayer_moves):
         '''Here we might implement some heuristics to score moves,
         then sort and possibly discard some of the lowest scoring ones
-        from further consideration. Returning the original full list
-        of moves is the same as the original version of the program eg
-        brute-forcing our way through the full 100% search tree of all
-        possible moves for each turn
+        from further consideration.
+        If no filtering done, the program will brute-force its way
+        through the full 100% search tree of all possible moves for
+        each turn (-> gets intractable very quickly)
         '''
         fplayer_moves = oplayer_moves
         return fplayer_moves
@@ -820,7 +899,7 @@ class ChessGame:
             pgame._winning_children[self] = self._depth
             if pgame._parent is None:
                 # This is the root node, show the output already
-                print("Root node reached, a solution was found!")
+                print("A mate-in-"+str(max_depth/2)+" solution was found!")
                 self.print_winning_tree("")
 
     def get_winning_children(self):
@@ -836,28 +915,33 @@ class ChessGame:
             nx = lm[1][0]
             ny = lm[1][1]
             empc = self._read_board(nx, ny)
-            # Add final piece with old coordinates
-            #dmove = PIECE_DECODE[empc]
-            dmove = chr(ORD_A + ox) + str(oy + 1)
-            if self._parent != None:
-                eopc = self._parent._read_board(ox, oy)
-                if eopc != empc:
-                    # Different piece, so move had a pawn promotion
-                    dmove = PIECE_DECODE[eopc] + dmove
-                else:
-                    dmove = PIECE_DECODE[empc] + dmove
-                if " " != self._parent._read_board(nx, ny):
-                    # Move had a capture involved
-                    dmove += "x"
-                # Add new coordinates after the move
-                dmove = dmove + chr(ORD_A + nx) + str(ny + 1)
-                if eopc != empc:
-                    # Show the new promoted piece
-                    dmove += "=" + PIECE_DECODE[empc]
+            deltax = nx - ox
+            if empc in EKINGS and (deltax == 2 or deltax == -2):
+                # Castle move
+                dmove = "0-0" if deltax == 2 else "0-0-0"
             else:
-                # Add piece and new coordinates
-                dmove = PIECE_DECODE[empc] + dmove \
-                    + chr(ORD_A + nx) + str(ny + 1)
+                # Add final piece with old coordinates
+                #dmove = PIECE_DECODE[empc]
+                dmove = chr(ORD_A + ox) + str(oy + 1)
+                if self._parent != None:
+                    eopc = self._parent._read_board(ox, oy)
+                    if eopc != empc:
+                        # Different piece, so move had a pawn promotion
+                        dmove = PIECE_DECODE[eopc] + dmove
+                    else:
+                        dmove = PIECE_DECODE[empc] + dmove
+                    if " " != self._parent._read_board(nx, ny):
+                        # Move had a capture involved
+                        dmove += "x"
+                    # Add new coordinates after the move
+                    dmove = dmove + chr(ORD_A + nx) + str(ny + 1)
+                    if eopc != empc:
+                        # Show the new promoted piece
+                        dmove += "=" + PIECE_DECODE[empc]
+                else:
+                    # Add piece and new coordinates
+                    dmove = PIECE_DECODE[empc] + dmove \
+                        + chr(ORD_A + nx) + str(ny + 1)
             if self._status[3].startswith("WIN"):
                 # Checkmate caused by the move
                 dmove += "#"
@@ -938,7 +1022,8 @@ class ChessGame:
                 + str(self._nchks[1]) + "     ", end="")
         print("Move history:\n", end="")
         print(self.get_path_from_root(), end="")
-        print("\nGame #"+str(self._num), self._status[3])
+        print("\nGame #"+str(self._num), \
+                "(depth "+str(self._depth)+")", self._status[3])
 
 
 BAR = '='*48
@@ -965,8 +1050,8 @@ def evaluate_recursively(parent, parent_move, game, depth):
     global debug_show
     nrec_calls += 1
     game.set_num(ngame, depth)
-    #if chatty and ngame % 2500 == 0 and ngame > 0:
-    #    game.show()
+    if chatty and ngame % 2500 == 0 and ngame > 0:
+        game.show()
     if ngame % 50000 == 0:
         print("Games explored:", ngame)
     ngame += 1

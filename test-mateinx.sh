@@ -19,6 +19,8 @@ python3 mateinx.py game-11.json -r -d1
 #python3 mateinx.py game-12.json -r -d4
 #python3 mateinx.py game-14.json -r -d4
 python3 mateinx.py game-16.json -r -d4 -q
+python3 mateinx.py castles.json -q
+python3 mateinx.py game-19.json -r -d4 -q
 
 # The following can take a few minutes
 # (more than 1.1M combinations to explore)
