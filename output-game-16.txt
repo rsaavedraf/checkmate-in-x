@@ -43,22 +43,33 @@ Initial game configuration is valid:
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 Brute-forcing our way through all combinations of moves...
+Games explored: 0
+A mate-in-2.0 solution was found!
+p0b7xa8=Q0+
+    K1a7b6
+        Q0e8c6#
+A mate-in-2.0 solution was found!
+p0b7b8=Q0+
+    K1a7a6
+        Q0e8b5#
+        Q0e8a4#
 
 Total recursive calls: 24823
 Total games processed: 24823
 Wins  found per depth: [0, 0, 0, 8, 0]
 Draws found per depth: [0, 0, 0, 2, 0]
 
-Mate-in-2.0 tree of moves:
+Complete Mate-in-2.0 tree of moves:
 ?
-    p0b7xa8=>Q0+
+    p0b7xa8=Q0+
         K1a7b6
             Q0e8c6#
-    p0b7b8=>Q0+
+    p0b7b8=Q0+
         K1a7a6
             Q0e8b5#
             Q0e8a4#

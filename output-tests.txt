@@ -81,9 +81,10 @@ Using 'error-05.json' as input file
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=4 b=0     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 ERROR: more than 2 checks simultaneously on w King
 
 ================================================
@@ -128,9 +129,10 @@ Using 'error-05.json' as input file
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=4 b=0     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 ERROR: more than 2 checks simultaneously on w King
 
 ================================================
@@ -175,9 +177,10 @@ Using 'error-06.json' as input file
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: b    Checked: w=2 b=1     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 ERROR: invalid scenario: both players are under check simultaneously
 
 ================================================
@@ -222,9 +225,10 @@ Using 'error-07.json' as input file
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=1     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 ERROR: invalid scenario. Player w will move next -> player b can't be in check
 
 ================================================
@@ -328,10 +332,12 @@ Initial game configuration is valid:
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: b    Checked: w=0 b=1     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 Brute-forcing our way through all combinations of moves...
+Games explored: 0
 
         a      b      c      d      e      f      g      h
     +------+------+------+------+------+------+------+------+
@@ -369,9 +375,10 @@ Brute-forcing our way through all combinations of moves...
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: b    Checked: w=0 b=1     Move history:
 []
-Game #0 WIN for w, game #0, depth 0
+Game #0 (depth 0) WIN for w, game #0, depth 0
 
 Total recursive calls: 1
 Total games processed: 1
@@ -441,10 +448,14 @@ Initial game configuration is valid:
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 Brute-forcing our way through all combinations of moves...
+Games explored: 0
+***** After game 0 a promotion into Q0 took place at 7,7 *****
+***** After game 0 a promotion into N0 took place at 7,7 *****
 
 Total recursive calls: 10
 Total games processed: 10
@@ -515,11 +526,13 @@ Initial game configuration is valid:
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 ((6, 6), (6, 4))
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 Brute-forcing our way through all combinations of moves...
-***** Detected pawn capturing 2-square moving pawn *****
+Games explored: 0
+***** Detected 'in passing' capture of a 2-square moving pawn *****
 
 Total recursive calls: 7
 Total games processed: 7
@@ -571,23 +584,244 @@ Initial game configuration is valid:
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 Starting game
+Game #0 (depth 0) Starting game
 Brute-forcing our way through all combinations of moves...
+Games explored: 0
+A mate-in-2.0 solution was found!
+p0b7xa8=Q0+
+    K1a7b6
+        Q0e8c6#
+A mate-in-2.0 solution was found!
+p0b7b8=Q0+
+    K1a7a6
+        Q0e8b5#
+        Q0e8a4#
 
 Total recursive calls: 24823
 Total games processed: 24823
 Wins  found per depth: [0, 0, 0, 8, 0]
 Draws found per depth: [0, 0, 0, 2, 0]
 
-Mate-in-2.0 tree of moves:
+Complete Mate-in-2.0 tree of moves:
 ?
-    p0b7xa8=>Q0+
+    p0b7xa8=Q0+
         K1a7b6
             Q0e8c6#
-    p0b7b8=>Q0+
+    p0b7b8=Q0+
         K1a7a6
             Q0e8b5#
             Q0e8a4#
+================================================
+
+================================================
+|      mateinx.py                              |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Using 'castles.json' as input file
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |  R1  |[    ]|      |[    ]|  K1  |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|      |[ R1 ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[    ]|  R0  |[    ]|      |[ K0 ]|      |[    ]|  R0  | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w: 0-0  b: 0-0-0 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) Starting game
+
+Total recursive calls: 0
+Total games processed: 0
+Wins  found per depth: [0, 0, 0]
+Draws found per depth: [0, 0, 0]
+================================================
+
+================================================
+|      mateinx.py                              |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Using 'game-19.json' as input file
+Using 4 as maximum depth
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[ B1 ]|      |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|  N0  |[ p1 ]|      |[    ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[ K1 ]|      |[    ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|  N0  |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|  Q0  |[    ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[ R0 ]|      |[    ]|      |[ K0 ]|      |[    ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w: 0-0-0   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) Starting game
+Brute-forcing our way through all combinations of moves...
+Games explored: 0
+A mate-in-2.0 solution was found!
+0-0-0
+    K1d4xd5
+        N0d3f4#
+    K1d4e4
+        N0d3e1#
+    B1d8e7
+        N0d3b4#
+        N0d3c5#
+        N0d3f4#
+        N0d3f2#
+        N0d3e1#
+        N0d3b2#
+    B1d8f6
+        N0d3b4#
+        N0d3c5#
+        N0d3f4#
+        N0d3f2#
+        N0d3e1#
+        N0d3b2#
+    B1d8g5+
+        N0d3f4#
+    B1d8h4
+        N0d3b4#
+        N0d3c5#
+        N0d3f4#
+        N0d3f2#
+        N0d3e1#
+        N0d3b2#
+    B1d8c7
+        N0d3b4#
+        N0d3c5#
+        N0d3f4#
+        N0d3f2#
+        N0d3e1#
+        N0d3b2#
+    B1d8b6
+        N0d3b4#
+        N0d3c5#
+        N0d3f4#
+        N0d3f2#
+        N0d3e1#
+        N0d3b2#
+    B1d8a5
+        N0d3b4#
+    p1e5e4
+        Q0c2c5#
+Games explored: 50000
+Games explored: 100000
+Games explored: 150000
+
+Total recursive calls: 155497
+Total games processed: 155497
+Wins  found per depth: [0, 0, 0, 141, 0]
+Draws found per depth: [0, 0, 0, 0, 0]
+
+Complete Mate-in-2.0 tree of moves:
+?
+    0-0-0
+        K1d4xd5
+            N0d3f4#
+        K1d4e4
+            N0d3e1#
+        B1d8e7
+            N0d3b4#
+            N0d3c5#
+            N0d3f4#
+            N0d3f2#
+            N0d3e1#
+            N0d3b2#
+        B1d8f6
+            N0d3b4#
+            N0d3c5#
+            N0d3f4#
+            N0d3f2#
+            N0d3e1#
+            N0d3b2#
+        B1d8g5+
+            N0d3f4#
+        B1d8h4
+            N0d3b4#
+            N0d3c5#
+            N0d3f4#
+            N0d3f2#
+            N0d3e1#
+            N0d3b2#
+        B1d8c7
+            N0d3b4#
+            N0d3c5#
+            N0d3f4#
+            N0d3f2#
+            N0d3e1#
+            N0d3b2#
+        B1d8b6
+            N0d3b4#
+            N0d3c5#
+            N0d3f4#
+            N0d3f2#
+            N0d3e1#
+            N0d3b2#
+        B1d8a5
+            N0d3b4#
+        p1e5e4
+            Q0c2c5#
 ================================================

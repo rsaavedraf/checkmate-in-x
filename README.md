@@ -38,10 +38,10 @@ problems, all running on the same machine:
 | Mate-in-3b |        |         |         |
 | ....       |        |         |         |
 
-## Update 2022-12-04:
-The python script is working well and almost done now.
-Only pending tasks for it:
-- Support castle moves
+## Update 2022-12-07:
+* Support castle moves done!
+Pending tasks:
+- Include filtering heuristic (-> deeper depths more tractable)
 - Write up usage/help for the script
 - Change recursive scheme to iterative (this will likely be convenient for a multithreaded rewrite)
 
