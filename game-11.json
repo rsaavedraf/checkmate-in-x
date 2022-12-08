@@ -1,6 +1,6 @@
 {
     "chess-game": {
-        "name" : "Pawn detecting (through last move) and capturing a 2-sq moving enemy pawn",
+        "name" : "Pawn detecting and capturing 'in-passing' enemy pawn",
         "date" : "2022-12-02",
         "wpcs" : ["Ke1", "f5"],
         "bpcs" : ["Kb1", "g5", "Bc2"],

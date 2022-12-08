@@ -38,10 +38,15 @@ problems, all running on the same machine:
 | Mate-in-3b |        |         |         |
 | ....       |        |         |         |
 
-## Update 2022-12-07:
+## Update 2022-12-08:
 * Support castle moves done!
+* Major simple optimization added: no need to explore any addition moves
+for the 'losing' player as soon as we find that one of his possible moves
+guarantees survival within the x number of moves of interest.
+This simple check trims down the search space massively, in fact by
+orders of magnitude.
+
 Pending tasks:
-- Include filtering heuristic (-> deeper depths more tractable)
 - Write up usage/help for the script
 - Change recursive scheme to iterative (this will likely be convenient for a multithreaded rewrite)
 

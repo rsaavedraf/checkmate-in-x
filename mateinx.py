@@ -17,19 +17,19 @@ import time
 import random
 from pathlib import Path
 
-show_end_games = True
-chatty = True
+show_games = False
+show_end_games = False
 show_attack_footprints = False
-recurse = False
-max_depth = 3
-max_depth_p1 = max_depth + 1
+show_json = False
+verbose = False
+max_moves = 2
+max_depth = max_moves * 2
 wins_per_depth = [0]*(max_depth)
 draws_per_depth = [0]*(max_depth)
 input_file = 'game-01.json'
 ngame = 0
-ngames_rev = 0
 nrec_calls = 0
-debug_show = False
+losing_player = 0
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -272,8 +272,8 @@ class ChessGame:
             return
         elmpc = self._read_board(c2[0], c2[1])
         if (elmpc == ' ' or PIECE_DECODE[elmpc][1:2] != str(self._waitp)):
-            st = "ERROR: conflict between last move '"+lastmv_str \
-                    + "' and existing pieces, or turn"
+            st = "ERROR: last move '"+lastmv_str \
+                    + "' in conflict with existing pieces, or turn"
             self._status[2] = st
         # Possible todo: validate that the move is compatible with the
         # piece standing there in c2. It must be either a move doable by
@@ -289,12 +289,14 @@ class ChessGame:
         self._npcs[player] += 1
 
     def _set_board_from_json(self, game_json):
+        global losing_player
         self._num = 0
         self._parent = None
         self._depth = 0
         self._nchks = [0, 0]
         turn = game_json.get('turn', "?").lower()
         self.set_turn("w" if (turn == "w" or turn == "?") else "b")
+        losing_player = 1 - self._movep
         moving_king = EKINGS[self._movep]
         for player in range(2):
             color = "w" if player == 0 else "b"
@@ -322,6 +324,10 @@ class ChessGame:
                     # Check that bishops are in different color squares
                     sqcolor = "b" if ((i + j) % 2 == 0) else "w"
                     if counts.get("B"+sqcolor, 0) != 0:
+                        # Technically not an error if one of them promoted,
+                        # but why would anyone chose a bishop over a queen
+                        # for promotion? So this is most likely an error/typo
+                        # in the input file
                         st = "ERROR: Two Bishops on same-colored squares"
                         self._status[player] = st
                         return
@@ -358,10 +364,11 @@ class ChessGame:
         for player in range(2):
             for pxy in self._pcs[player]:
                 epc = pxy[0]                # Encoded piece (1 char)
-                if epc == ' ':
-                    self._parent.show()
-                    self.show()
-                    print("Player", player, "Pcs:", self._pcs[player])
+                #if epc == ' ':
+                #    #This should never happen
+                #    self._parent.show(show_attack_footprints)
+                #    self.show(show_attack_footprints)
+                #    print("Player", player, "Pcs:", self._pcs[player])
                 dpc = PIECE_DECODE[epc]     # Decoded piece (2 chars)
                 self._gen_piece_attack_footp(player, dpc, pxy[1], pxy[2])
 
@@ -420,6 +427,9 @@ class ChessGame:
             if (deltax == 2 or deltax == -2):
                 # It's a castle move
                 castle = True
+                if (verbose):
+                    print("***** " + PIECE_DECODE[empc] \
+                            + " doing a castle move *****")
                 eprook = EROOKS[pgame._movep]
             self._can_still_castle = [[], []]
             # Clone waiting player's castle possibilities from parent
@@ -461,7 +471,7 @@ class ChessGame:
                 # original in the case of a pawn promotion
                 empc = self._read_board(i1, j1)
                 new_p = [empc, i1, j1]
-                if empc != p[0] and chatty:
+                if empc != p[0] and verbose:
                     print("***** After game " + str(pgame.get_num()) \
                         + " a promotion into "+PIECE_DECODE[empc] \
                         + " took place at "+str(i1)+","+str(j1)+" *****")
@@ -623,7 +633,7 @@ class ChessGame:
         if (self._status[0] == "OK"
             and self._status[1] == "OK"
             and self._status[2] == "OK"):
-            self._status[3] = "Starting game"
+            self._status[3] = "OK"
             return "OK"
         self._status[3] = "INVALID"
         return ("Whites  : "+self._status[0] + "\n"
@@ -852,8 +862,9 @@ class ChessGame:
                         # Last move was made by that enemy pawn, and
                         # it was a 2-square move, so our pawn can
                         # indeed capture it in passing
-                        print("***** Detected 'in passing' capture of a " \
-                                + "2-square moving pawn *****")
+                        if verbose:
+                            print("***** Detected pawn getting captured " \
+                                + "'in passing' (after a 2-square move) *****")
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
 
@@ -882,30 +893,24 @@ class ChessGame:
                     self._append_opcs_moves(player_moves, dpt, i, j)
         return player_moves
 
-    def filter_worthy_moves(self, oplayer_moves):
-        '''Here we might implement some heuristics to score moves,
-        then sort and possibly discard some of the lowest scoring ones
-        from further consideration.
-        If no filtering done, the program will brute-force its way
-        through the full 100% search tree of all possible moves for
-        each turn (-> gets intractable very quickly)
-        '''
-        fplayer_moves = oplayer_moves
-        return fplayer_moves
+    #def filter_worthy_moves(self, oplayer_moves):
+    #    fplayer_moves = oplayer_moves
+    #    return fplayer_moves
 
     def tell_parent_iam_awin(self):
         pgame = self._parent
         if not pgame is None:
             pgame._winning_children[self] = self._depth
             if pgame._parent is None:
-                # This is the root node, show the output already
-                print("A mate-in-"+str(max_depth/2)+" solution was found!")
-                self.print_winning_tree("")
+                # This is the root node, show the starting move already
+                print("A mate-in-"+str(max_moves)+" was found " \
+                        + "with move ", end="")
+                self.print_winning_tree("", False)
 
     def get_winning_children(self):
         return self._winning_children
 
-    def print_winning_tree(self, tabs):
+    def print_winning_tree(self, tabs, all):
         lm = self._last_move
         if lm == None:
             dmove = "?"
@@ -949,13 +954,17 @@ class ChessGame:
                 # Check caused by the move
                 dmove += "+"
         print(tabs + dmove)
-        for kchild in self._winning_children.keys():
-            kchild.print_winning_tree(tabs+"    ")
+        if all:
+            for kchild in self._winning_children.keys():
+                kchild.print_winning_tree(tabs+"    ", all)
 
     def has_winning_children(self):
+        return self.get_num_winning_children() > 0
+
+    def get_num_winning_children(self):
         return len(self._winning_children.keys()) > 0
 
-    def show(self):
+    def show(self, show_attack_fp):
         nums = \
             "        0      1      2      3      4      5      6      7"
         letters = \
@@ -985,19 +994,19 @@ class ChessGame:
             print("| {0}".format(7-j))
             print("    ", end="")
             for i in range(8):
-                if show_attack_footprints:
+                if show_attack_fp:
                     print("|", end="")
                     wattacks = int(self._attackfp[0][i][7-j])
                     if wattacks != 0:
-                        print(f"{wattacks:02d}", end="")
+                        print(f"{wattacks:1d}", end="")
                     else:
-                        print("  ", end="")
-                    print("  ", end="")
+                        print(" ", end="")
+                    print("    ", end="")
                     battacks = int(self._attackfp[1][i][7-j])
                     if battacks != 0:
-                        print(f"{battacks:02d}", end="")
+                        print(f"{battacks:1d}", end="")
                     else:
-                        print("  ", end="")
+                        print(" ", end="")
                 else:
                     if whitesq:
                         print("|      ", end="")
@@ -1030,7 +1039,7 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py                              |')
+     print('|      mateinx.py v1.0                         |')
      print('|      By Raul Saavedra F., 2022-Nov-18        |');
      print(BAR)
 
@@ -1038,31 +1047,30 @@ def load_game_from_json():
     with open(input_file, 'r') as f:
         game_json = json.load(f)
     g = game_json['chess-game']
-    if chatty:
-        print("Starting game (json input):")
+    print("Starting game (json input): "+input_file)
+    if show_json:
         print(json.dumps(game_json, indent=4)+"\n")
     return g
 
 def evaluate_recursively(parent, parent_move, game, depth):
-    global ngame
-    global ngames_rev
-    global nrec_calls
-    global debug_show
+    global ngame, nrec_calls, losing_player
+    global show_games, show_attack_footprints, verbose
     nrec_calls += 1
+    if depth >= max_depth:
+        return "nowin deep enough"
     game.set_num(ngame, depth)
-    if chatty and ngame % 2500 == 0 and ngame > 0:
-        game.show()
-    if ngame % 50000 == 0:
-        print("Games explored:", ngame)
+    if show_games and ngame % 1000 == 0 and ngame > 0:
+        game.show(show_attack_footprints)
+    #if verbose and ngame % 50000 == 0:
+    #    print("Games explored:", ngame)
     ngame += 1
     nchks = game.get_all_checks()
     moves = game.get_all_moves(nchks)
-    if depth >= max_depth:
-        return "Deep enough"
-    fmoves = game.filter_worthy_moves(moves)
+    #fmoves = game.filter_worthy_moves(moves)
+    mov_player = game.get_mover()
     next_depth = depth + 1
     valid_children = []
-    for m in fmoves:
+    for m in moves:
         # Simulate move to get corresponding child(ren) board(s)
         child_boards = game.simulate_move(m)
         for ch_brd in child_boards:
@@ -1081,21 +1089,33 @@ def evaluate_recursively(parent, parent_move, game, depth):
             valid_children.append(child_game)
             child_game.flip_turn()
             evaluate_recursively(game, m, child_game, next_depth)
+            if (mov_player == losing_player and
+                child_game.get_num_winning_children() == 0):
+                ''' If parent game moving player (mov_player) is the
+                "losing" player (that is, not the 1st moving player in
+                the mate-in-x setup,)
+                and at least one child here has no winning moves for the
+                "winning" player,
+                then this move of the losing player is one survival path.
+                This child game's parent is therefore for sure not in a
+                winning path for the 1st mover, so no need to explore
+                additional moves here.
+                This simple check can trim down the entire search space
+                hugely (e.g. orders of magnitude)
+                '''
+                return "nowin"
     result = verify(game, valid_children)
     return "Subtree processed"
 
 def verify(game, children):
-    global ngame
-    global wins_per_depth
-    global draws_per_depth
-    global show_end_games
+    global ngame, wins_per_depth, draws_per_depth, show_end_games
     depth = game.get_depth()
     if game.get_npcs(0) + game.get_npcs(1) == 2:
         draws_per_depth[depth] += 1
         msg = "GAME OVER: DRAW (only both Kings remain)," \
             +" game #" + str(game.get_num()) + ", depth " + str(depth)
         game.set_ending(msg)
-        if show_end_games: game.show()
+        if show_end_games: game.show(show_attack_footprints)
         return msg
     if children == []:
         nchks = game.get_num_checks(game.get_mover())
@@ -1112,19 +1132,20 @@ def verify(game, children):
                     + str(game.get_num()) + ", depth " + str(depth)
             game.set_ending(msg)
             game.tell_parent_iam_awin()
-            if show_end_games: game.show()
+            if show_end_games: game.show(show_attack_footprints)
             return msg
         # No moves and not under check -> Game over: DRAW
         draws_per_depth[depth] += 1
         msg = "DRAW found at game #" + str(ngame) \
                 + ", depth " + str(depth)
         game.set_ending(msg)
-        if show_end_games: game.show()
+        if show_end_games: game.show(show_attack_footprints)
         return msg
     # Reaching this point means player had move options
     for child in children:
-        if len(child._winning_children.keys()) == 0:
-            return "ok"
+        if child.get_num_winning_children() == 0:
+            return "nowin move"
+
     ''' Reaching this point means absolutely all children had
     at least one winning move (for the opponent's win.) So
     let this node know that all its children have at least
@@ -1137,11 +1158,9 @@ def verify(game, children):
     return "ok"
 
 def process_options(argv):
-    global input_file
-    global recurse
-    global show_attack_footprints
-    global chatty, show_end_games
-    global max_depth, max_depth_p1, wins_per_depth, draws_per_depth
+    global input_file, verbose, show_attack_footprints
+    global show_json, show_games, show_end_games
+    global max_moves, max_depth, wins_per_depth, draws_per_depth
     for opt in argv:
         if opt == "-h":
             # Display help
@@ -1149,30 +1168,43 @@ def process_options(argv):
                 for line in help:
                     print(line.rstrip())
             exit()
-        if opt == "-r":
-            # Do recurse to find solution
-            recurse = True
+        if opt == "-g":
+            # Do show some games
+            show_games = True
+            if verbose: print("Showing some games while searching")
+            continue
+        if opt == "-e":
+            # Do show End games
+            if verbose: print("Showing End games (Wins and Draws)")
+            show_end_games = True
             continue
         if opt == "-a":
             # Do show Attack Footprints
             show_attack_footprints = True
+            if verbose: print("Showing attack footprints on board squares")
             continue
-        if opt == "-q":
-            # Run in quiet mode
-            chatty = False
-            show_end_games = False
+        if opt == "-v":
+            # Run in verbose/chatty mode (defaul is quiet mode)
+            verbose = True
+            print("Running in verbose mode")
             continue
-        if opt[0:2] == "-d":
-            # Set maximum depth to explore
-            n=opt[2:]
-            if n.isdecimal():
-                max_depth = int(n)
-                max_depth_p1 = max_depth + 1
-                wins_per_depth = [0]*(max_depth_p1)
-                draws_per_depth = [0]*(max_depth_p1)
+        if opt == "-j":
+            # Include json file in output
+            show_json = True
+            if verbose: print("Including json file in the output")
+            continue
+        if opt[0:2] == "-m":
+            # Set maximum # moves to explore
+            n = opt[2:]
+            if n.isdecimal() and int(n) >= 0:
+                max_moves = int(n)
+                max_depth = max_moves * 2
+                wins_per_depth = [0] * max_depth
+                draws_per_depth = [0] * max_depth
             else:
-                print("Invalid max depth parameter:", n)
-            print("Using", max_depth, "as maximum depth")
+                print("Invalid max moves parameter:", n)
+            print("Using", max_moves, "as maximum number of moves " \
+                    + "(max depth=" + str(max_depth) + ")")
             continue
         if not opt.startswith("-"):
             # This should be the file name (.json) to use as input
@@ -1180,7 +1212,7 @@ def process_options(argv):
             vpath = Path(fname)
             if vpath.is_file():
                 input_file = fname
-                if chatty: print("Using '"+input_file+"' as input file")
+                if verbose: print("Using '"+input_file+"' as input file")
             else:
                 print("ERROR: file '"+fname+"' not found, exiting")
                 exit(-2)
@@ -1189,10 +1221,9 @@ def process_options(argv):
         exit(-1)
 
 def mateinx_solver(argv):
-    global ngame
-    global chatty
-    global nrec_calls
-    global ngames_rev
+    global ngame, verbose, nrec_calls
+    global max_moves, wins_per_depth, draws_per_depth
+    global show_games, show_attack_footprints
     starting_banner()
     process_options(argv)
     start = load_game_from_json()
@@ -1200,6 +1231,7 @@ def mateinx_solver(argv):
     game.init_from_json(start)
     vst = game.get_status()
     if vst != "OK":
+        if show_games: game.show(False)
         print(vst)
         exit()
     # Aditional validations before starting recursive calls
@@ -1208,50 +1240,53 @@ def mateinx_solver(argv):
     nchk0 = game.get_all_checks()
     vst = game.get_status()
     if vst != "OK":
-        game.show()
+        if show_games: game.show(False)
         print(vst)
         exit()
     game.set_turn("b")
     nchk1 = game.get_all_checks()
     vst = game.get_status()
     if vst != "OK":
-        game.show()
+        if show_games: game.show(False)
         print(vst)
         exit()
     if nchk0 > 0 and nchk1 > 0:
-        game.show()
+        if show_games: game.show(show_attack_footprints)
         print("ERROR: invalid scenario: both players are under check" \
                 + " simultaneously")
         exit()
     game.set_turn(orig_turn) # Reset original player moving next
     if ((nchk0 > 0 and orig_turn == "b")
         or (nchk1 > 0 and orig_turn == "w")):
-        game.show()
+        if show_games: game.show(show_attack_footprints)
         print("ERROR: invalid scenario. Player "+orig_turn+" will move" \
                 + " next -> player "+game.get_next_turn() \
                 + " can't be in check")
         exit()
-    if nchk0 > 2 or nchk1 >2:
-        game.show()
-        print("ERROR: more than 2 checks simultaneously on", \
-                "w" if nchk0 > 2 else "b", "King")
+    if nchk0 > 2 or nchk1 > 2:
+        if show_games: game.show(show_attack_footprints)
+        print("ERROR: more than 2 checks simultaneously on ", end="")
+        print(("w King (K0)" if nchk0 > 2 else "b King (K1)"))
         exit()
     # At this point, the Game setup was found to be valid
     ngame = 0
     print("Initial game configuration is valid:")
-    game.show()
-    if recurse:
-        print("Brute-forcing our way through all combinations of moves...")
-        evaluate_recursively(None, (), game, 0)
+    game.show(False)
+    if (max_moves == 0): exit()
+
+    print("Exploring combinations of moves...\n")
+    evaluate_recursively(None, (), game, 0)
 
     print("\nTotal recursive calls:", nrec_calls)
     print("Total games processed:", ngame)
     print("Wins  found per depth:", wins_per_depth)
     print("Draws found per depth:", draws_per_depth)
     if (game.has_winning_children()):
-        print("\nComplete Mate-in-"+str(max_depth/2)+" tree of moves:")
-        game.print_winning_tree("")
-    print(BAR)
+        print("\nComplete Mate-in-"+str(max_moves)+" tree of moves:")
+        game.print_winning_tree("", True)
+    else:
+        if ngame > 1:
+            print("\nNo moves found for Mate-in-"+str(max_moves))
 
 if __name__ == '__main__':
     mateinx_solver(sys.argv[1:])
