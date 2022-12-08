@@ -1,49 +1,185 @@
 [H[2J[3J
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-01.json' as input file
+Running in verbose mode
+Including json file in the output
+Starting game (json input): error-01.json
+{
+    "chess-game": {
+        "name": "Error: two pieces on same position",
+        "date": "2022-11-18",
+        "wpcs": [
+            "Kh4",
+            "Qa4",
+            "Rf3",
+            "Rh5",
+            "Bg1",
+            "Bg2",
+            "Nb7",
+            "Ne7",
+            "b4"
+        ],
+        "bpcs": [
+            "Ke4",
+            "Qd5",
+            "Rc6",
+            "e5",
+            "g2",
+            "Kh8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Whites  : OK
 Blacks  : ERROR: two pieces in same position g,2
 Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-02.json' as input file
+Running in verbose mode
+Including json file in the output
+Starting game (json input): error-02.json
+{
+    "chess-game": {
+        "name": "Error: too many kings",
+        "date": "2022-11-18",
+        "wpcs": [
+            "Kh4",
+            "Qa4",
+            "Rf3",
+            "Rh5",
+            "Bg1",
+            "Bg2",
+            "Nb7",
+            "Ne7",
+            "b4"
+        ],
+        "bpcs": [
+            "Ke4",
+            "Qd5",
+            "Rc6",
+            "e5",
+            "f4",
+            "Kh8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Whites  : OK
 Blacks  : ERROR: 2 King pieces for b player
 Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-03.json' as input file
+Running in verbose mode
+Including json file in the output
+Starting game (json input): error-03.json
+{
+    "chess-game": {
+        "name": "Error: too many pieces",
+        "date": "2022-11-22",
+        "wpcs": [
+            "Ke1",
+            "Qd1",
+            "a2",
+            "b2",
+            "c2",
+            "d3",
+            "e6",
+            "f3",
+            "g2",
+            "h2",
+            "h5"
+        ],
+        "bpcs": [
+            "Ke8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Whites  : ERROR: 9 pawns for w player
 Blacks  : OK
 Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-04.json' as input file
+Running in verbose mode
+Including json file in the output
+Starting game (json input): error-04.json
+{
+    "chess-game": {
+        "name": "Error: too many promoted pieces given number of pawns",
+        "date": "2022-11-22",
+        "wpcs": [
+            "Ke1",
+            "Qd1",
+            "a2",
+            "b2",
+            "c2",
+            "d3",
+            "e6",
+            "f3",
+            "g2",
+            "h2",
+            "Qh8"
+        ],
+        "bpcs": [
+            "Ke8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Whites  : ERROR: 8 pawns 1 promoted pieces, too many for w player
 Blacks  : OK
 Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-05.json' as input file
+Running in verbose mode
+Including json file in the output
+Showing some games while searching
+Starting game (json input): error-05.json
+{
+    "chess-game": {
+        "name": "Error: Too many checks",
+        "date": "2022-11-18",
+        "wpcs": [
+            "Kh2"
+        ],
+        "bpcs": [
+            "Ke4",
+            "g3",
+            "Nf1",
+            "Ra2",
+            "Qh8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 
         a      b      c      d      e      f      g      h
     +------+------+------+------+------+------+------+------+
@@ -84,62 +220,67 @@ Using 'error-05.json' as input file
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=4 b=0     Move history:
 []
-Game #0 (depth 0) Starting game
-ERROR: more than 2 checks simultaneously on w King
+Game #0 (depth 0) OK
+ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-05.json' as input file
+Running in verbose mode
+Showing some games while searching
+Showing attack footprints on board squares
+Starting game (json input): error-05.json
 
         a      b      c      d      e      f      g      h
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
   8 |      |[    ]|      |[    ]|      |[    ]|      |[ Q1 ]| 7
-    |    02|    01|    01|    01|    01|    01|    01|      |
+    |     2|     1|     1|     1|     1|     1|     1|      |
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
   7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
-    |    01|      |      |      |      |      |    01|    01|
+    |     1|      |      |      |      |      |     1|     1|
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
   6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
-    |    01|      |      |      |      |    01|      |    01|
+    |     1|      |      |      |      |     1|      |     1|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
   5 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 4
-    |    01|      |      |    01|    02|    01|      |    01|
+    |     1|      |      |     1|     2|     1|      |     1|
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
   4 |      |[    ]|      |[    ]|  K1  |[    ]|      |[    ]| 3
-    |    01|      |      |    02|      |    01|      |    01|
+    |     1|      |      |     2|      |     1|      |     1|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
   3 |[    ]|      |[    ]|      |[    ]|      |[ p1 ]|      | 2
-    |    01|      |    01|    01|    02|    01|01  01|01  01|
+    |     1|      |     1|     1|     2|     1|1    1|1    1|
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
   2 |  R1  |[    ]|      |[    ]|      |[    ]|      |[ K0 ]| 1
-    |      |    02|    01|    02|    01|    02|01  01|    04|
+    |      |     2|     1|     2|     1|     2|1    1|     4|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
   1 |[    ]|      |[    ]|      |[    ]|  N1  |[    ]|      | 0
-    |    02|      |      |      |      |      |01    |01    |
+    |     2|      |      |      |      |      |1     |1     |
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=4 b=0     Move history:
 []
-Game #0 (depth 0) Starting game
-ERROR: more than 2 checks simultaneously on w King
+Game #0 (depth 0) OK
+ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-06.json' as input file
+Running in verbose mode
+Showing some games while searching
+Starting game (json input): error-06.json
 
         a      b      c      d      e      f      g      h
     +------+------+------+------+------+------+------+------+
@@ -180,14 +321,16 @@ Using 'error-06.json' as input file
 	Possible castle moves: w:   b: 
 	To play: b    Checked: w=2 b=1     Move history:
 []
-Game #0 (depth 0) Starting game
+Game #0 (depth 0) OK
 ERROR: invalid scenario: both players are under check simultaneously
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-07.json' as input file
+Running in verbose mode
+Showing some games while searching
+Starting game (json input): error-07.json
 
         a      b      c      d      e      f      g      h
     +------+------+------+------+------+------+------+------+
@@ -228,72 +371,59 @@ Using 'error-07.json' as input file
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=1     Move history:
 []
-Game #0 (depth 0) Starting game
+Game #0 (depth 0) OK
 ERROR: invalid scenario. Player w will move next -> player b can't be in check
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-08.json' as input file
+Running in verbose mode
+Starting game (json input): error-08.json
 Whites  : OK
 Blacks  : ERROR: 0 King pieces for b player
 Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-09.json' as input file
+Running in verbose mode
+Starting game (json input): error-09.json
 Whites  : OK
 Blacks  : OK
 Gameplay: ERROR: invalid pawn position b1
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-10.json' as input file
+Running in verbose mode
+Starting game (json input): error-10.json
 Whites  : ERROR: Two Bishops on same-colored squares
 Blacks  : OK
 Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'error-11.json' as input file
+Running in verbose mode
+Starting game (json input): error-11.json
 Whites  : OK
 Blacks  : OK
-Gameplay: ERROR: conflict between last move 'a2a1' and existing pieces, or turn
+Gameplay: ERROR: last move 'a2a1' in conflict with existing pieces, or turn
 Overall : INVALID
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'game-01.json' as input file
-Starting game (json input):
-{
-    "chess-game": {
-        "name": "mate-in-0-001",
-        "date": "2022-11-20",
-        "wpcs": [
-            "Kg1",
-            "Qh5",
-            "Bc3"
-        ],
-        "bpcs": [
-            "Ke1"
-        ],
-        "lastMove": null,
-        "turn": "b"
-    }
-}
-
+Using 0 as maximum number of moves (max depth=0)
+Starting game (json input): game-01.json
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -335,9 +465,14 @@ Initial game configuration is valid:
 	Possible castle moves: w:   b: 
 	To play: b    Checked: w=0 b=1     Move history:
 []
-Game #0 (depth 0) Starting game
-Brute-forcing our way through all combinations of moves...
-Games explored: 0
+Game #0 (depth 0) OK
+
+================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Starting game (json input): game-03.json
+Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
     +------+------+------+------+------+------+------+------+
@@ -346,53 +481,126 @@ Games explored: 0
     |      |######|      |######|      |######|      |######|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
-  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+  7 |[    ]|  N0  |[    ]|      |[ N0 ]|      |[    ]|      | 6
     |######|      |######|      |######|      |######|      |
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
-  6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
+  6 |      |[    ]|  R1  |[    ]|      |[    ]|      |[    ]| 5
     |      |######|      |######|      |######|      |######|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
-  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|  Q0  | 4
+  5 |[    ]|      |[    ]|  Q1  |[ p1 ]|      |[    ]|  R0  | 4
     |######|      |######|      |######|      |######|      |
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
-  4 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 3
+  4 |  Q0  |[ p0 ]|      |[    ]|  K1  |[ p1 ]|      |[ K0 ]| 3
     |      |######|      |######|      |######|      |######|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
-  3 |[    ]|      |[ B0 ]|      |[    ]|      |[    ]|      | 2
+  3 |[    ]|      |[    ]|      |[    ]|  R0  |[    ]|      | 2
     |######|      |######|      |######|      |######|      |
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
-  2 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 1
+  2 |      |[    ]|      |[    ]|      |[    ]|  B0  |[    ]| 1
     |      |######|      |######|      |######|      |######|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
-  1 |[    ]|      |[    ]|      |[ K1 ]|      |[ K0 ]|      | 0
+  1 |[    ]|      |[    ]|      |[    ]|      |[ B0 ]|      | 0
     |######|      |######|      |######|      |######|      |
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
 	Possible castle moves: w:   b: 
-	To play: b    Checked: w=0 b=1     Move history:
+	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 (depth 0) WIN for w, game #0, depth 0
+Game #0 (depth 0) OK
+Exploring combinations of moves...
 
-Total recursive calls: 1
-Total games processed: 1
-Wins  found per depth: [1, 0, 0]
-Draws found per depth: [0, 0, 0]
-================================================
+A mate-in-2 was found with move Q0a4a8
+
+Total recursive calls: 14788
+Total games processed: 7568
+Wins  found per depth: [0, 0, 0, 147]
+Draws found per depth: [0, 0, 0, 2]
+
+Complete Mate-in-2 tree of moves:
+?
+    Q0a4a8
+        Q1d5d6
+            N0b7xd6#
+        Q1d5d7
+            N0b7c5#
+        Q1d5d8
+            N0b7c5#
+        Q1d5d4
+            R0f3e3#
+        Q1d5d3
+            N0b7c5#
+        Q1d5d2
+            N0b7c5#
+        Q1d5d1
+            N0b7c5#
+        Q1d5c5
+            N0b7xc5#
+        Q1d5b5
+            N0b7d6#
+        Q1d5a5
+            N0b7d6#
+        Q1d5e6
+            N0b7c5#
+        Q1d5f7
+            N0b7d6#
+            N0b7c5#
+        Q1d5g8
+            N0b7d6#
+            N0b7c5#
+        Q1d5c4
+            N0b7d6#
+        Q1d5b3
+            N0b7d6#
+            N0b7c5#
+        Q1d5a2
+            N0b7d6#
+            N0b7c5#
+        R1c6c7
+            N0b7d6#
+        R1c6c8
+            N0b7d6#
+        R1c6c5
+            N0b7d6#
+            N0b7xc5#
+        R1c6c4
+            N0b7d6#
+        R1c6c3
+            N0b7d6#
+        R1c6c2
+            N0b7d6#
+        R1c6c1
+            N0b7d6#
+        R1c6d6
+            N0b7xd6#
+            N0b7c5#
+        R1c6e6
+            N0b7c5#
+        R1c6f6
+            N0b7c5#
+        R1c6g6
+            N0b7c5#
+        R1c6h6
+            N0b7c5#
+        R1c6b6
+            N0b7c5#
+        R1c6a6
+            N0b7c5#
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'game-10.json' as input file
-Using 1 as maximum depth
-Starting game (json input):
+Running in verbose mode
+Including json file in the output
+Using 1 as maximum number of moves (max depth=2)
+Starting game (json input): game-10.json
 {
     "chess-game": {
         "name": "Pawn to get promoted",
@@ -451,28 +659,30 @@ Initial game configuration is valid:
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 (depth 0) Starting game
-Brute-forcing our way through all combinations of moves...
-Games explored: 0
+Game #0 (depth 0) OK
+Exploring combinations of moves...
+
 ***** After game 0 a promotion into Q0 took place at 7,7 *****
 ***** After game 0 a promotion into N0 took place at 7,7 *****
 
-Total recursive calls: 10
+Total recursive calls: 19
 Total games processed: 10
 Wins  found per depth: [0, 0]
 Draws found per depth: [0, 0]
-================================================
+
+No moves found for Mate-in-1
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'game-11.json' as input file
-Using 1 as maximum depth
-Starting game (json input):
+Running in verbose mode
+Including json file in the output
+Using 1 as maximum number of moves (max depth=2)
+Starting game (json input): game-11.json
 {
     "chess-game": {
-        "name": "Pawn detecting (through last move) and capturing a 2-sq moving enemy pawn",
+        "name": "Pawn detecting and capturing 'in-passing' enemy pawn",
         "date": "2022-12-02",
         "wpcs": [
             "Ke1",
@@ -529,23 +739,224 @@ Initial game configuration is valid:
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 ((6, 6), (6, 4))
-Game #0 (depth 0) Starting game
-Brute-forcing our way through all combinations of moves...
-Games explored: 0
-***** Detected 'in passing' capture of a 2-square moving pawn *****
+Game #0 (depth 0) OK
+Exploring combinations of moves...
 
-Total recursive calls: 7
+***** Detected pawn getting captured 'in passing' (after a 2-square move) *****
+
+Total recursive calls: 13
 Total games processed: 7
 Wins  found per depth: [0, 0]
 Draws found per depth: [0, 0]
-================================================
+
+No moves found for Mate-in-1
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'game-16.json' as input file
-Using 4 as maximum depth
+Running in verbose mode
+Including json file in the output
+Starting game (json input): game-12.json
+{
+    "chess-game": {
+        "name": "mate-in-2-002",
+        "date": "2022-12-03",
+        "wpcs": [
+            "Kg1",
+            "Qh5",
+            "Re8",
+            "Ba1"
+        ],
+        "bpcs": [
+            "Kd2"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[    ]|  R0  |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|  Q0  | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[ K1 ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[ B0 ]|      |[    ]|      |[    ]|      |[ K0 ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Exploring combinations of moves...
+
+A mate-in-2 was found with move R0e8e1
+
+Total recursive calls: 4791
+Total games processed: 2470
+Wins  found per depth: [0, 0, 0, 11]
+Draws found per depth: [0, 0, 0, 39]
+
+Complete Mate-in-2 tree of moves:
+?
+    R0e8e1
+        K1d2c2
+            Q0h5d1#
+        K1d2d3
+            Q0h5e2#
+        K1d2xe1
+            B0a1c3#
+
+================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Starting game (json input): game-14.json
+{
+    "chess-game": {
+        "name": "Mate-in-2 Chessify 2022-12-02",
+        "date": "2022-12-04",
+        "wpcs": [
+            "Kf7",
+            "Qc1",
+            "Rd1",
+            "Rh2",
+            "f3"
+        ],
+        "bpcs": [
+            "Kg5",
+            "Nc3",
+            "Nf8",
+            "c4",
+            "f4",
+            "g2"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[    ]|      |[ N1 ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|  K0  |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|      |[    ]|      |[ K1 ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|  p1  |[    ]|      |[ p1 ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[ N1 ]|      |[    ]|  p0  |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[    ]|      |[    ]|  p1  |[ R0 ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[    ]|      |[ Q0 ]|  R0  |[    ]|      |[    ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Exploring combinations of moves...
+
+A mate-in-2 was found with move Q0c1b1
+
+Total recursive calls: 15060
+Total games processed: 7771
+Wins  found per depth: [0, 0, 0, 245]
+Draws found per depth: [0, 0, 0, 0]
+
+Complete Mate-in-2 tree of moves:
+?
+    Q0c1b1
+        N1c3a4
+            R0d1d5#
+        N1c3b5
+            Q0b1xb5#
+            R0d1d5#
+        N1c3d5
+            R0d1xd5#
+        N1c3e4
+            R0d1d5#
+        N1c3e2
+            Q0b1b5#
+            R0d1d5#
+        N1c3xd1
+            Q0b1b5#
+        N1c3xb1
+            R0d1d5#
+        N1c3a2
+            Q0b1b5#
+            R0d1d5#
+        N1f8h7
+            Q0b1g6#
+        N1f8g6
+            Q0b1xg6#
+        N1f8e6
+            Q0b1g6#
+        N1f8d7
+            Q0b1g6#
+        p1g2g1=Q1
+            R0d1xg1#
+        p1g2g1=N1
+            R0d1xg1#
+
+================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Starting game (json input): game-16.json
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -587,25 +998,18 @@ Initial game configuration is valid:
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 (depth 0) Starting game
-Brute-forcing our way through all combinations of moves...
-Games explored: 0
-A mate-in-2.0 solution was found!
-p0b7xa8=Q0+
-    K1a7b6
-        Q0e8c6#
-A mate-in-2.0 solution was found!
-p0b7b8=Q0+
-    K1a7a6
-        Q0e8b5#
-        Q0e8a4#
+Game #0 (depth 0) OK
+Exploring combinations of moves...
 
-Total recursive calls: 24823
-Total games processed: 24823
-Wins  found per depth: [0, 0, 0, 8, 0]
-Draws found per depth: [0, 0, 0, 2, 0]
+A mate-in-2 was found with move p0b7xa8=Q0+
+A mate-in-2 was found with move p0b7b8=Q0+
 
-Complete Mate-in-2.0 tree of moves:
+Total recursive calls: 1965
+Total games processed: 1017
+Wins  found per depth: [0, 0, 0, 5]
+Draws found per depth: [0, 0, 0, 1]
+
+Complete Mate-in-2 tree of moves:
 ?
     p0b7xa8=Q0+
         K1a7b6
@@ -614,13 +1018,33 @@ Complete Mate-in-2.0 tree of moves:
         K1a7a6
             Q0e8b5#
             Q0e8a4#
-================================================
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'castles.json' as input file
+Running in verbose mode
+Including json file in the output
+Starting game (json input): castles.json
+{
+    "chess-game": {
+        "name": "Checking support for castle moves",
+        "date": "2022-12-06",
+        "wpcs": [
+            "Ke1",
+            "Rb1",
+            "Rh1"
+        ],
+        "bpcs": [
+            "Ke8",
+            "Ra8",
+            "Rh6"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -662,20 +1086,74 @@ Initial game configuration is valid:
 	Possible castle moves: w: 0-0  b: 0-0-0 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 (depth 0) Starting game
+Game #0 (depth 0) OK
+Exploring combinations of moves...
 
-Total recursive calls: 0
-Total games processed: 0
-Wins  found per depth: [0, 0, 0]
-Draws found per depth: [0, 0, 0]
-================================================
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K0 doing a castle move *****
+***** K0 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K0 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+***** K1 doing a castle move *****
+
+Total recursive calls: 1101
+Total games processed: 574
+Wins  found per depth: [0, 0, 0, 0]
+Draws found per depth: [0, 0, 0, 0]
+
+No moves found for Mate-in-2
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'game-19.json' as input file
-Using 4 as maximum depth
+Starting game (json input): game-19.json
+{
+    "chess-game": {
+        "name": "mate-in-2 from Chessify 2022-12-07",
+        "date": "2022-12-07",
+        "wpcs": [
+            "Ke1",
+            "Qc2",
+            "Ra1",
+            "Nd3",
+            "Nd5"
+        ],
+        "bpcs": [
+            "Kd4",
+            "e5",
+            "Bd8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -717,66 +1195,17 @@ Initial game configuration is valid:
 	Possible castle moves: w: 0-0-0   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 (depth 0) Starting game
-Brute-forcing our way through all combinations of moves...
-Games explored: 0
-A mate-in-2.0 solution was found!
-0-0-0
-    K1d4xd5
-        N0d3f4#
-    K1d4e4
-        N0d3e1#
-    B1d8e7
-        N0d3b4#
-        N0d3c5#
-        N0d3f4#
-        N0d3f2#
-        N0d3e1#
-        N0d3b2#
-    B1d8f6
-        N0d3b4#
-        N0d3c5#
-        N0d3f4#
-        N0d3f2#
-        N0d3e1#
-        N0d3b2#
-    B1d8g5+
-        N0d3f4#
-    B1d8h4
-        N0d3b4#
-        N0d3c5#
-        N0d3f4#
-        N0d3f2#
-        N0d3e1#
-        N0d3b2#
-    B1d8c7
-        N0d3b4#
-        N0d3c5#
-        N0d3f4#
-        N0d3f2#
-        N0d3e1#
-        N0d3b2#
-    B1d8b6
-        N0d3b4#
-        N0d3c5#
-        N0d3f4#
-        N0d3f2#
-        N0d3e1#
-        N0d3b2#
-    B1d8a5
-        N0d3b4#
-    p1e5e4
-        Q0c2c5#
-Games explored: 50000
-Games explored: 100000
-Games explored: 150000
+Game #0 (depth 0) OK
+Exploring combinations of moves...
 
-Total recursive calls: 155497
-Total games processed: 155497
-Wins  found per depth: [0, 0, 0, 141, 0]
-Draws found per depth: [0, 0, 0, 0, 0]
+A mate-in-2 was found with move 0-0-0
 
-Complete Mate-in-2.0 tree of moves:
+Total recursive calls: 5429
+Total games processed: 2798
+Wins  found per depth: [0, 0, 0, 51]
+Draws found per depth: [0, 0, 0, 0]
+
+Complete Mate-in-2 tree of moves:
 ?
     0-0-0
         K1d4xd5
@@ -824,4 +1253,95 @@ Complete Mate-in-2.0 tree of moves:
             N0d3b4#
         p1e5e4
             Q0c2c5#
+
 ================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Using 3 as maximum number of moves (max depth=6)
+Starting game (json input): game-20.json
+{
+    "chess-game": {
+        "name": "Mate-in-3, Chessify 2022-11-13",
+        "date": "2022-12-08",
+        "wpcs": [
+            "Kc5",
+            "Qe1",
+            "Rh4",
+            "Bf1",
+            "b3"
+        ],
+        "bpcs": [
+            "Ka6",
+            "Qc8",
+            "Ra8",
+            "Re8",
+            "b5",
+            "c6",
+            "e6"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |  R1  |[    ]|  Q1  |[    ]|  R1  |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |  K1  |[    ]|  p1  |[    ]|  p1  |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|  p1  |[ K0 ]|      |[    ]|      |[    ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[    ]|      |[ R0 ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|  p0  |[    ]|      |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[    ]|      |[    ]|      |[ Q0 ]|  B0  |[    ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Exploring combinations of moves...
+
+A mate-in-3 was found with move Q0e1a5+
+
+Total recursive calls: 188162
+Total games processed: 96845
+Wins  found per depth: [0, 0, 0, 11, 0, 1017]
+Draws found per depth: [0, 0, 0, 0, 0, 0]
+
+Complete Mate-in-3 tree of moves:
+?
+    Q0e1a5+
+        K1a6xa5
+            R0h4a4+
+                p1b5xa4
+                    p0b3b4#
+        K1a6b7
+            Q0a5b6#

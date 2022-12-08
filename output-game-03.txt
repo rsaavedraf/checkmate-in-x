@@ -1,10 +1,9 @@
 
 ================================================
-|      mateinx.py                              |
+|      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
-Using 'game-03.json' as input file
-Using 4 as maximum depth
+Starting game (json input): game-03.json
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -43,17 +42,20 @@ Initial game configuration is valid:
     +------+------+------+------+------+------+------+------+
         0      1      2      3      4      5      6      7
         a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
 []
-Game #0 Starting game
-Brute-forcing our way through all combinations of moves...
+Game #0 (depth 0) OK
+Exploring combinations of moves...
 
-Total recursive calls: 1167245
-Total games processed: 1167245
-Wins  found per depth: [0, 0, 0, 594, 0]
-Draws found per depth: [0, 0, 0, 9, 0]
+A mate-in-2 was found with move Q0a4a8
 
-Mate-in-2.0 tree of moves:
+Total recursive calls: 14788
+Total games processed: 7568
+Wins  found per depth: [0, 0, 0, 147]
+Draws found per depth: [0, 0, 0, 2]
+
+Complete Mate-in-2 tree of moves:
 ?
     Q0a4a8
         Q1d5d6
@@ -122,4 +124,3 @@ Mate-in-2.0 tree of moves:
             N0b7c5#
         R1c6a6
             N0b7c5#
-================================================
