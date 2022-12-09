@@ -30,6 +30,8 @@ input_file = 'game-01.json'
 ngame = 0
 nrec_calls = 0
 losing_player = 0
+n_1st_moves = 0
+n_nodes_in_sol = 0
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -898,22 +900,26 @@ class ChessGame:
     #    return fplayer_moves
 
     def tell_parent_iam_awin(self):
+        global n_1st_moves, n_nodes_in_sol
         pgame = self._parent
         if not pgame is None:
             pgame._winning_children[self] = self._depth
             if pgame._parent is None:
-                # This is the root node, show the starting move already
-                print("A mate-in-"+str(max_moves)+" was found " \
-                        + "with move ", end="")
+                # pgame is the root node, show the starting move already
+                n_1st_moves += 1
+                print(n_1st_moves, "mate-in-"+str(max_moves)+" " \
+                    + "solution(s) found!  Winning first move: ", end="")
                 self.print_winning_tree("", False)
 
     def get_winning_children(self):
         return self._winning_children
 
     def print_winning_tree(self, tabs, all):
+        global n_nodes_in_sol
         lm = self._last_move
         if lm == None:
             dmove = "?"
+            n_nodes_in_sol = 0
         else:
             ox = lm[0][0]
             oy = lm[0][1]
@@ -953,10 +959,15 @@ class ChessGame:
             elif self._nchks[self._movep] > 0:
                 # Check caused by the move
                 dmove += "+"
-        print(tabs + dmove)
         if all:
+            n_nodes_in_sol += 0 if dmove == "?" else 1
+            tail_txt = " " * max(2, 30 - len(tabs) - len(dmove)) \
+                        + " (" + str(n_nodes_in_sol) + ")"
+            print(tabs + dmove + tail_txt)
             for kchild in self._winning_children.keys():
                 kchild.print_winning_tree(tabs+"    ", all)
+        else:
+            print(tabs + dmove)
 
     def has_winning_children(self):
         return self.get_num_winning_children() > 0
@@ -1223,7 +1234,7 @@ def process_options(argv):
 def mateinx_solver(argv):
     global ngame, verbose, nrec_calls
     global max_moves, wins_per_depth, draws_per_depth
-    global show_games, show_attack_footprints
+    global show_games, show_attack_footprints, n_1st_moves, n_nodes_in_sol
     starting_banner()
     process_options(argv)
     start = load_game_from_json()
@@ -1284,6 +1295,11 @@ def mateinx_solver(argv):
     if (game.has_winning_children()):
         print("\nComplete Mate-in-"+str(max_moves)+" tree of moves:")
         game.print_winning_tree("", True)
+        print("\nTotal number of nodes in solution:", n_nodes_in_sol)
+        print("Number of first moves that can mate-in-" \
+                + str(max_moves) + ": " + str(n_1st_moves))
+        for ch in game.get_winning_children():
+            ch.print_winning_tree("    ", False)
     else:
         if ngame > 1:
             print("\nNo moves found for Mate-in-"+str(max_moves))

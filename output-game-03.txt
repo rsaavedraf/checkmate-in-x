@@ -4,6 +4,33 @@
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
 Starting game (json input): game-03.json
+{
+    "chess-game": {
+        "name": "mate-in-2?-001",
+        "date": "2022-11-18",
+        "wpcs": [
+            "Kh4",
+            "Qa4",
+            "Rf3",
+            "Rh5",
+            "Bg1",
+            "Bg2",
+            "Nb7",
+            "Ne7",
+            "b4"
+        ],
+        "bpcs": [
+            "Ke4",
+            "Qd5",
+            "Rc6",
+            "e5",
+            "f4"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -48,7 +75,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-2 was found with move Q0a4a8
+1 mate-in-2 solution(s) found!  Winning first move: Q0a4a8
 
 Total recursive calls: 14788
 Total games processed: 7568
@@ -56,71 +83,75 @@ Wins  found per depth: [0, 0, 0, 147]
 Draws found per depth: [0, 0, 0, 2]
 
 Complete Mate-in-2 tree of moves:
-?
+?                              (0)
+    Q0a4a8                     (1)
+        Q1d5d6                 (2)
+            N0b7xd6#           (3)
+        Q1d5d7                 (4)
+            N0b7c5#            (5)
+        Q1d5d8                 (6)
+            N0b7c5#            (7)
+        Q1d5d4                 (8)
+            R0f3e3#            (9)
+        Q1d5d3                 (10)
+            N0b7c5#            (11)
+        Q1d5d2                 (12)
+            N0b7c5#            (13)
+        Q1d5d1                 (14)
+            N0b7c5#            (15)
+        Q1d5c5                 (16)
+            N0b7xc5#           (17)
+        Q1d5b5                 (18)
+            N0b7d6#            (19)
+        Q1d5a5                 (20)
+            N0b7d6#            (21)
+        Q1d5e6                 (22)
+            N0b7c5#            (23)
+        Q1d5f7                 (24)
+            N0b7d6#            (25)
+            N0b7c5#            (26)
+        Q1d5g8                 (27)
+            N0b7d6#            (28)
+            N0b7c5#            (29)
+        Q1d5c4                 (30)
+            N0b7d6#            (31)
+        Q1d5b3                 (32)
+            N0b7d6#            (33)
+            N0b7c5#            (34)
+        Q1d5a2                 (35)
+            N0b7d6#            (36)
+            N0b7c5#            (37)
+        R1c6c7                 (38)
+            N0b7d6#            (39)
+        R1c6c8                 (40)
+            N0b7d6#            (41)
+        R1c6c5                 (42)
+            N0b7d6#            (43)
+            N0b7xc5#           (44)
+        R1c6c4                 (45)
+            N0b7d6#            (46)
+        R1c6c3                 (47)
+            N0b7d6#            (48)
+        R1c6c2                 (49)
+            N0b7d6#            (50)
+        R1c6c1                 (51)
+            N0b7d6#            (52)
+        R1c6d6                 (53)
+            N0b7xd6#           (54)
+            N0b7c5#            (55)
+        R1c6e6                 (56)
+            N0b7c5#            (57)
+        R1c6f6                 (58)
+            N0b7c5#            (59)
+        R1c6g6                 (60)
+            N0b7c5#            (61)
+        R1c6h6                 (62)
+            N0b7c5#            (63)
+        R1c6b6                 (64)
+            N0b7c5#            (65)
+        R1c6a6                 (66)
+            N0b7c5#            (67)
+
+Total number of nodes in solution: 67
+Number of first moves that can mate-in-2: 1
     Q0a4a8
-        Q1d5d6
-            N0b7xd6#
-        Q1d5d7
-            N0b7c5#
-        Q1d5d8
-            N0b7c5#
-        Q1d5d4
-            R0f3e3#
-        Q1d5d3
-            N0b7c5#
-        Q1d5d2
-            N0b7c5#
-        Q1d5d1
-            N0b7c5#
-        Q1d5c5
-            N0b7xc5#
-        Q1d5b5
-            N0b7d6#
-        Q1d5a5
-            N0b7d6#
-        Q1d5e6
-            N0b7c5#
-        Q1d5f7
-            N0b7d6#
-            N0b7c5#
-        Q1d5g8
-            N0b7d6#
-            N0b7c5#
-        Q1d5c4
-            N0b7d6#
-        Q1d5b3
-            N0b7d6#
-            N0b7c5#
-        Q1d5a2
-            N0b7d6#
-            N0b7c5#
-        R1c6c7
-            N0b7d6#
-        R1c6c8
-            N0b7d6#
-        R1c6c5
-            N0b7d6#
-            N0b7xc5#
-        R1c6c4
-            N0b7d6#
-        R1c6c3
-            N0b7d6#
-        R1c6c2
-            N0b7d6#
-        R1c6c1
-            N0b7d6#
-        R1c6d6
-            N0b7xd6#
-            N0b7c5#
-        R1c6e6
-            N0b7c5#
-        R1c6f6
-            N0b7c5#
-        R1c6g6
-            N0b7c5#
-        R1c6h6
-            N0b7c5#
-        R1c6b6
-            N0b7c5#
-        R1c6a6
-            N0b7c5#

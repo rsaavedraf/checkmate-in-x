@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "mate-in-5-001 from Chessify 2022-12-05",
+        "date" : "2022-12-05",
+        "wpcs" : ["Kb2", "Ra1", "Bg1", "a2", "b3", "c4"],
+        "bpcs" : ["Kb4", "Ra8", "Bb8", "a6", "c5", "c6", "c7", "f4", "g3"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

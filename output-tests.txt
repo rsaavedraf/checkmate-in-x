@@ -472,6 +472,33 @@ Game #0 (depth 0) OK
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
 Starting game (json input): game-03.json
+{
+    "chess-game": {
+        "name": "mate-in-2?-001",
+        "date": "2022-11-18",
+        "wpcs": [
+            "Kh4",
+            "Qa4",
+            "Rf3",
+            "Rh5",
+            "Bg1",
+            "Bg2",
+            "Nb7",
+            "Ne7",
+            "b4"
+        ],
+        "bpcs": [
+            "Ke4",
+            "Qd5",
+            "Rc6",
+            "e5",
+            "f4"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -516,7 +543,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-2 was found with move Q0a4a8
+1 mate-in-2 solution(s) found!  Winning first move: Q0a4a8
 
 Total recursive calls: 14788
 Total games processed: 7568
@@ -524,74 +551,78 @@ Wins  found per depth: [0, 0, 0, 147]
 Draws found per depth: [0, 0, 0, 2]
 
 Complete Mate-in-2 tree of moves:
-?
+?                              (0)
+    Q0a4a8                     (1)
+        Q1d5d6                 (2)
+            N0b7xd6#           (3)
+        Q1d5d7                 (4)
+            N0b7c5#            (5)
+        Q1d5d8                 (6)
+            N0b7c5#            (7)
+        Q1d5d4                 (8)
+            R0f3e3#            (9)
+        Q1d5d3                 (10)
+            N0b7c5#            (11)
+        Q1d5d2                 (12)
+            N0b7c5#            (13)
+        Q1d5d1                 (14)
+            N0b7c5#            (15)
+        Q1d5c5                 (16)
+            N0b7xc5#           (17)
+        Q1d5b5                 (18)
+            N0b7d6#            (19)
+        Q1d5a5                 (20)
+            N0b7d6#            (21)
+        Q1d5e6                 (22)
+            N0b7c5#            (23)
+        Q1d5f7                 (24)
+            N0b7d6#            (25)
+            N0b7c5#            (26)
+        Q1d5g8                 (27)
+            N0b7d6#            (28)
+            N0b7c5#            (29)
+        Q1d5c4                 (30)
+            N0b7d6#            (31)
+        Q1d5b3                 (32)
+            N0b7d6#            (33)
+            N0b7c5#            (34)
+        Q1d5a2                 (35)
+            N0b7d6#            (36)
+            N0b7c5#            (37)
+        R1c6c7                 (38)
+            N0b7d6#            (39)
+        R1c6c8                 (40)
+            N0b7d6#            (41)
+        R1c6c5                 (42)
+            N0b7d6#            (43)
+            N0b7xc5#           (44)
+        R1c6c4                 (45)
+            N0b7d6#            (46)
+        R1c6c3                 (47)
+            N0b7d6#            (48)
+        R1c6c2                 (49)
+            N0b7d6#            (50)
+        R1c6c1                 (51)
+            N0b7d6#            (52)
+        R1c6d6                 (53)
+            N0b7xd6#           (54)
+            N0b7c5#            (55)
+        R1c6e6                 (56)
+            N0b7c5#            (57)
+        R1c6f6                 (58)
+            N0b7c5#            (59)
+        R1c6g6                 (60)
+            N0b7c5#            (61)
+        R1c6h6                 (62)
+            N0b7c5#            (63)
+        R1c6b6                 (64)
+            N0b7c5#            (65)
+        R1c6a6                 (66)
+            N0b7c5#            (67)
+
+Total number of nodes in solution: 67
+Number of first moves that can mate-in-2: 1
     Q0a4a8
-        Q1d5d6
-            N0b7xd6#
-        Q1d5d7
-            N0b7c5#
-        Q1d5d8
-            N0b7c5#
-        Q1d5d4
-            R0f3e3#
-        Q1d5d3
-            N0b7c5#
-        Q1d5d2
-            N0b7c5#
-        Q1d5d1
-            N0b7c5#
-        Q1d5c5
-            N0b7xc5#
-        Q1d5b5
-            N0b7d6#
-        Q1d5a5
-            N0b7d6#
-        Q1d5e6
-            N0b7c5#
-        Q1d5f7
-            N0b7d6#
-            N0b7c5#
-        Q1d5g8
-            N0b7d6#
-            N0b7c5#
-        Q1d5c4
-            N0b7d6#
-        Q1d5b3
-            N0b7d6#
-            N0b7c5#
-        Q1d5a2
-            N0b7d6#
-            N0b7c5#
-        R1c6c7
-            N0b7d6#
-        R1c6c8
-            N0b7d6#
-        R1c6c5
-            N0b7d6#
-            N0b7xc5#
-        R1c6c4
-            N0b7d6#
-        R1c6c3
-            N0b7d6#
-        R1c6c2
-            N0b7d6#
-        R1c6c1
-            N0b7d6#
-        R1c6d6
-            N0b7xd6#
-            N0b7c5#
-        R1c6e6
-            N0b7c5#
-        R1c6f6
-            N0b7c5#
-        R1c6g6
-            N0b7c5#
-        R1c6h6
-            N0b7c5#
-        R1c6b6
-            N0b7c5#
-        R1c6a6
-            N0b7c5#
 
 ================================================
 |      mateinx.py v1.0                         |
@@ -820,7 +851,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-2 was found with move R0e8e1
+1 mate-in-2 solution(s) found!  Winning first move: R0e8e1
 
 Total recursive calls: 4791
 Total games processed: 2470
@@ -828,14 +859,18 @@ Wins  found per depth: [0, 0, 0, 11]
 Draws found per depth: [0, 0, 0, 39]
 
 Complete Mate-in-2 tree of moves:
-?
+?                              (0)
+    R0e8e1                     (1)
+        K1d2c2                 (2)
+            Q0h5d1#            (3)
+        K1d2d3                 (4)
+            Q0h5e2#            (5)
+        K1d2xe1                (6)
+            B0a1c3#            (7)
+
+Total number of nodes in solution: 7
+Number of first moves that can mate-in-2: 1
     R0e8e1
-        K1d2c2
-            Q0h5d1#
-        K1d2d3
-            Q0h5e2#
-        K1d2xe1
-            B0a1c3#
 
 ================================================
 |      mateinx.py v1.0                         |
@@ -910,7 +945,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-2 was found with move Q0c1b1
+1 mate-in-2 solution(s) found!  Winning first move: Q0c1b1
 
 Total recursive calls: 15060
 Total games processed: 7771
@@ -918,45 +953,67 @@ Wins  found per depth: [0, 0, 0, 245]
 Draws found per depth: [0, 0, 0, 0]
 
 Complete Mate-in-2 tree of moves:
-?
+?                              (0)
+    Q0c1b1                     (1)
+        N1c3a4                 (2)
+            R0d1d5#            (3)
+        N1c3b5                 (4)
+            Q0b1xb5#           (5)
+            R0d1d5#            (6)
+        N1c3d5                 (7)
+            R0d1xd5#           (8)
+        N1c3e4                 (9)
+            R0d1d5#            (10)
+        N1c3e2                 (11)
+            Q0b1b5#            (12)
+            R0d1d5#            (13)
+        N1c3xd1                (14)
+            Q0b1b5#            (15)
+        N1c3xb1                (16)
+            R0d1d5#            (17)
+        N1c3a2                 (18)
+            Q0b1b5#            (19)
+            R0d1d5#            (20)
+        N1f8h7                 (21)
+            Q0b1g6#            (22)
+        N1f8g6                 (23)
+            Q0b1xg6#           (24)
+        N1f8e6                 (25)
+            Q0b1g6#            (26)
+        N1f8d7                 (27)
+            Q0b1g6#            (28)
+        p1g2g1=Q1              (29)
+            R0d1xg1#           (30)
+        p1g2g1=N1              (31)
+            R0d1xg1#           (32)
+
+Total number of nodes in solution: 32
+Number of first moves that can mate-in-2: 1
     Q0c1b1
-        N1c3a4
-            R0d1d5#
-        N1c3b5
-            Q0b1xb5#
-            R0d1d5#
-        N1c3d5
-            R0d1xd5#
-        N1c3e4
-            R0d1d5#
-        N1c3e2
-            Q0b1b5#
-            R0d1d5#
-        N1c3xd1
-            Q0b1b5#
-        N1c3xb1
-            R0d1d5#
-        N1c3a2
-            Q0b1b5#
-            R0d1d5#
-        N1f8h7
-            Q0b1g6#
-        N1f8g6
-            Q0b1xg6#
-        N1f8e6
-            Q0b1g6#
-        N1f8d7
-            Q0b1g6#
-        p1g2g1=Q1
-            R0d1xg1#
-        p1g2g1=N1
-            R0d1xg1#
 
 ================================================
 |      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Nov-18        |
 ================================================
 Starting game (json input): game-16.json
+{
+    "chess-game": {
+        "name": "mate-in-2",
+        "date": "2022-12-04",
+        "wpcs": [
+            "Kd1",
+            "Qe8",
+            "b7"
+        ],
+        "bpcs": [
+            "Ka7",
+            "Na8"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -1001,8 +1058,8 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-2 was found with move p0b7xa8=Q0+
-A mate-in-2 was found with move p0b7b8=Q0+
+1 mate-in-2 solution(s) found!  Winning first move: p0b7xa8=Q0+
+2 mate-in-2 solution(s) found!  Winning first move: p0b7b8=Q0+
 
 Total recursive calls: 1965
 Total games processed: 1017
@@ -1010,14 +1067,19 @@ Wins  found per depth: [0, 0, 0, 5]
 Draws found per depth: [0, 0, 0, 1]
 
 Complete Mate-in-2 tree of moves:
-?
+?                              (0)
+    p0b7xa8=Q0+                (1)
+        K1a7b6                 (2)
+            Q0e8c6#            (3)
+    p0b7b8=Q0+                 (4)
+        K1a7a6                 (5)
+            Q0e8b5#            (6)
+            Q0e8a4#            (7)
+
+Total number of nodes in solution: 7
+Number of first moves that can mate-in-2: 2
     p0b7xa8=Q0+
-        K1a7b6
-            Q0e8c6#
     p0b7b8=Q0+
-        K1a7a6
-            Q0e8b5#
-            Q0e8a4#
 
 ================================================
 |      mateinx.py v1.0                         |
@@ -1198,7 +1260,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-2 was found with move 0-0-0
+1 mate-in-2 solution(s) found!  Winning first move: 0-0-0
 
 Total recursive calls: 5429
 Total games processed: 2798
@@ -1206,53 +1268,57 @@ Wins  found per depth: [0, 0, 0, 51]
 Draws found per depth: [0, 0, 0, 0]
 
 Complete Mate-in-2 tree of moves:
-?
+?                              (0)
+    0-0-0                      (1)
+        K1d4xd5                (2)
+            N0d3f4#            (3)
+        K1d4e4                 (4)
+            N0d3e1#            (5)
+        B1d8e7                 (6)
+            N0d3b4#            (7)
+            N0d3c5#            (8)
+            N0d3f4#            (9)
+            N0d3f2#            (10)
+            N0d3e1#            (11)
+            N0d3b2#            (12)
+        B1d8f6                 (13)
+            N0d3b4#            (14)
+            N0d3c5#            (15)
+            N0d3f4#            (16)
+            N0d3f2#            (17)
+            N0d3e1#            (18)
+            N0d3b2#            (19)
+        B1d8g5+                (20)
+            N0d3f4#            (21)
+        B1d8h4                 (22)
+            N0d3b4#            (23)
+            N0d3c5#            (24)
+            N0d3f4#            (25)
+            N0d3f2#            (26)
+            N0d3e1#            (27)
+            N0d3b2#            (28)
+        B1d8c7                 (29)
+            N0d3b4#            (30)
+            N0d3c5#            (31)
+            N0d3f4#            (32)
+            N0d3f2#            (33)
+            N0d3e1#            (34)
+            N0d3b2#            (35)
+        B1d8b6                 (36)
+            N0d3b4#            (37)
+            N0d3c5#            (38)
+            N0d3f4#            (39)
+            N0d3f2#            (40)
+            N0d3e1#            (41)
+            N0d3b2#            (42)
+        B1d8a5                 (43)
+            N0d3b4#            (44)
+        p1e5e4                 (45)
+            Q0c2c5#            (46)
+
+Total number of nodes in solution: 46
+Number of first moves that can mate-in-2: 1
     0-0-0
-        K1d4xd5
-            N0d3f4#
-        K1d4e4
-            N0d3e1#
-        B1d8e7
-            N0d3b4#
-            N0d3c5#
-            N0d3f4#
-            N0d3f2#
-            N0d3e1#
-            N0d3b2#
-        B1d8f6
-            N0d3b4#
-            N0d3c5#
-            N0d3f4#
-            N0d3f2#
-            N0d3e1#
-            N0d3b2#
-        B1d8g5+
-            N0d3f4#
-        B1d8h4
-            N0d3b4#
-            N0d3c5#
-            N0d3f4#
-            N0d3f2#
-            N0d3e1#
-            N0d3b2#
-        B1d8c7
-            N0d3b4#
-            N0d3c5#
-            N0d3f4#
-            N0d3f2#
-            N0d3e1#
-            N0d3b2#
-        B1d8b6
-            N0d3b4#
-            N0d3c5#
-            N0d3f4#
-            N0d3f2#
-            N0d3e1#
-            N0d3b2#
-        B1d8a5
-            N0d3b4#
-        p1e5e4
-            Q0c2c5#
 
 ================================================
 |      mateinx.py v1.0                         |
@@ -1329,7 +1395,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Exploring combinations of moves...
 
-A mate-in-3 was found with move Q0e1a5+
+1 mate-in-3 solution(s) found!  Winning first move: Q0e1a5+
 
 Total recursive calls: 188162
 Total games processed: 96845
@@ -1337,11 +1403,182 @@ Wins  found per depth: [0, 0, 0, 11, 0, 1017]
 Draws found per depth: [0, 0, 0, 0, 0, 0]
 
 Complete Mate-in-3 tree of moves:
-?
+?                              (0)
+    Q0e1a5+                    (1)
+        K1a6xa5                (2)
+            R0h4a4+            (3)
+                p1b5xa4        (4)
+                    p0b3b4#    (5)
+        K1a6b7                 (6)
+            Q0a5b6#            (7)
+
+Total number of nodes in solution: 7
+Number of first moves that can mate-in-3: 1
     Q0e1a5+
-        K1a6xa5
-            R0h4a4+
-                p1b5xa4
-                    p0b3b4#
-        K1a6b7
-            Q0a5b6#
+
+================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Running in verbose mode
+Using 4 as maximum number of moves (max depth=8)
+Starting game (json input): game-18.json
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[    ]|  N0  |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|  p1  |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|      |[    ]|      |[    ]|  p1  | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[    ]|      |[ K0 ]|      |[ K1 ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Exploring combinations of moves...
+
+1 mate-in-4 solution(s) found!  Winning first move: N0e8f6
+
+Total recursive calls: 27753
+Total games processed: 15164
+Wins  found per depth: [0, 0, 0, 0, 0, 0, 0, 3]
+Draws found per depth: [0, 0, 0, 0, 0, 0, 0, 7]
+
+Complete Mate-in-4 tree of moves:
+?                              (0)
+    N0e8f6                     (1)
+        K1h2h1                 (2)
+            N0f6g4             (3)
+                p1g6g5         (4)
+                    K0f2f1     (5)
+                        p1h3h2   (6)
+                            N0g4f2#   (7)
+                p1h3h2         (8)
+                    K0f2f1     (9)
+                        p1g6g5   (10)
+                            N0g4f2#   (11)
+        p1g6g5                 (12)
+            N0f6g4+            (13)
+                K1h2h1         (14)
+                    K0f2f1     (15)
+                        p1h3h2   (16)
+                            N0g4f2#   (17)
+
+Total number of nodes in solution: 17
+Number of first moves that can mate-in-4: 1
+    N0e8f6
+
+================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Nov-18        |
+================================================
+Running in verbose mode
+Using 4 as maximum number of moves (max depth=8)
+Starting game (json input): game-22.json
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[    ]|      |[    ]|      |[ K0 ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[ p0 ]|      |[ p1 ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|  p0  |[ K1 ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|  p1  |[    ]|      |[ p1 ]|  p0  | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[ p1 ]|      |[    ]|      |[    ]|  p0  |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|  p0  |[    ]|  p1  |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[ p0 ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Exploring combinations of moves...
+
+***** After game 2 a promotion into Q0 took place at 4,7 *****
+***** After game 2 a promotion into N0 took place at 4,7 *****
+***** After game 0 a promotion into Q0 took place at 4,7 *****
+***** After game 19 a promotion into Q1 took place at 3,0 *****
+***** After game 20 a promotion into Q1 took place at 3,0 *****
+***** After game 21 a promotion into Q1 took place at 3,0 *****
+***** After game 24 a promotion into Q1 took place at 3,0 *****
+***** After game 25 a promotion into Q1 took place at 3,0 *****
+***** After game 28 a promotion into Q1 took place at 4,0 *****
+***** After game 34 a promotion into Q1 took place at 4,0 *****
+***** After game 0 a promotion into N0 took place at 4,7 *****
+***** After game 63 a promotion into Q0 took place at 6,7 *****
+***** After game 63 a promotion into N0 took place at 6,7 *****
+1 mate-in-4 solution(s) found!  Winning first move: p0e7e8=N0
+
+Total recursive calls: 88
+Total games processed: 70
+Wins  found per depth: [0, 0, 0, 0, 0, 0, 0, 1]
+Draws found per depth: [0, 0, 0, 26, 0, 0, 0, 0]
+
+Complete Mate-in-4 tree of moves:
+?                              (0)
+    p0e7e8=N0                  (1)
+        p1d5d4                 (2)
+            N0e8f6             (3)
+                p1g7xf6        (4)
+                    p0g6g7     (5)
+                        p1f6f5   (6)
+                            p0g7g8=N0#   (7)
+
+Total number of nodes in solution: 7
+Number of first moves that can mate-in-4: 1
+    p0e7e8=N0
