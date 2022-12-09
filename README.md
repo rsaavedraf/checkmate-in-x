@@ -40,11 +40,17 @@ problems, all running on the same machine:
 
 ## Update 2022-12-08:
 * Support castle moves done!
-* Major simple optimization added: no need to explore any addition moves
+* Major simple optimization added: no need to explore any additional moves
 for the 'losing' player as soon as we find that one of his possible moves
 guarantees survival within the x number of moves of interest.
 This simple check trims down the search space massively, in fact by
 orders of magnitude.
+
+## Update 2022-12-09:
+Minor changes in the outputs, after realizing how huge the output tree of
+moves can get (i.e. for game-17.json a single 1st move can achieve the
+mate-in-5, but the final tree of moves has a whopping 190413 nodes
+in total)
 
 Pending tasks:
 - Write up usage/help for the script

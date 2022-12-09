@@ -37,7 +37,7 @@ python3 mateinx.py game-18.json -v -m4
 python3 mateinx.py game-22.json -v -m4
 
 # Here's a really tough to complete mate-in-5 problem.
-# Takes almost 40 mins exploring 25M games.
+# Takes almost 40 mins exploring 13.5M games.
 # final solution tree with only one 1st winning move
-# has a whopping 190K+ nodes
+# has a whopping 190413 nodes
 #python3 mateinx.py game-17.json -v -m5
