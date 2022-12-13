@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "mate-in-2 from twitter @MauriceAshley",
+        "date" : "2022-12-13",
+        "wpcs" : ["Kg1", "Qc7", "Rd1", "Rf1", "Nd5", "a2", "b2", "e3", "g2", "h3"],
+        "bpcs" : ["Ke8", "Qb5", "Rd8", "Rh8", "Be6", "Bf8", "Nc6", "a7", "b7", "c4", "g7", "h7"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}
