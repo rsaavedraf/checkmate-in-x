@@ -8,13 +8,8 @@ v1.0   : 2022.12.13
 
 import sys
 import string
-import re
 import json
-import copy
-import hashlib
 import numpy as np
-import time
-import random
 from pathlib import Path
 
 show_games = False
