@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-#---*----1----*----2----*----3----*----4----*----5----*----6----*----7----*----8
 """
 mateinx.py
-author: Raul Saavedra ( raul.saavedra@gmail.com )
-date  : 2022.11.18
+author : Raul Saavedra ( raul.saavedra@gmail.com )
+Started: 2022.11.18
+v1.0   : 2022.12.13
 """
 
 import sys
@@ -26,12 +26,15 @@ max_moves = 2
 max_depth = max_moves * 2
 wins_per_depth = [0]*(max_depth)
 draws_per_depth = [0]*(max_depth)
-input_file = 'game-01.json'
+#input_file = 'game-01.json'
+input_file = ''
 ngame = 0
 nrec_calls = 0
 losing_player = 0
 n_1st_moves = 0
 n_nodes_in_sol = 0
+stop_at_1st_find = True
+smateinx = ""
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -865,16 +868,18 @@ class ChessGame:
                         # it was a 2-square move, so our pawn can
                         # indeed capture it in passing
                         if verbose:
-                            print("***** Detected pawn getting captured " \
-                                + "'in passing' (after a 2-square move) *****")
+                            print("***** Detected pawn captured " \
+                                + "'in passing' (after a 2-sq move) *****")
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
 
     def get_all_moves(self, nchecks):
         # Generate list of all valid moves to consider
-        player_moves = []
+        pawn_moves = []
+        king_moves = []
+        opcs_moves = []
         # The king is always among the pieces to consider
-        self._append_king_moves(player_moves)
+        self._append_king_moves(king_moves)
         if nchecks < 2:
             # Not under double check, so consider non-king movements
             movable_pcs = []
@@ -890,26 +895,30 @@ class ChessGame:
                 i = p[1]
                 j = p[2]
                 if dpt == "p":
-                    self._append_pawn_moves(player_moves, dp, i, j)
+                    self._append_pawn_moves(pawn_moves, dp, i, j)
                 else:
-                    self._append_opcs_moves(player_moves, dpt, i, j)
-        return player_moves
-
-    #def filter_worthy_moves(self, oplayer_moves):
-    #    fplayer_moves = oplayer_moves
-    #    return fplayer_moves
+                    self._append_opcs_moves(opcs_moves, dpt, i, j)
+        return pawn_moves + king_moves + opcs_moves
 
     def tell_parent_iam_awin(self):
-        global n_1st_moves, n_nodes_in_sol
+        global n_1st_moves, stop_at_1st_find, smateinx
         pgame = self._parent
         if not pgame is None:
             pgame._winning_children[self] = self._depth
             if pgame._parent is None:
-                # pgame is the root node, show the starting move already
+                # pgame is the root node
                 n_1st_moves += 1
-                print(n_1st_moves, "mate-in-"+str(max_moves)+" " \
-                    + "solution(s) found!  Winning first move: ", end="")
-                self.print_winning_tree("", False)
+                if stop_at_1st_find:
+                    # Fully printout this first solution found, and exit
+                    print("\nFound a " + smateinx + " solution!")
+                    show_final_summary(pgame)
+                    exit()
+                else:
+                    # show only the starting winning move, and keep searching
+                    # for other possible solutions
+                    print("\nFound " + str(n_1st_moves) + " " + smateinx \
+                        + " solution(s)!  Winning first move: ", end="")
+                    self.print_winning_tree("", False)
 
     def get_winning_children(self):
         return self._winning_children
@@ -1051,7 +1060,7 @@ BAR = '='*48
 def starting_banner():
      print("\n"+BAR)
      print('|      mateinx.py v1.0                         |')
-     print('|      By Raul Saavedra F., 2022-Nov-18        |');
+     print('|      By Raul Saavedra F., 2022-Dec-13        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1068,16 +1077,15 @@ def evaluate_recursively(parent, parent_move, game, depth):
     global show_games, show_attack_footprints, verbose
     nrec_calls += 1
     if depth >= max_depth:
-        return "nowin deep enough"
+        return
     game.set_num(ngame, depth)
     if show_games and ngame % 1000 == 0 and ngame > 0:
         game.show(show_attack_footprints)
-    #if verbose and ngame % 50000 == 0:
-    #    print("Games explored:", ngame)
+    if verbose and ngame % 50000 == 0:
+        print("Games explored:", ngame)
     ngame += 1
     nchks = game.get_all_checks()
     moves = game.get_all_moves(nchks)
-    #fmoves = game.filter_worthy_moves(moves)
     mov_player = game.get_mover()
     next_depth = depth + 1
     valid_children = []
@@ -1112,11 +1120,11 @@ def evaluate_recursively(parent, parent_move, game, depth):
                 winning path for the 1st mover, so no need to explore
                 additional moves here.
                 This simple check can trim down the entire search space
-                hugely (e.g. orders of magnitude)
+                hugely (e.g. orders of magnitude in some cases)
                 '''
-                return "nowin"
-    result = verify(game, valid_children)
-    return "Subtree processed"
+                return
+    verify(game, valid_children)
+    return
 
 def verify(game, children):
     global ngame, wins_per_depth, draws_per_depth, show_end_games
@@ -1127,7 +1135,7 @@ def verify(game, children):
             +" game #" + str(game.get_num()) + ", depth " + str(depth)
         game.set_ending(msg)
         if show_end_games: game.show(show_attack_footprints)
-        return msg
+        return
     if children == []:
         nchks = game.get_num_checks(game.get_mover())
         if nchks > 0:
@@ -1144,18 +1152,18 @@ def verify(game, children):
             game.set_ending(msg)
             game.tell_parent_iam_awin()
             if show_end_games: game.show(show_attack_footprints)
-            return msg
+            return
         # No moves and not under check -> Game over: DRAW
         draws_per_depth[depth] += 1
         msg = "DRAW found at game #" + str(ngame) \
                 + ", depth " + str(depth)
         game.set_ending(msg)
         if show_end_games: game.show(show_attack_footprints)
-        return msg
+        return
     # Reaching this point means player had move options
     for child in children:
         if child.get_num_winning_children() == 0:
-            return "nowin move"
+            return
 
     ''' Reaching this point means absolutely all children had
     at least one winning move (for the opponent's win.) So
@@ -1166,43 +1174,42 @@ def verify(game, children):
     for child in children:
         child.tell_parent_iam_awin()
     game.tell_parent_iam_awin()
-    return "ok"
+    return
 
 def process_options(argv):
     global input_file, verbose, show_attack_footprints
-    global show_json, show_games, show_end_games
-    global max_moves, max_depth, wins_per_depth, draws_per_depth
+    global show_json, show_games, show_end_games, max_moves, max_depth
+    global wins_per_depth, draws_per_depth, stop_at_1st_find
     for opt in argv:
         if opt == "-h":
             # Display help
-            with open('mateinx.txt') as help:
+            with open('mateinx-usage.txt') as help:
                 for line in help:
                     print(line.rstrip())
             exit()
+        if opt == "-a":
+            stop_at_1st_find = False
+            print("Searching for ALL solutions (won't stop after 1st find)")
+            continue
         if opt == "-g":
-            # Do show some games
             show_games = True
-            if verbose: print("Showing some games while searching")
+            print("Showing some game boards while searching")
             continue
         if opt == "-e":
-            # Do show End games
-            if verbose: print("Showing End games (Wins and Draws)")
+            print("Showing End-game boards (Wins and Draws)")
             show_end_games = True
             continue
-        if opt == "-a":
-            # Do show Attack Footprints
+        if opt == "-c":
             show_attack_footprints = True
-            if verbose: print("Showing attack footprints on board squares")
+            print("Showing attack footprint counts on board squares")
             continue
         if opt == "-v":
-            # Run in verbose/chatty mode (defaul is quiet mode)
             verbose = True
             print("Running in verbose mode")
             continue
         if opt == "-j":
-            # Include json file in output
             show_json = True
-            if verbose: print("Including json file in the output")
+            print("Showing json file in the output")
             continue
         if opt[0:2] == "-m":
             # Set maximum # moves to explore
@@ -1231,12 +1238,38 @@ def process_options(argv):
         print("ERROR: "+opt+" is not an option, use -h for usage details")
         exit(-1)
 
+def show_final_summary(game):
+    global ngame, nrec_calls, ngame, wins_per_depth, draws_per_depth
+    global smateinx, n_nodes_in_sol, n_1st_moves
+    if (game.has_winning_children()):
+        #print("\nComplete Mate-in-"+str(max_moves)+" tree of moves:")
+        print("\n" + smateinx + " tree of moves:")
+        game.print_winning_tree("", True)
+        print("\nTotal number of nodes in solution:", n_nodes_in_sol)
+        #print("Number of first moves that can mate-in-" \
+        #        + str(max_moves) + ": " + str(n_1st_moves))
+        print("Found " + str(n_1st_moves) + " first move(s) which can " \
+                + smateinx + ":")
+        for ch in game.get_winning_children():
+            ch.print_winning_tree("    ", False)
+    else:
+        #if ngame > 1:
+        print("\nNo moves for " + game.get_turn() \
+                + " found to " + smateinx)
+    print("\nWins  found per depth:", wins_per_depth)
+    print("Draws found per depth:", draws_per_depth)
+    print("Total recursive calls:", nrec_calls)
+    print("Total games processed:", ngame)
+
 def mateinx_solver(argv):
-    global ngame, verbose, nrec_calls
-    global max_moves, wins_per_depth, draws_per_depth
-    global show_games, show_attack_footprints, n_1st_moves, n_nodes_in_sol
+    global ngame, verbose, nrec_calls, max_moves, wins_per_depth
+    global draws_per_depth, show_games, show_attack_footprints
+    global n_1st_moves, n_nodes_in_sol, smateinx
     starting_banner()
     process_options(argv)
+    if input_file == "":
+        print("No input file argument, use -h for usage details.")
+        exit(-3)
     start = load_game_from_json()
     game = ChessGame()
     game.init_from_json(start)
@@ -1285,24 +1318,16 @@ def mateinx_solver(argv):
     game.show(False)
     if (max_moves == 0): exit()
 
-    print("Exploring combinations of moves...\n")
-    evaluate_recursively(None, (), game, 0)
-
-    print("\nTotal recursive calls:", nrec_calls)
-    print("Total games processed:", ngame)
-    print("Wins  found per depth:", wins_per_depth)
-    print("Draws found per depth:", draws_per_depth)
-    if (game.has_winning_children()):
-        print("\nComplete Mate-in-"+str(max_moves)+" tree of moves:")
-        game.print_winning_tree("", True)
-        print("\nTotal number of nodes in solution:", n_nodes_in_sol)
-        print("Number of first moves that can mate-in-" \
-                + str(max_moves) + ": " + str(n_1st_moves))
-        for ch in game.get_winning_children():
-            ch.print_winning_tree("    ", False)
+    #print("Exploring combinations of moves...\n")
+    smateinx = "Mate-in-" + str(max_moves)
+    if stop_at_1st_find:
+        print("Searching for 1st " + smateinx + " solution", end="")
     else:
-        if ngame > 1:
-            print("\nNo moves found for Mate-in-"+str(max_moves))
+        print("Searching for ALL " + smateinx + " solutions", end="")
+    print(" for", input_file, "...")
+
+    evaluate_recursively(None, (), game, 0)
+    show_final_summary(game)
 
 if __name__ == '__main__':
     mateinx_solver(sys.argv[1:])

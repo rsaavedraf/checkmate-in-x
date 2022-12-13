@@ -1,0 +1,27 @@
+A python script to find mate-in-x solutions for a given chess board setup
+as specified in a json file.
+
+Usage:
+
+./mateinx.py <game-file.json> [OPTIONS]
+
+Available options:
+
+    -h    Show this help
+
+    -mX   Search for Mate-in-X solutions (default X is 2)
+
+    -a    Search for all solutions (default mode stops after first find)
+
+    -e    Show End-game boards (wins and draws)
+
+    -g    Show some game boards while exploring
+
+    -c    Show attack footprint counts on board squares
+
+    -j    Include json input file in the output
+
+    -v    Run in verbose mode
+
+Examples of valid input json files are available at:
+github.com/rsaavedraf/checkmate-in-x

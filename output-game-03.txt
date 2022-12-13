@@ -1,36 +1,9 @@
 
 ================================================
 |      mateinx.py v1.0                         |
-|      By Raul Saavedra F., 2022-Nov-18        |
+|      By Raul Saavedra F., 2022-Dec-13        |
 ================================================
 Starting game (json input): game-03.json
-{
-    "chess-game": {
-        "name": "mate-in-2?-001",
-        "date": "2022-11-18",
-        "wpcs": [
-            "Kh4",
-            "Qa4",
-            "Rf3",
-            "Rh5",
-            "Bg1",
-            "Bg2",
-            "Nb7",
-            "Ne7",
-            "b4"
-        ],
-        "bpcs": [
-            "Ke4",
-            "Qd5",
-            "Rc6",
-            "e5",
-            "f4"
-        ],
-        "lastMove": null,
-        "turn": "w"
-    }
-}
-
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -73,16 +46,11 @@ Initial game configuration is valid:
 	To play: w    Checked: w=0 b=0     Move history:
 []
 Game #0 (depth 0) OK
-Exploring combinations of moves...
+Searching for 1st Mate-in-2 solution for game-03.json ...
 
-1 mate-in-2 solution(s) found!  Winning first move: Q0a4a8
+Found a Mate-in-2 solution!
 
-Total recursive calls: 14788
-Total games processed: 7568
-Wins  found per depth: [0, 0, 0, 147]
-Draws found per depth: [0, 0, 0, 2]
-
-Complete Mate-in-2 tree of moves:
+Mate-in-2 tree of moves:
 ?                              (0)
     Q0a4a8                     (1)
         Q1d5d6                 (2)
@@ -153,5 +121,10 @@ Complete Mate-in-2 tree of moves:
             N0b7c5#            (67)
 
 Total number of nodes in solution: 67
-Number of first moves that can mate-in-2: 1
+Found 1 first move(s) which can Mate-in-2:
     Q0a4a8
+
+Wins  found per depth: [0, 0, 0, 49]
+Draws found per depth: [0, 0, 0, 2]
+Total recursive calls: 5190
+Total games processed: 2650

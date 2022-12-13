@@ -1,6 +1,6 @@
 {
     "chess-game": {
-        "name" : "mate-in-2",
+        "name" : "mate-in-2 with 2 winning first moves",
         "date" : "2022-12-04",
         "wpcs" : ["Kd1", "Qe8", "b7"],
         "bpcs" : ["Ka7", "Na8"],
