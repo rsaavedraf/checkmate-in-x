@@ -26,7 +26,6 @@ max_moves = 2
 max_depth = max_moves * 2
 wins_per_depth = [0]*(max_depth)
 draws_per_depth = [0]*(max_depth)
-#input_file = 'game-01.json'
 input_file = ''
 ngame = 0
 nrec_calls = 0
@@ -195,21 +194,7 @@ def get_piece_player(epc):
 
 class ChessGame:
 
-    def __init__(self):
-        self._num = 0
-        self._status = ["OK", "OK", "OK", "EMPTY"]
-        self._movep = 0     # moving player
-        self._waitp = 1     # waiting player
-        self._board = self._empty_board()
-        self._npcs = [0, 0]
-        self._nchks = [0, 0]
-        self._can_still_castle = [[False, False], [False, False]]
-        self._pcs = [[], []]
-        self._parent = None
-        self._last_move = None
-        self._depth = 0
-        self._attackfp = [self._no_attackfp(), self._no_attackfp()]
-        self._winning_children = {}
+    #def __init__(self):
 
     def init_from_json(self, game_json):
         self._num = 0
@@ -410,6 +395,8 @@ class ChessGame:
         self._last_move = pmove
         self._board = child_board
         self._pcs = [[], []]
+        self._npcs = [0, 0]
+        self._nchks = [0, 0]
         self._winning_children = {}
         # moving piece from old square at i0, j0
         oldsq = pmove[0]
@@ -1264,15 +1251,21 @@ def show_final_summary(game):
 def mateinx_solver(argv):
     global ngame, verbose, nrec_calls, max_moves, wins_per_depth
     global draws_per_depth, show_games, show_attack_footprints
-    global n_1st_moves, n_nodes_in_sol, smateinx
+    global n_1st_moves, n_nodes_in_sol, smateinx, input_file
     starting_banner()
     process_options(argv)
     if input_file == "":
         print("No input file argument, use -h for usage details.")
         exit(-3)
-    start = load_game_from_json()
+    try:
+        json_data = load_game_from_json()
+    except:
+        print("\nERROR parsing json file '" + input_file + "'")
+        print("Please verify the file contents.\n" \
+                + "Examples available at: github.com/rsaavedraf/checkmate-in-x\n")
+        exit(-4)
     game = ChessGame()
-    game.init_from_json(start)
+    game.init_from_json(json_data)
     vst = game.get_status()
     if vst != "OK":
         if show_games: game.show(False)

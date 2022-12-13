@@ -1,0 +1,9 @@
+{
+    "chess-game": {
+        "name" : "Error: invalid json structure",
+        "date" : "2022-12-13",
+        "bpcs" : "Kf7"],
+        "lastMove": "a2a1",
+        "turn" : "w"
+    }
+}

@@ -52,7 +52,14 @@ moves can get (i.e. for game-17.json a single 1st move can achieve the
 mate-in-5, but the final tree of moves has a whopping 190413 nodes
 in total)
 
+## Update 2022-12-13
+Usage/help for the script added.
+Calling this version v1.0 proper, pretty much finished for the required functionality.
+The iterative implementation will be a script with a different name
+(i.e. mateinx-iter.py)
+
 Pending tasks:
-- Write up usage/help for the script
-- Change recursive scheme to iterative (this will likely be convenient for a multithreaded rewrite)
+- Implement an iterative python version
+- Implement a single threaded Rust version
+- Implement a multithreaded Rust version
 

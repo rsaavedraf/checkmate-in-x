@@ -13,6 +13,7 @@ python3 mateinx.py error-08.json -v
 python3 mateinx.py error-09.json -v
 python3 mateinx.py error-10.json -v
 python3 mateinx.py error-11.json -v
+python3 mateinx.py error-12.json -v
 python3 mateinx.py game-01.json -m0
 python3 mateinx.py game-03.json -j
 python3 mateinx.py game-10.json -v -j -m1 -a

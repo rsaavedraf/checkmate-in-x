@@ -422,6 +422,17 @@ Overall : INVALID
 |      mateinx.py v1.0                         |
 |      By Raul Saavedra F., 2022-Dec-13        |
 ================================================
+Running in verbose mode
+
+ERROR parsing json file 'error-12.json'
+Please verify the file contents.
+Examples available at: github.com/rsaavedraf/checkmate-in-x
+
+
+================================================
+|      mateinx.py v1.0                         |
+|      By Raul Saavedra F., 2022-Dec-13        |
+================================================
 Using 0 as maximum number of moves (max depth=0)
 Starting game (json input): game-01.json
 Initial game configuration is valid:
