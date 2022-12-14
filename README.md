@@ -62,6 +62,7 @@ The iterative implementation will be a script with a different name
 - v1.1 after a bug found and fixed: when a pawn was getting captured in passing, it was not
 getting properly removed from the board and remaining pieces.
 
+## Next tasks:
 - Implement an iterative python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version
