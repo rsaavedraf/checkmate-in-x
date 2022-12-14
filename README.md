@@ -59,8 +59,9 @@ The iterative implementation will be a script with a different name
 (i.e. mateinx-iter.py)
 
 ## Update 2022-12-14
-- v1.1 after a bug found and fixed: when a pawn was getting captured in passing, it was not
-getting properly removed from the board and remaining pieces.
+v1.1 after a bug found and fixed: when a pawn was getting captured in passing, it was not
+getting properly removed from the board and remaining pieces. Also such capturing move
+was missing the "x" when printed out.
 
 ## Next tasks:
 - Implement an iterative python version
