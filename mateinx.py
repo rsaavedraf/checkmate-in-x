@@ -4,6 +4,7 @@ mateinx.py
 author : Raul Saavedra ( raul.saavedra@gmail.com )
 Started: 2022.11.18
 v1.0   : 2022.12.13
+v1.1   : 2022.12.14 (bug-fix for in-passing captures)
 """
 
 import sys
@@ -189,8 +190,6 @@ def get_piece_player(epc):
 
 class ChessGame:
 
-    #def __init__(self):
-
     def init_from_json(self, game_json):
         self._num = 0
         self._status = ["OK", "OK", "OK", "VALIDATING"]
@@ -373,8 +372,27 @@ class ChessGame:
                 if self._read_board(ii, jj) != " ": break
 
     def _read_board(self, i, j):
-        index = i + j*8
+        index = i + j * 8
         return self._board[index:index+1]
+
+    def _write_board(self, board, i, j, vchar):
+        index = i + j * 8
+        return board[0:index] + vchar + board[index+1:]
+
+    def _gen_new_board(self, oldboard, piece, idx_from, idx_to):
+        newBoard = oldboard[0:idx_from] \
+                    + " " \
+                    + oldboard[idx_from+1:]
+        newBoard = newBoard[0:idx_to] \
+                    + piece \
+                    + newBoard[idx_to+1:]
+        # Here we simply move one piece from one position to another,
+        # replacing the starting position with a space, and replacing
+        # whatever was in the destination with the moved piece.
+        # Notice here we do not handle a pawn captured in passing, that
+        # gets handled both in the simulated move (board-wise), and
+        # in init_from_parent_game (enemy pieces-wise)
+        return newBoard
 
     def _sort_pieces(self, player):
         self._pcs[player].sort()
@@ -385,7 +403,7 @@ class ChessGame:
         # For now keep the same moving player as from parent game
         self.set_turn(pgame.get_turn())
         self._parent = pgame
-        self._num = -1 # -pgame._num
+        self._num = -1
         self._depth = pgame._depth + 1
         self._last_move = pmove
         self._board = child_board
@@ -403,6 +421,13 @@ class ChessGame:
         j1 = newsq[1]
         # moving piece
         empc = pgame._read_board(i0, j0)    # Encoded moved piece
+        in_passing_capture = False
+        if empc in EPAWNS:
+            if j1 != j0:
+                # Moved piece was a pawn and captured something (moved
+                # diagonally.) Check if it was an in-passing capture
+                # of another pawn
+                in_passing_capture = pgame._read_board(i1, j1) == ' '
         # Clone pieces for our soon moving player from parent game's
         # waiting player, except that one piece (if any) which might
         # have been in the destination square (such a piece would be
@@ -441,8 +466,8 @@ class ChessGame:
         for p in pgame._pcs[pgame._waitp]:
             px = p[1]
             py = p[2]
-            if px == i1 and py == j1:
-                # The piece we had there in that square just got captured
+            if px == i1 and (py == j1 or (py == j0 and in_passing_capture)):
+                # This piece just got captured
                 capture = 1
                 continue
             new_p = [p[0], px, py]
@@ -500,16 +525,6 @@ class ChessGame:
     def _no_attackfp(self):
         return np.zeros([8,8])
 
-    def _gen_new_board(self, oldboard, piece, idx_from, idx_to):
-        newBoard = oldboard[0:idx_from] \
-                    + " " \
-                    + oldboard[idx_from+1:]
-        newBoard = newBoard[0:idx_to] \
-                    + piece \
-                    + newBoard[idx_to+1:]
-        return newBoard
-
-
     def simulate_move(self, m):
         ''' Returns a list of children boards given a move.
         Typically just 1 board inside that list, but 2 when
@@ -517,26 +532,46 @@ class ChessGame:
         (Never promoting into rooks or bishops, since they are never
         preferable over a Queen.)
         '''
-        index_old = m[0][0] + m[0][1]*8
-        ydest = m[1][1]
-        index_new = m[1][0] + ydest*8
+        xold = m[0][0]
+        yold = m[0][1]
+        index_old = xold + yold * 8
+        xnew = m[1][0]
+        ynew = m[1][1]
+        index_new = xnew + ynew * 8
         # Encoded moving piece
         empc = self._board[index_old:index_old+1]
-        if empc in EPAWNS and (ydest == 0 or ydest == 7):
-            # Pawn reaching a final row, so a promotion applies.
-            prom_q = EQUEENS[self._movep]
-            prom_n = EKNIGHTS[self._movep]
-            ch_board_q = self._gen_new_board(
-                            self._board,
-                            prom_q,
-                            index_old,
-                            index_new)
-            ch_board_n = self._gen_new_board(
-                            self._board,
-                            prom_n,
-                            index_old,
-                            index_new)
-            return (ch_board_q, ch_board_n)
+        if empc in EPAWNS:
+            if (ynew == 0 or ynew == 7):
+                # Pawn reaching a final row, so a promotion applies.
+                prom_q = EQUEENS[self._movep]
+                prom_n = EKNIGHTS[self._movep]
+                ch_board_q = self._gen_new_board(
+                                self._board,
+                                prom_q,
+                                index_old,
+                                index_new)
+                ch_board_n = self._gen_new_board(
+                                self._board,
+                                prom_n,
+                                index_old,
+                                index_new)
+                return (ch_board_q, ch_board_n)
+            else:
+                # Simply move the pawn from old to new position
+                ch_board = self._gen_new_board(
+                                self._board,
+                                empc,
+                                index_old,
+                                index_new)
+                if xnew != xold:
+                    # Pawn moved diagonally, so it captured something.
+                    # If it was an in-passing capture we must remove
+                    # that captured pawn from the new board setup
+                    if self._read_board(xnew, ynew) == ' ':
+                        # It was an in-passing capture, so remove
+                        # the captured pawn from board
+                        ch_board = self._write_board(ch_board, xnew, yold, ' ')
+                return (ch_board,)
         else:
             # Just move the piece from old to new position
             ch_board = self._gen_new_board(
@@ -633,7 +668,7 @@ class ChessGame:
 
     def get_path_from_root(self):
         if self._parent is None:
-            return ([] if self._last_move is None else self._last_move)
+            return ([] if self._last_move is None else [self._last_move])
         else:
             path = self._parent.get_path_from_root()
             path.append(self._last_move)
@@ -923,7 +958,6 @@ class ChessGame:
                 dmove = "0-0" if deltax == 2 else "0-0-0"
             else:
                 # Add final piece with old coordinates
-                #dmove = PIECE_DECODE[empc]
                 dmove = chr(ORD_A + ox) + str(oy + 1)
                 if self._parent != None:
                     eopc = self._parent._read_board(ox, oy)
@@ -932,7 +966,8 @@ class ChessGame:
                         dmove = PIECE_DECODE[eopc] + dmove
                     else:
                         dmove = PIECE_DECODE[empc] + dmove
-                    if " " != self._parent._read_board(nx, ny):
+                    if " " != self._parent._read_board(nx, ny) or \
+                        ((empc in EPAWNS) and deltax != 0):
                         # Move had a capture involved
                         dmove += "x"
                     # Add new coordinates after the move
@@ -1033,6 +1068,8 @@ class ChessGame:
                 + str(self._nchks[1]) + "     ", end="")
         print("Move history:\n", end="")
         print(self.get_path_from_root(), end="")
+        #print("\nWhite pieces:", self._pcs[0])
+        #print("Black pieces:", self._pcs[1])
         print("\nGame #"+str(self._num), \
                 "(depth "+str(self._depth)+")", self._status[3])
 
@@ -1041,8 +1078,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.0                         |')
-     print('|      By Raul Saavedra F., 2022-Dec-13        |');
+     print('|      mateinx.py v1.1                         |')
+     print('|      By Raul Saavedra F., 2022-Dec-14        |');
      print(BAR)
 
 def load_game_from_json():

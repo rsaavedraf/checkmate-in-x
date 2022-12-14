@@ -58,7 +58,10 @@ Calling this version v1.0 proper, pretty much finished for the required function
 The iterative implementation will be a script with a different name
 (i.e. mateinx-iter.py)
 
-Pending tasks:
+## Update 2022-12-14
+- v1.1 after a bug found and fixed: when a pawn was getting captured in passing, it was not
+getting properly removed from the board and remaining pieces.
+
 - Implement an iterative python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version

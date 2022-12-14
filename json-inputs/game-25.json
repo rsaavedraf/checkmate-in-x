@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "mate-in-1 from Chessify, last move + in-passing capture example",
+        "date" : "2022-12-14",
+        "wpcs" : ["Kf2", "Re1", "Bb3", "Bh6", "Nh5", "d5", "g2"],
+        "bpcs" : ["Kg8", "Qa8", "Rc8", "Rh8", "Be7", "Nd7", "Bh7", "Ng6", "c5"],
+        "lastMove": "c7c5",
+        "turn" : "w"
+    }
+}

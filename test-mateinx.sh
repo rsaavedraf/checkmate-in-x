@@ -47,3 +47,7 @@ python3 mateinx.py json-inputs/game-22.json -m4
 # Final solution tree with only one 1st winning move
 # has a whopping 190413 nodes
 #python3 mateinx.py json-inputs/game-17.json -v -m5
+
+# Test the mate-in-1 which was not being found originally
+# (there was a bug with handling in-passing captures, now fixed)
+python3 mateinx.py json-inputs/game-25.json -j -v -m2
