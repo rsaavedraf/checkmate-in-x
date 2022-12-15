@@ -259,6 +259,7 @@ class ChessGame:
             st = "ERROR: last move '"+lastmv_str \
                     + "' in conflict with existing pieces, or turn"
             self._status[2] = st
+            return
         # Possible todo: validate that the move is compatible with the
         # piece standing there in c2. It must be either a move doable by
         # the piece itself, or if c2 is at row 7, doable by a pawn
@@ -869,7 +870,7 @@ class ChessGame:
                             continue
                         # Here our pawn was in the right row, and next
                         # to it there is an enemy pawn!
-                        if (self._last_move == ()
+                        if (self._last_move is None
                             or self._last_move[1][0] != ii
                             or self._last_move[1][1] != j):
                             # Last move was not made by that pawn

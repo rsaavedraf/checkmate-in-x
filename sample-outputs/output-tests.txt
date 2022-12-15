@@ -651,11 +651,13 @@ Starting game (json input): json-inputs/game-10.json
         "date": "2022-12-01",
         "wpcs": [
             "Kg7",
-            "h7"
+            "h7",
+            "e5"
         ],
         "bpcs": [
             "Ke1",
-            "f2"
+            "f2",
+            "d5"
         ],
         "lastMove": null,
         "turn": "w"
@@ -679,7 +681,7 @@ Initial game configuration is valid:
     |      |######|      |######|      |######|      |######|
     +------+------+------+------+------+------+------+------+
     |######|      |######|      |######|      |######|      |
-  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 4
+  5 |[    ]|      |[    ]|  p1  |[ p0 ]|      |[    ]|      | 4
     |######|      |######|      |######|      |######|      |
     +------+------+------+------+------+------+------+------+
     |      |######|      |######|      |######|      |######|
@@ -707,23 +709,14 @@ Game #0 (depth 0) OK
 Searching for ALL Mate-in-1 solutions for json-inputs/game-10.json ...
 Games explored: 0
 ***** After game 0 a promotion into Q0 took place at 7,7 *****
-***** After game 1 a promotion into Q1 took place at 5,0 *****
 ***** After game 0 a promotion into N0 took place at 7,7 *****
-***** After game 2 a promotion into Q1 took place at 5,0 *****
-***** After game 3 a promotion into Q1 took place at 5,0 *****
-***** After game 4 a promotion into Q1 took place at 5,0 *****
-***** After game 5 a promotion into Q1 took place at 5,0 *****
-***** After game 6 a promotion into Q1 took place at 5,0 *****
-***** After game 7 a promotion into Q1 took place at 5,0 *****
-***** After game 8 a promotion into Q1 took place at 5,0 *****
-***** After game 9 a promotion into Q1 took place at 5,0 *****
 
 No moves for w found to Mate-in-1
 
 Wins  found per depth: [0, 0]
 Draws found per depth: [0, 0]
-Total recursive calls: 19
-Total games processed: 10
+Total recursive calls: 21
+Total games processed: 11
 
 ================================================
 |      mateinx.py v1.1                         |
@@ -1037,7 +1030,7 @@ Starting game (json input): json-inputs/game-16.json
             "Ka7",
             "Na8"
         ],
-        "lastMove": "c7a8",
+        "lastMove": null,
         "turn": "w"
     }
 }
@@ -1082,7 +1075,7 @@ Initial game configuration is valid:
         a      b      c      d      e      f      g      h
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
-[((2, 6), (0, 7))]
+[]
 Game #0 (depth 0) OK
 Searching for ALL Mate-in-2 solutions for json-inputs/game-16.json ...
 
@@ -1091,16 +1084,16 @@ Found 1 Mate-in-2 solution(s)!  Winning first move: p0b7xa8=Q0+
 Found 2 Mate-in-2 solution(s)!  Winning first move: p0b7b8=Q0+
 
 Mate-in-2 tree of moves:
-N1c7a8                         (1)
-    p0b7xa8=Q0+                (2)
-        K1a7b6                 (3)
-            Q0e8c6#            (4)
-    p0b7b8=Q0+                 (5)
-        K1a7a6                 (6)
-            Q0e8b5#            (7)
-            Q0e8a4#            (8)
+?                              (0)
+    p0b7xa8=Q0+                (1)
+        K1a7b6                 (2)
+            Q0e8c6#            (3)
+    p0b7b8=Q0+                 (4)
+        K1a7a6                 (5)
+            Q0e8b5#            (6)
+            Q0e8a4#            (7)
 
-Total number of nodes in solution: 8
+Total number of nodes in solution: 7
 Found 2 first move(s) which can Mate-in-2:
     p0b7xa8=Q0+
     p0b7b8=Q0+
@@ -1155,19 +1148,19 @@ Initial game configuration is valid:
         a      b      c      d      e      f      g      h
 	Possible castle moves: w:   b: 
 	To play: w    Checked: w=0 b=0     Move history:
-[((2, 6), (0, 7))]
+[]
 Game #0 (depth 0) OK
 Searching for 1st Mate-in-2 solution for json-inputs/game-16.json ...
 
 Found a Mate-in-2 solution!
 
 Mate-in-2 tree of moves:
-N1c7a8                         (1)
-    p0b7xa8=Q0+                (2)
-        K1a7b6                 (3)
-            Q0e8c6#            (4)
+?                              (0)
+    p0b7xa8=Q0+                (1)
+        K1a7b6                 (2)
+            Q0e8c6#            (3)
 
-Total number of nodes in solution: 4
+Total number of nodes in solution: 3
 Found 1 first move(s) which can Mate-in-2:
     p0b7xa8=Q0+
 
