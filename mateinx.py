@@ -5,6 +5,7 @@ author : Raul Saavedra ( raul.saavedra@gmail.com )
 Started: 2022.11.18
 v1.0   : 2022.12.13
 v1.1   : 2022.12.14 (bug-fix for in-passing captures)
+v1.1.1 : 2022.12.15 (bug-fix for in-passing inspection)
 """
 
 import sys
@@ -1079,8 +1080,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.1                         |')
-     print('|      By Raul Saavedra F., 2022-Dec-14        |');
+     print('|      mateinx.py v1.1.1                       |')
+     print('|      By Raul Saavedra F., 2022-Dec-15        |');
      print(BAR)
 
 def load_game_from_json():

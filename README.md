@@ -63,6 +63,12 @@ v1.1 after a bug found and fixed: when a pawn was getting captured in passing, i
 getting properly removed from the board and remaining pieces. Also such capturing move
 was missing the "x" when printed out.
 
+## Update 2022-12-15
+v1.1.1 after another bug found and fixed: when exploring the possibility of in-passing capture,
+if the last move was unknown (None) the program was crashing checking for last move being
+() (older representation) instead of None. 
+game-10.json modified to test this case and make sure it runs problem-free.
+
 ## Next tasks:
 - Implement an iterative python version
 - Implement a single threaded Rust version
