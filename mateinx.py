@@ -5,7 +5,7 @@ author : Raul Saavedra ( raul.saavedra@gmail.com )
 Started: 2022.11.18
 v1.0   : 2022.12.13
 v1.1   : 2022.12.14 (bug-fix for in-passing captures)
-v1.1.1 : 2022.12.15 (bug-fix for in-passing inspection)
+v1.1.1 : 2022.12.15 (bug-fixes for in-passing inspection)
 """
 
 import sys
@@ -424,8 +424,9 @@ class ChessGame:
         # moving piece
         empc = pgame._read_board(i0, j0)    # Encoded moved piece
         in_passing_capture = False
+        deltax = i1 - i0
         if empc in EPAWNS:
-            if j1 != j0:
+            if deltax != 0:
                 # Moved piece was a pawn and captured something (moved
                 # diagonally.) Check if it was an in-passing capture
                 # of another pawn
@@ -435,7 +436,6 @@ class ChessGame:
         # have been in the destination square (such a piece would be
         # getting captured by this move)
         castle = False
-        deltax = i1 - i0
         if empc in EKINGS:
             # King moving
             if (deltax == 2 or deltax == -2):
