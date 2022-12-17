@@ -21,6 +21,8 @@ Available options:
 
     -j    Include json input file in the output
 
+    -i    Run the iterative implementation (instead of the recursive one)
+
     -v    Run in verbose mode
 
 Examples of valid input json files are available at:

@@ -5,6 +5,6 @@
         "wpcs" : ["Ka1"],
         "bpcs" : ["Kc1", "a2", "Ra3"],
         "lastMove": null,
-        "turn" : "w"
+        "turn" : "b"
     }
 }

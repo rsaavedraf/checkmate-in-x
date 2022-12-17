@@ -54,23 +54,28 @@ in total)
 
 ## Update 2022-12-13
 Usage/help for the script added.
-Calling this version v1.0 proper, pretty much finished for the required functionality.
-The iterative implementation will be a script with a different name
-(i.e. mateinx-iter.py)
+Calling this version v1.0 proper, pretty much finished for the required 
+functionality.
 
 ## Update 2022-12-14
-v1.1 after a bug found and fixed: when a pawn was getting captured in passing, it was not
-getting properly removed from the board and remaining pieces. Also such capturing move
-was missing the "x" when printed out.
+v1.1 after a bug found and fixed: when a pawn was getting captured in passing,
+it was not getting properly removed from the board and remaining pieces. 
+Also such capturing move was missing the "x" when printed out.
 
 ## Update 2022-12-15
-v1.1.1 after another bug found and fixed: when exploring the possibility of in-passing capture,
-if the last move was unknown (None) the program was crashing checking for last move being
-() (older representation) instead of None. 
+v1.1.1 after another bug found and fixed: when exploring the possibility 
+of in-passing capture, if the last move was unknown (None) the program 
+was crashing checking for last move being () (older representation)
+instead of None. 
 game-10.json modified to test this case and make sure it runs problem-free.
 
+## Update 2022-12-17
+v1.2 with a first iterative implementation (activated with option -i, so
+not a separat program). Runs well but not yet finished, since it still
+does not have the trimming speed-up that the recursive one does.
+
 ## Next tasks:
-- Implement an iterative python version
+- Finish iterative python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version
 

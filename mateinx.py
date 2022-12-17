@@ -6,6 +6,7 @@ Started: 2022.11.18
 v1.0   : 2022.12.13
 v1.1   : 2022.12.14 (bug-fix for in-passing captures)
 v1.1.1 : 2022.12.15 (bug-fixes for in-passing inspection)
+v1.2   : 2022.12.17 (1st iterative implementation with option -i)
 """
 
 import sys
@@ -13,6 +14,7 @@ import string
 import json
 import numpy as np
 from pathlib import Path
+from collections import deque
 
 show_games = False
 show_end_games = False
@@ -21,16 +23,20 @@ show_json = False
 verbose = False
 max_moves = 2
 max_depth = max_moves * 2
-wins_per_depth = [0]*(max_depth)
-draws_per_depth = [0]*(max_depth)
+wins_per_depth = [0] * max_depth
+draws_per_depth = [0] * max_depth
 input_file = ''
 ngame = 0
 nrec_calls = 0
+niterations = 0
 losing_player = 0
 n_1st_moves = 0
 n_nodes_in_sol = 0
 stop_at_1st_find = True
 smateinx = ""
+iterative = False
+main_stack = deque()
+len_biggest_stack = 0
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -206,6 +212,7 @@ class ChessGame:
         self._depth = 0
         self._attackfp = [self._no_attackfp(), self._no_attackfp()]
         self._set_board_from_json(game_json)
+        self._valid_children = []
         self._winning_children = {}
 
     def _parse_coords(self, xystr):
@@ -412,6 +419,7 @@ class ChessGame:
         self._pcs = [[], []]
         self._npcs = [0, 0]
         self._nchks = [0, 0]
+        self._valid_children = []
         self._winning_children = {}
         # moving piece from old square at i0, j0
         oldsq = pmove[0]
@@ -600,15 +608,22 @@ class ChessGame:
                                 j+7, j+5)
             return (ch_board,)
 
-    def set_num(self, num, depth):
+    #def set_num(self, num, depth):
+    def set_num(self, num):
         self._num = num
-        self._depth = depth
+        #self._depth = depth
 
     def get_num(self):
         return self._num
 
     def get_depth(self):
         return self._depth
+
+    def add_valid_child(self, child_game):
+        self._valid_children.append(child_game)
+
+    def get_valid_children(self):
+        return self._valid_children
 
     def _decode_piece_from_board(self, i, j):
         p = self._read_board(i,j)
@@ -888,7 +903,7 @@ class ChessGame:
                         # indeed capture it in passing
                         if verbose:
                             print("***** Detected pawn captured " \
-                                + "'in passing' (after a 2-sq move) *****")
+                                + "'in-passing'  *****")
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
 
@@ -901,14 +916,10 @@ class ChessGame:
         self._append_king_moves(king_moves)
         if nchecks < 2:
             # Not under double check, so consider non-king movements
-            movable_pcs = []
+            movable_pcs = deque()
             npieces = len(self._pcs[self._movep])
             for i in range(1,npieces,1):
                 p = self._pcs[self._movep][i]
-                key = p[0] + str(p[1]) + str(p[2])
-                movable_pcs.append( p )
-            # Generate all valid moves for the movable pieces
-            for p in movable_pcs:
                 dp = PIECE_DECODE[p[0]]
                 dpt = dp[0:1]
                 i = p[1]
@@ -947,7 +958,7 @@ class ChessGame:
         lm = self._last_move
         if lm == None:
             dmove = "?"
-            n_nodes_in_sol = 0
+            n_nodes_in_sol = -1
         else:
             ox = lm[0][0]
             oy = lm[0][1]
@@ -988,7 +999,7 @@ class ChessGame:
                 # Check caused by the move
                 dmove += "+"
         if all:
-            n_nodes_in_sol += 0 if dmove == "?" else 1
+            n_nodes_in_sol += 1
             tail_txt = " " * max(2, 30 - len(tabs) - len(dmove)) \
                         + " (" + str(n_nodes_in_sol) + ")"
             print(tabs + dmove + tail_txt)
@@ -1080,8 +1091,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.1.1                       |')
-     print('|      By Raul Saavedra F., 2022-Dec-15        |');
+     print('|      mateinx.py v1.2                         |')
+     print('|      By Raul Saavedra F., 2022-Dec-17        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1093,13 +1104,67 @@ def load_game_from_json():
         print(json.dumps(game_json, indent=4)+"\n")
     return g
 
-def evaluate_recursively(parent, parent_move, game, depth):
+def evaluate_iteratively(starting_game):
+    global ngame, nrec_calls, losing_player, len_biggest_stack
+    global show_games, show_attack_footprints, verbose, niterations
+    max_qsize = 0
+    main_stack.append(starting_game)
+    while len(main_stack) > 0:
+        niterations += 1
+        if len(main_stack) > len_biggest_stack:
+            len_biggest_stack = len(main_stack)
+        game = main_stack.pop()
+        depth = game.get_depth()
+        if depth >= max_depth:
+            continue
+        if (game.get_num() < 0):
+            # First time seeing this game from the stack
+            game.set_num(ngame)
+            if show_games and ngame % 1000 == 0 and ngame > 0:
+                game.show(show_attack_footprints)
+            if verbose and ngame % 50000 == 0:
+                print("Games explored:", ngame)
+            # Append the game again to the stack to check it after
+            # we processed all of its children
+            main_stack.append(game)
+            ngame += 1
+            nchks = game.get_all_checks()
+            moves = game.get_all_moves(nchks)
+            mov_player = game.get_mover()
+            next_depth = depth + 1
+            for m in moves:
+                # Simulate move to get corresponding child(ren) board(s)
+                child_boards = game.simulate_move(m)
+                for ch_brd in child_boards:
+                    # Generate new child(ren) given the move, and explore further
+                    child_game = ChessGame()
+                    child_game.init_from_parent_game(game, m, ch_brd)
+                    nchks_in_child = child_game.get_all_checks()
+                    if nchks_in_child > 0:
+                        ''' Our King is left in check with this move: invalid.
+                        We can break from the inner for already since it will
+                        iterate a second time only when promoting a pawn, but
+                        regardless of promoting into Queen or Knight, if the
+                        first promotion is invalid, the second will be as well
+                        '''
+                        break
+                    child_game.flip_turn()
+                    game.add_valid_child(child_game)
+                    main_stack.append(child_game)
+        else:
+            # All children of this game already processed, so just
+            # verify this game itself
+            verify(game, game.get_valid_children())
+    return
+
+def evaluate_recursively(parent, game, depth):
     global ngame, nrec_calls, losing_player
     global show_games, show_attack_footprints, verbose
     nrec_calls += 1
     if depth >= max_depth:
         return
-    game.set_num(ngame, depth)
+    #game.set_num(ngame, depth)
+    game.set_num(ngame)
     if show_games and ngame % 1000 == 0 and ngame > 0:
         game.show(show_attack_footprints)
     if verbose and ngame % 50000 == 0:
@@ -1128,7 +1193,7 @@ def evaluate_recursively(parent, parent_move, game, depth):
                 break
             valid_children.append(child_game)
             child_game.flip_turn()
-            evaluate_recursively(game, m, child_game, next_depth)
+            evaluate_recursively(game, child_game, next_depth)
             if (mov_player == losing_player and
                 child_game.get_num_winning_children() == 0):
                 ''' If parent game moving player (mov_player) is the
@@ -1150,13 +1215,6 @@ def evaluate_recursively(parent, parent_move, game, depth):
 def verify(game, children):
     global ngame, wins_per_depth, draws_per_depth, show_end_games
     depth = game.get_depth()
-    if game.get_npcs(0) + game.get_npcs(1) == 2:
-        draws_per_depth[depth] += 1
-        msg = "GAME OVER: DRAW (only both Kings remain)," \
-            +" game #" + str(game.get_num()) + ", depth " + str(depth)
-        game.set_ending(msg)
-        if show_end_games: game.show(show_attack_footprints)
-        return
     if children == []:
         nchks = game.get_num_checks(game.get_mover())
         if nchks > 0:
@@ -1181,6 +1239,13 @@ def verify(game, children):
         game.set_ending(msg)
         if show_end_games: game.show(show_attack_footprints)
         return
+    if game.get_npcs(0) + game.get_npcs(1) == 2:
+        draws_per_depth[depth] += 1
+        msg = "GAME OVER: DRAW (only both Kings remain)," \
+            +" game #" + str(game.get_num()) + ", depth " + str(depth)
+        game.set_ending(msg)
+        if show_end_games: game.show(show_attack_footprints)
+        return
     # Reaching this point means player had move options
     for child in children:
         if child.get_num_winning_children() == 0:
@@ -1200,7 +1265,7 @@ def verify(game, children):
 def process_options(argv):
     global input_file, verbose, show_attack_footprints
     global show_json, show_games, show_end_games, max_moves, max_depth
-    global wins_per_depth, draws_per_depth, stop_at_1st_find
+    global wins_per_depth, draws_per_depth, stop_at_1st_find, iterative
     for opt in argv:
         if opt == "-h":
             # Display help
@@ -1232,6 +1297,10 @@ def process_options(argv):
             show_json = True
             print("Showing json file in the output")
             continue
+        if opt == "-i":
+            iterative = True
+            print("Using Iterative instead of recursive implementation")
+            continue
         if opt[0:2] == "-m":
             # Set maximum # moves to explore
             n = opt[2:]
@@ -1261,7 +1330,7 @@ def process_options(argv):
 
 def show_final_summary(game):
     global ngame, nrec_calls, ngame, wins_per_depth, draws_per_depth
-    global smateinx, n_nodes_in_sol, n_1st_moves
+    global smateinx, n_nodes_in_sol, n_1st_moves, iterative, len_biggest_stack
     if (game.has_winning_children()):
         #print("\nComplete Mate-in-"+str(max_moves)+" tree of moves:")
         print("\n" + smateinx + " tree of moves:")
@@ -1279,13 +1348,17 @@ def show_final_summary(game):
                 + " found to " + smateinx)
     print("\nWins  found per depth:", wins_per_depth)
     print("Draws found per depth:", draws_per_depth)
-    print("Total recursive calls:", nrec_calls)
+    if iterative:
+        print("Total iterations     :", niterations)
+        print("Max stack size       :", len_biggest_stack)
+    else:
+        print("Total recursive calls:", nrec_calls)
     print("Total games processed:", ngame)
 
 def mateinx_solver(argv):
     global ngame, verbose, nrec_calls, max_moves, wins_per_depth
     global draws_per_depth, show_games, show_attack_footprints
-    global n_1st_moves, n_nodes_in_sol, smateinx, input_file
+    global n_1st_moves, n_nodes_in_sol, smateinx, input_file, iterative
     starting_banner()
     process_options(argv)
     if input_file == "":
@@ -1353,7 +1426,12 @@ def mateinx_solver(argv):
         print("Searching for ALL " + smateinx + " solutions", end="")
     print(" for", input_file, "...")
 
-    evaluate_recursively(None, (), game, 0)
+    game.set_num(-1)
+    if iterative:
+        evaluate_iteratively(game)
+    else:
+        evaluate_recursively(None, game, 0)
+
     show_final_summary(game)
 
 if __name__ == '__main__':

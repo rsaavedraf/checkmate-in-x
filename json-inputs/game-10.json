@@ -4,7 +4,7 @@
         "date" : "2022-12-01",
         "wpcs" : ["Kg7", "h7", "e5"],
         "bpcs" : ["Ke1", "f2", "d5"],
-        "lastMove": null,
+        "lastMove": "d7d5",
         "turn" : "w"
     }
 }
