@@ -70,9 +70,10 @@ instead of None.
 game-10.json modified to test this case and make sure it runs problem-free.
 
 ## Update 2022-12-17
-v1.2 with a first iterative implementation (activated with option -i, so
-not a separat program). Runs well but not yet finished, since it still
-does not have the trimming speed-up that the recursive one does.
+v1.2 with a first iterative implementation (runs using option -i, so
+not a separate program). Runs well but not yet finished, since it still
+does not have the quite significant trimming speed-up that the recursive
+one does.
 
 ## Next tasks:
 - Finish iterative python version
