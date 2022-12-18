@@ -54,4 +54,5 @@ python3 mateinx.py json-inputs/game-25.json -j -v -m2
 
 # Test the iterative implementation (same program
 # but with the new option -i)
+python3 mateinx.py json-inputs/game-07.json -m2 -a
 python3 mateinx.py json-inputs/game-07.json -m2 -a -i

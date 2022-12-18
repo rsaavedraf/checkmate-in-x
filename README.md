@@ -75,8 +75,13 @@ not a separate program). Runs well but not yet finished, since it still
 does not have the quite significant trimming speed-up that the recursive
 one does.
 
+## Update 2022-12-18
+v.1.3 modified iterative implementation now made depth-first (imitating
+recursive one), and also now including the "speed-up" trimming.
+However at least for now it is massively slower than the recursive one
+(~14x the time)
+
 ## Next tasks:
 - Finish iterative python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version
-

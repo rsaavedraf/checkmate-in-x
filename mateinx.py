@@ -7,6 +7,7 @@ v1.0   : 2022.12.13
 v1.1   : 2022.12.14 (bug-fix for in-passing captures)
 v1.1.1 : 2022.12.15 (bug-fixes for in-passing inspection)
 v1.2   : 2022.12.17 (1st iterative implementation with option -i)
+v1.3   : 2022.12.18 (2st iterative implementation, depth-1st + trim)
 """
 
 import sys
@@ -287,6 +288,7 @@ class ChessGame:
         self._parent = None
         self._depth = 0
         self._nchks = [0, 0]
+        self._moves = []
         turn = game_json.get('turn', "?").lower()
         self.set_turn("w" if (turn == "w" or turn == "?") else "b")
         losing_player = 1 - self._movep
@@ -419,6 +421,7 @@ class ChessGame:
         self._pcs = [[], []]
         self._npcs = [0, 0]
         self._nchks = [0, 0]
+        self._moves = []
         self._valid_children = []
         self._winning_children = {}
         # moving piece from old square at i0, j0
@@ -625,6 +628,41 @@ class ChessGame:
     def get_valid_children(self):
         return self._valid_children
 
+    def clear_valid_children(self):
+        self._valid_children.clear()
+
+    def generate_all_moves(self):
+        self._moves = deque()
+        nchecks = self.count_all_checks()
+        # Generate list of all valid moves to consider
+        pawn_moves = deque()
+        king_moves = deque()
+        opcs_moves = deque()
+        # The king is always among the pieces to consider
+        self._append_king_moves(king_moves)
+        if nchecks < 2:
+            # Not under double check, so consider non-king movements
+            #movable_pcs = deque()
+            npieces = len(self._pcs[self._movep])
+            for i in range(1,npieces,1):
+                p = self._pcs[self._movep][i]
+                dp = PIECE_DECODE[p[0]]
+                dpt = dp[0:1]
+                i = p[1]
+                j = p[2]
+                if dpt == "p":
+                    self._append_pawn_moves(pawn_moves, dp, i, j)
+                else:
+                    self._append_opcs_moves(opcs_moves, dpt, i, j)
+        self._moves = pawn_moves + king_moves + opcs_moves
+        return self._moves
+
+    def has_more_moves(self):
+        return len(self._moves) > 0
+
+    def get_next_move(self):
+        return self._moves.popleft()
+
     def _decode_piece_from_board(self, i, j):
         p = self._read_board(i,j)
         if p == " ": return "  "
@@ -691,7 +729,7 @@ class ChessGame:
             path.append(self._last_move)
             return path
 
-    def _get_pawn_checks(self, eking, kx, ky):
+    def _count_pawn_checks(self, eking, kx, ky):
         pattacks = PATTACKS[eking]
         epawn = pattacks[0]
         la = pattacks[1]
@@ -706,7 +744,7 @@ class ChessGame:
                     return 1
         return 0
 
-    def _get_long_checks(self, eking, kx, ky):
+    def _count_long_checks(self, eking, kx, ky):
         nla_chks = 0
         for adir, ainfo in LATTACKS.items():
             xdelta = ainfo[0]
@@ -733,7 +771,7 @@ class ChessGame:
                 break
         return nla_chks
 
-    def _get_knight_checks(self, eking, kx, ky):
+    def _count_knight_checks(self, eking, kx, ky):
         lnpos = NATTACKS
         nk_chks = 0
         for pos in lnpos:
@@ -748,15 +786,15 @@ class ChessGame:
                 nk_chks += 1
         return nk_chks
 
-    def get_all_checks(self):
+    def count_all_checks(self):
         # Scan all attacks from the playing King's point of view
         king = self._pcs[self._movep][0]
         eking = king[0]
         kx = king[1]
         ky = king[2]
-        nchks = (self._get_pawn_checks(eking, kx, ky)
-                + self._get_long_checks(eking, kx, ky)
-                + self._get_knight_checks(eking, kx, ky))
+        nchks = (self._count_pawn_checks(eking, kx, ky)
+                + self._count_long_checks(eking, kx, ky)
+                + self._count_knight_checks(eking, kx, ky))
         self._nchks[self._movep] = nchks
         return nchks
 
@@ -906,29 +944,6 @@ class ChessGame:
                                 + "'in-passing'  *****")
                 newmove = ((i,j), (ii,jj))
                 moves.append(newmove)
-
-    def get_all_moves(self, nchecks):
-        # Generate list of all valid moves to consider
-        pawn_moves = []
-        king_moves = []
-        opcs_moves = []
-        # The king is always among the pieces to consider
-        self._append_king_moves(king_moves)
-        if nchecks < 2:
-            # Not under double check, so consider non-king movements
-            movable_pcs = deque()
-            npieces = len(self._pcs[self._movep])
-            for i in range(1,npieces,1):
-                p = self._pcs[self._movep][i]
-                dp = PIECE_DECODE[p[0]]
-                dpt = dp[0:1]
-                i = p[1]
-                j = p[2]
-                if dpt == "p":
-                    self._append_pawn_moves(pawn_moves, dp, i, j)
-                else:
-                    self._append_opcs_moves(opcs_moves, dpt, i, j)
-        return pawn_moves + king_moves + opcs_moves
 
     def tell_parent_iam_awin(self):
         global n_1st_moves, stop_at_1st_find, smateinx
@@ -1091,8 +1106,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.2                         |')
-     print('|      By Raul Saavedra F., 2022-Dec-17        |');
+     print('|      mateinx.py v1.3                         |')
+     print('|      By Raul Saavedra F., 2022-Dec-18        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1111,50 +1126,57 @@ def evaluate_iteratively(starting_game):
     main_stack.append(starting_game)
     while len(main_stack) > 0:
         niterations += 1
-        if len(main_stack) > len_biggest_stack:
-            len_biggest_stack = len(main_stack)
-        game = main_stack.pop()
-        depth = game.get_depth()
-        if depth >= max_depth:
+        lstack = len(main_stack)
+        if lstack > len_biggest_stack:
+            len_biggest_stack = lstack
+        game = main_stack[lstack-1]
+        if game.get_depth() >= max_depth:
+            main_stack.pop()
             continue
-        if (game.get_num() < 0):
+        if game.get_num() < 0:
             # First time seeing this game from the stack
             game.set_num(ngame)
             if show_games and ngame % 1000 == 0 and ngame > 0:
                 game.show(show_attack_footprints)
             if verbose and ngame % 50000 == 0:
                 print("Games explored:", ngame)
-            # Append the game again to the stack to check it after
-            # we processed all of its children
-            main_stack.append(game)
             ngame += 1
-            nchks = game.get_all_checks()
-            moves = game.get_all_moves(nchks)
-            mov_player = game.get_mover()
-            next_depth = depth + 1
-            for m in moves:
-                # Simulate move to get corresponding child(ren) board(s)
-                child_boards = game.simulate_move(m)
-                for ch_brd in child_boards:
-                    # Generate new child(ren) given the move, and explore further
-                    child_game = ChessGame()
-                    child_game.init_from_parent_game(game, m, ch_brd)
-                    nchks_in_child = child_game.get_all_checks()
-                    if nchks_in_child > 0:
-                        ''' Our King is left in check with this move: invalid.
-                        We can break from the inner for already since it will
-                        iterate a second time only when promoting a pawn, but
-                        regardless of promoting into Queen or Knight, if the
-                        first promotion is invalid, the second will be as well
-                        '''
-                        break
-                    child_game.flip_turn()
-                    game.add_valid_child(child_game)
-                    main_stack.append(child_game)
-        else:
-            # All children of this game already processed, so just
-            # verify this game itself
+            game.generate_all_moves()
+        nochild = True
+        while game.has_more_moves() and nochild:
+            m = game.get_next_move()
+            # Simulate move to get corresponding child(ren) board(s)
+            child_boards = game.simulate_move(m)
+            for ch_brd in child_boards:
+                # Generate new child(ren) given the move, and explore further
+                child_game = ChessGame()
+                child_game.init_from_parent_game(game, m, ch_brd)
+                nchks_in_child = child_game.count_all_checks()
+                if nchks_in_child > 0:
+                    # King left in check with this move: invalid.
+                    # See comment in the recursive version for more details
+                    break
+                child_game.flip_turn()
+                game.add_valid_child(child_game)
+                main_stack.append(child_game)
+                nochild = False
+        if nochild:
+            # All children of this game already processed, so remove from
+            # stack and verify this game itself
+            main_stack.pop()
             verify(game, game.get_valid_children())
+            game.clear_valid_children()
+            if (game.get_mover() != losing_player and
+                game.get_num_winning_children() == 0):
+                # Speed-up analogous to the one done in the recursive:
+                # we pop once or twice more till discarding the parent
+                # of this game, so that no more move options from it
+                # get explored
+                gaux = main_stack.pop()
+                if gaux != game.get_parent_game():
+                    # This happens only after pawn promotions, were two
+                    # child games get appended to the stack at once
+                    main.stack.pop()
     return
 
 def evaluate_recursively(parent, game, depth):
@@ -1163,15 +1185,13 @@ def evaluate_recursively(parent, game, depth):
     nrec_calls += 1
     if depth >= max_depth:
         return
-    #game.set_num(ngame, depth)
     game.set_num(ngame)
     if show_games and ngame % 1000 == 0 and ngame > 0:
         game.show(show_attack_footprints)
     if verbose and ngame % 50000 == 0:
         print("Games explored:", ngame)
     ngame += 1
-    nchks = game.get_all_checks()
-    moves = game.get_all_moves(nchks)
+    moves = game.generate_all_moves()
     mov_player = game.get_mover()
     next_depth = depth + 1
     valid_children = []
@@ -1182,7 +1202,7 @@ def evaluate_recursively(parent, game, depth):
             # Generate new child(ren) given the move, and explore further
             child_game = ChessGame()
             child_game.init_from_parent_game(game, m, ch_brd)
-            nchks_in_child = child_game.get_all_checks()
+            nchks_in_child = child_game.count_all_checks()
             if nchks_in_child > 0:
                 ''' Our King is left in check with this move: invalid.
                 We can break from the inner for already since it will
@@ -1381,14 +1401,14 @@ def mateinx_solver(argv):
     # Aditional validations before starting recursive calls
     orig_turn = game.get_turn()
     game.set_turn("w")
-    nchk0 = game.get_all_checks()
+    nchk0 = game.count_all_checks()
     vst = game.get_status()
     if vst != "OK":
         if show_games: game.show(False)
         print(vst)
         exit()
     game.set_turn("b")
-    nchk1 = game.get_all_checks()
+    nchk1 = game.count_all_checks()
     vst = game.get_status()
     if vst != "OK":
         if show_games: game.show(False)
