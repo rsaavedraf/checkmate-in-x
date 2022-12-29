@@ -1,10 +1,10 @@
 
 ================================================
-|      mateinx.py v1.0                         |
-|      By Raul Saavedra F., 2022-Dec-13        |
+|      mateinx.py v1.4                         |
+|      By Raul Saavedra F., 2022-Dec-29        |
 ================================================
 Searching for ALL solutions (won't stop after 1st find)
-Starting game (json input): game-16.json
+Starting game (json input): json-inputs/game-16.json
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -47,7 +47,7 @@ Initial game configuration is valid:
 	To play: w    Checked: w=0 b=0     Move history:
 []
 Game #0 (depth 0) OK
-Searching for ALL Mate-in-2 solutions for game-16.json ...
+Searching for ALL Mate-in-2 solutions for json-inputs/game-16.json ...
 
 Found 1 Mate-in-2 solution(s)!  Winning first move: p0b7xa8=Q0+
 
@@ -71,4 +71,5 @@ Found 2 first move(s) which can Mate-in-2:
 Wins  found per depth: [0, 0, 0, 5]
 Draws found per depth: [0, 0, 0, 1]
 Total recursive calls: 1965
+Total search trims   : 976
 Total games processed: 1017

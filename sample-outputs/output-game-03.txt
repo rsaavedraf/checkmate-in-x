@@ -1,9 +1,9 @@
 
 ================================================
-|      mateinx.py v1.0                         |
-|      By Raul Saavedra F., 2022-Dec-13        |
+|      mateinx.py v1.4                         |
+|      By Raul Saavedra F., 2022-Dec-29        |
 ================================================
-Starting game (json input): game-03.json
+Starting game (json input): json-inputs/game-03.json
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -46,7 +46,7 @@ Initial game configuration is valid:
 	To play: w    Checked: w=0 b=0     Move history:
 []
 Game #0 (depth 0) OK
-Searching for 1st Mate-in-2 solution for game-03.json ...
+Searching for 1st Mate-in-2 solution for json-inputs/game-03.json ...
 
 Found a Mate-in-2 solution!
 
@@ -127,4 +127,5 @@ Found 1 first move(s) which can Mate-in-2:
 Wins  found per depth: [0, 0, 0, 49]
 Draws found per depth: [0, 0, 0, 2]
 Total recursive calls: 5190
+Total search trims   : 2547
 Total games processed: 2650

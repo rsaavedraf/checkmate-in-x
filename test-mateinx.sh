@@ -50,7 +50,7 @@ python3 mateinx.py json-inputs/game-22.json -m4
 
 # Test the mate-in-1 which was not being found originally
 # (there was a bug with handling in-passing captures, now fixed)
-python3 mateinx.py json-inputs/game-25.json -j -v -m2
+python3 mateinx.py json-inputs/game-25.json -j -v -m1
 
 # Test the iterative implementation (same program
 # but with the new option -i)

@@ -1,10 +1,10 @@
 
 ================================================
-|      mateinx.py v1.0                         |
-|      By Raul Saavedra F., 2022-Dec-13        |
+|      mateinx.py v1.4                         |
+|      By Raul Saavedra F., 2022-Dec-29        |
 ================================================
 Using 3 as maximum number of moves (max depth=6)
-Starting game (json input): game-21.json
+Starting game (json input): json-inputs/game-21.json
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -47,7 +47,7 @@ Initial game configuration is valid:
 	To play: w    Checked: w=0 b=0     Move history:
 []
 Game #0 (depth 0) OK
-Searching for 1st Mate-in-3 solution for game-21.json ...
+Searching for 1st Mate-in-3 solution for json-inputs/game-21.json ...
 
 Found a Mate-in-3 solution!
 
@@ -663,4 +663,5 @@ Found 1 first move(s) which can Mate-in-3:
 Wins  found per depth: [0, 0, 0, 51, 0, 8311]
 Draws found per depth: [0, 0, 0, 0, 0, 0]
 Total recursive calls: 753118
+Total search trims   : 369506
 Total games processed: 386985

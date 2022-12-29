@@ -81,7 +81,12 @@ recursive one), and also now including the "speed-up" trimming.
 However at least for now it is massively slower than the recursive one
 (~14x the time)
 
+## Update 2022-12-29
+v.1.4 debugged and fixed iterative implementation, now goes through
+exactly the same sequence of games and search trims done by the recursive
+one. Iterative still slightly slower (5-7% more time), but now in the
+same ballpark as the recursive.
+
 ## Next tasks:
-- Finish iterative python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version

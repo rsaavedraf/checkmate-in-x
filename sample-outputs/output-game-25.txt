@@ -1,7 +1,7 @@
 
 ================================================
-|      mateinx.py v1.1                         |
-|      By Raul Saavedra F., 2022-Dec-14        |
+|      mateinx.py v1.4                         |
+|      By Raul Saavedra F., 2022-Dec-29        |
 ================================================
 Using 1 as maximum number of moves (max depth=2)
 Showing json file in the output
@@ -80,7 +80,7 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Searching for 1st Mate-in-1 solution for json-inputs/game-25.json ...
 Games explored: 0
-***** Detected pawn captured 'in passing' (after a 2-sq move) *****
+***** Detected pawn captured 'in-passing'  *****
 
 Found a Mate-in-1 solution!
 
@@ -95,4 +95,5 @@ Found 1 first move(s) which can Mate-in-1:
 Wins  found per depth: [0, 1]
 Draws found per depth: [0, 0]
 Total recursive calls: 2
+Total search trims   : 0
 Total games processed: 2
