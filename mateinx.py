@@ -1279,9 +1279,6 @@ def verify(game, children):
     one winning move, and notify parent of this game that this
     game itself is the result of a winning move.
     '''
-    #print("1st time ALL children have at least 1 winning move, game:")
-    #game.show_board()
-    #exit()
     for child in children:
         child.tell_parent_iam_awin()
     game.tell_parent_iam_awin()
