@@ -8,6 +8,7 @@ v1.1   : 2022.12.14 (bug-fix for in-passing captures)
 v1.1.1 : 2022.12.15 (bug-fixes for in-passing inspection)
 v1.2   : 2022.12.17 (1st iterative implementation with option -i)
 v1.3   : 2022.12.18 (2st iterative implementation, depth-1st + trim)
+v1.4   : 2022.12.29 (3st iterative implementation, debugged)
 """
 
 import sys
@@ -37,7 +38,7 @@ stop_at_1st_find = True
 smateinx = ""
 iterative = False
 main_stack = deque()
-len_biggest_stack = 0
+n_trims = 0
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -625,26 +626,30 @@ class ChessGame:
     def add_valid_child(self, child_game):
         self._valid_children.append(child_game)
 
+    def get_last_child(self):
+        return self._valid_children[len(self._valid_children) - 1]
+
     def get_valid_children(self):
         return self._valid_children
+
+    def get_num_valid_children(self):
+        return len(self._valid_children)
 
     def clear_valid_children(self):
         self._valid_children.clear()
 
     def generate_all_moves(self):
-        self._moves = deque()
-        nchecks = self.count_all_checks()
         # Generate list of all valid moves to consider
-        pawn_moves = deque()
-        king_moves = deque()
-        opcs_moves = deque()
+        pawn_moves = []
+        king_moves = []
+        opcs_moves = []
         # The king is always among the pieces to consider
         self._append_king_moves(king_moves)
+        nchecks = self.count_all_checks()
         if nchecks < 2:
             # Not under double check, so consider non-king movements
-            #movable_pcs = deque()
             npieces = len(self._pcs[self._movep])
-            for i in range(1,npieces,1):
+            for i in range(1, npieces, 1):
                 p = self._pcs[self._movep][i]
                 dp = PIECE_DECODE[p[0]]
                 dpt = dp[0:1]
@@ -655,13 +660,16 @@ class ChessGame:
                 else:
                     self._append_opcs_moves(opcs_moves, dpt, i, j)
         self._moves = pawn_moves + king_moves + opcs_moves
+        self._last_move_idx = len(self._moves) - 1
+        self._next_move = 0
         return self._moves
 
-    def has_more_moves(self):
-        return len(self._moves) > 0
-
     def get_next_move(self):
-        return self._moves.popleft()
+        if self._next_move > self._last_move_idx:
+            return None
+        move = self._moves[self._next_move]
+        self._next_move += 1
+        return move
 
     def _decode_piece_from_board(self, i, j):
         p = self._read_board(i,j)
@@ -1101,13 +1109,16 @@ class ChessGame:
         print("\nGame #"+str(self._num), \
                 "(depth "+str(self._depth)+")", self._status[3])
 
+    def show_board(self):
+        print(self._num, "(@", self._depth,") : ", self._board)
+
 
 BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.3                         |')
-     print('|      By Raul Saavedra F., 2022-Dec-18        |');
+     print('|      mateinx.py v1.4                         |')
+     print('|      By Raul Saavedra F., 2022-Dec-29        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1120,16 +1131,12 @@ def load_game_from_json():
     return g
 
 def evaluate_iteratively(starting_game):
-    global ngame, nrec_calls, losing_player, len_biggest_stack
-    global show_games, show_attack_footprints, verbose, niterations
-    max_qsize = 0
-    main_stack.append(starting_game)
+    global ngame, nrec_calls, losing_player, max_depth
+    global show_games, show_attack_footprints, verbose, niterations, n_trims
+    main_stack.append( starting_game )
     while len(main_stack) > 0:
         niterations += 1
-        lstack = len(main_stack)
-        if lstack > len_biggest_stack:
-            len_biggest_stack = lstack
-        game = main_stack[lstack-1]
+        game = main_stack[len(main_stack) - 1]
         if game.get_depth() >= max_depth:
             main_stack.pop()
             continue
@@ -1142,9 +1149,21 @@ def evaluate_iteratively(starting_game):
                 print("Games explored:", ngame)
             ngame += 1
             game.generate_all_moves()
-        nochild = True
-        while game.has_more_moves() and nochild:
-            m = game.get_next_move()
+        if (game.get_mover() == losing_player and
+            game.get_num_valid_children() > 0 and
+            game.get_last_child().get_num_winning_children() == 0):
+            # Speed-up analogous to the one done in the recursive:
+            n_trims += 1
+            main_stack.pop()
+            continue
+        m = game.get_next_move()
+        if m is None:
+            # All children of this game already processed, so remove from
+            # stack and verify this game itself
+            main_stack.pop()
+            verify(game, game.get_valid_children())
+            game.clear_valid_children()
+        else:
             # Simulate move to get corresponding child(ren) board(s)
             child_boards = game.simulate_move(m)
             for ch_brd in child_boards:
@@ -1159,29 +1178,11 @@ def evaluate_iteratively(starting_game):
                 child_game.flip_turn()
                 game.add_valid_child(child_game)
                 main_stack.append(child_game)
-                nochild = False
-        if nochild:
-            # All children of this game already processed, so remove from
-            # stack and verify this game itself
-            main_stack.pop()
-            verify(game, game.get_valid_children())
-            game.clear_valid_children()
-            if (game.get_mover() != losing_player and
-                game.get_num_winning_children() == 0):
-                # Speed-up analogous to the one done in the recursive:
-                # we pop once or twice more till discarding the parent
-                # of this game, so that no more move options from it
-                # get explored
-                gaux = main_stack.pop()
-                if gaux != game.get_parent_game():
-                    # This happens only after pawn promotions, were two
-                    # child games get appended to the stack at once
-                    main.stack.pop()
     return
 
 def evaluate_recursively(parent, game, depth):
     global ngame, nrec_calls, losing_player
-    global show_games, show_attack_footprints, verbose
+    global show_games, show_attack_footprints, verbose, n_trims
     nrec_calls += 1
     if depth >= max_depth:
         return
@@ -1228,6 +1229,7 @@ def evaluate_recursively(parent, game, depth):
                 This simple check can trim down the entire search space
                 hugely (e.g. orders of magnitude in some cases)
                 '''
+                n_trims += 1
                 return
     verify(game, valid_children)
     return
@@ -1277,6 +1279,9 @@ def verify(game, children):
     one winning move, and notify parent of this game that this
     game itself is the result of a winning move.
     '''
+    #print("1st time ALL children have at least 1 winning move, game:")
+    #game.show_board()
+    #exit()
     for child in children:
         child.tell_parent_iam_awin()
     game.tell_parent_iam_awin()
@@ -1350,29 +1355,25 @@ def process_options(argv):
 
 def show_final_summary(game):
     global ngame, nrec_calls, ngame, wins_per_depth, draws_per_depth
-    global smateinx, n_nodes_in_sol, n_1st_moves, iterative, len_biggest_stack
+    global smateinx, n_nodes_in_sol, n_1st_moves, iterative
     if (game.has_winning_children()):
-        #print("\nComplete Mate-in-"+str(max_moves)+" tree of moves:")
         print("\n" + smateinx + " tree of moves:")
         game.print_winning_tree("", True)
         print("\nTotal number of nodes in solution:", n_nodes_in_sol)
-        #print("Number of first moves that can mate-in-" \
-        #        + str(max_moves) + ": " + str(n_1st_moves))
         print("Found " + str(n_1st_moves) + " first move(s) which can " \
                 + smateinx + ":")
         for ch in game.get_winning_children():
             ch.print_winning_tree("    ", False)
     else:
-        #if ngame > 1:
         print("\nNo moves for " + game.get_turn() \
                 + " found to " + smateinx)
     print("\nWins  found per depth:", wins_per_depth)
     print("Draws found per depth:", draws_per_depth)
     if iterative:
         print("Total iterations     :", niterations)
-        print("Max stack size       :", len_biggest_stack)
     else:
         print("Total recursive calls:", nrec_calls)
+    print("Total search trims   :", n_trims)
     print("Total games processed:", ngame)
 
 def mateinx_solver(argv):
