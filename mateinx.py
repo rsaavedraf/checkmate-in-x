@@ -359,29 +359,23 @@ class ChessGame:
         # All pieces now on board, generate their attack foot prints
         for player in range(2):
             for pxy in self._pcs[player]:
-                epc = pxy[0]                # Encoded piece (1 char)
-                #if epc == ' ':
-                #    #This should never happen
-                #    self._parent.show(show_attack_footprints)
-                #    self.show(show_attack_footprints)
-                #    print("Player", player, "Pcs:", self._pcs[player])
+                epc = pxy[0]        # Encoded piece (1 char)
+                i = pxy[1]
+                j = pxy[2]
                 dpc = PIECE_DECODE[epc]     # Decoded piece (2 chars)
-                self._gen_piece_attack_footp(player, dpc, pxy[1], pxy[2])
-
-    def _gen_piece_attack_footp(self, player, dpc, i, j):
-        vp = dpc if dpc[0:1] == "p" else dpc[0:1]
-        vmoves = ATTACK_MOVES.get(vp, [])
-        afp = self._attackfp[player]
-        for movedir in vmoves:
-            for m in movedir:
-                ii = i + m[0]
-                if ii < 0 or ii > 7: break
-                jj = j + m[1]
-                if jj < 0 or jj > 7: break
-                afp[ii][jj] += 1
-                # Here check if board has a piece here, and if so
-                # stop checking any further in this attacking direction
-                if self._read_board(ii, jj) != " ": break
+                vp = dpc if dpc[0:1] == "p" else dpc[0:1]
+                vmoves = ATTACK_MOVES.get(vp, [])
+                afp = self._attackfp[player]
+                for movedir in vmoves:
+                    for m in movedir:
+                        ii = i + m[0]
+                        if ii < 0 or ii > 7: break
+                        jj = j + m[1]
+                        if jj < 0 or jj > 7: break
+                        afp[ii][jj] += 1
+                        # Here check if board has a piece here, and if so
+                        # stop checking any further in this attacking dir
+                        if self._read_board(ii, jj) != " ": break
 
     def _read_board(self, i, j):
         index = i + j * 8
@@ -425,11 +419,11 @@ class ChessGame:
         self._moves = []
         self._valid_children = []
         self._winning_children = {}
-        # moving piece from old square at i0, j0
+        # moving piece from old square at i0, j0 ...
         oldsq = pmove[0]
         i0 = oldsq[0]
         j0 = oldsq[1]
-        # to new square at i1, j1
+        # ... to new square at i1, j1
         newsq = pmove[1]
         i1 = newsq[0]
         j1 = newsq[1]
@@ -455,7 +449,9 @@ class ChessGame:
                 castle = True
                 if (verbose):
                     print("***** " + PIECE_DECODE[empc] \
-                            + " doing a castle move *****")
+                            + " doing a " \
+                            + ("short" if deltax == 2 else "long") \
+                            + " castle move *****")
                 eprook = EROOKS[pgame._movep]
             self._can_still_castle = [[], []]
             # Clone waiting player's castle possibilities from parent
@@ -474,8 +470,8 @@ class ChessGame:
                 # Rook moving
                 if i0 == 0 or i0 == 7:
                     # But disable castle on this rook's side for moving player
-                    rside = (0 if i0 == 0 else 1)
-                    self._can_still_castle[pgame._movep][rside] = False
+                    rkside = (0 if i0 == 0 else 1)
+                    self._can_still_castle[pgame._movep][rkside] = False
         capture = 0
         for p in pgame._pcs[pgame._waitp]:
             px = p[1]
@@ -640,13 +636,13 @@ class ChessGame:
 
     def generate_all_moves(self):
         # Generate list of all valid moves to consider
-        pawn_moves = []
         king_moves = []
-        opcs_moves = []
         # The king is always among the pieces to consider
         self._append_king_moves(king_moves)
         nchecks = self.count_all_checks()
         if nchecks < 2:
+            pawn_moves = []
+            opcs_moves = []
             # Not under double check, so consider non-king movements
             npieces = len(self._pcs[self._movep])
             for i in range(1, npieces, 1):
@@ -659,7 +655,9 @@ class ChessGame:
                     self._append_pawn_moves(pawn_moves, dp, i, j)
                 else:
                     self._append_opcs_moves(opcs_moves, dpt, i, j)
-        self._moves = pawn_moves + king_moves + opcs_moves
+            self._moves = pawn_moves + king_moves + opcs_moves
+        else:
+            self._moves = king_moves
         self._last_move_idx = len(self._moves) - 1
         self._next_move = 0
         return self._moves
