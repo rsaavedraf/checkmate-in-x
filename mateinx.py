@@ -9,6 +9,7 @@ v1.1.1 : 2022.12.15 (bug-fixes for in-passing inspection)
 v1.2   : 2022.12.17 (1st iterative implementation with option -i)
 v1.3   : 2022.12.18 (2st iterative implementation, depth-1st + trim)
 v1.4   : 2022.12.29 (3st iterative implementation, debugged)
+v1.4.1 : 2023.01.17 (with -a now detects if there are mate-in-Y < X solutions)
 """
 
 import sys
@@ -39,6 +40,7 @@ smateinx = ""
 iterative = False
 main_stack = deque()
 n_trims = 0
+shorter_win = False
 
 ORD_CAP_A = ord('A')
 ORD_A = ord('a')
@@ -216,6 +218,7 @@ class ChessGame:
         self._set_board_from_json(game_json)
         self._valid_children = []
         self._winning_children = {}
+        self._shorter_winner = False
 
     def _parse_coords(self, xystr):
         if len(xystr) != 2:
@@ -255,9 +258,10 @@ class ChessGame:
         return (ptype, coords[0], coords[1])
 
     def _parse_last_move(self, lastmv_str):
-        # Last move needs two board coordinates (origin and dest squares)
-        # in order to be able to tell whether a pawn had moved 2 squares
-        # as last move right before our input board setup
+        ''' Last move needs two board coordinates (origin and dest squares)
+        in order to be able to tell whether a pawn had moved 2 squares
+        as last move right before our input board setup
+        '''
         c1 = self._parse_coords(lastmv_str[0:2])
         c2 = self._parse_coords(lastmv_str[2:])
         if c1 is None or c2 is None:
@@ -290,6 +294,7 @@ class ChessGame:
         self._depth = 0
         self._nchks = [0, 0]
         self._moves = []
+        self._shorter_winner = False
         turn = game_json.get('turn', "?").lower()
         self.set_turn("w" if (turn == "w" or turn == "?") else "b")
         losing_player = 1 - self._movep
@@ -392,12 +397,13 @@ class ChessGame:
         newBoard = newBoard[0:idx_to] \
                     + piece \
                     + newBoard[idx_to+1:]
-        # Here we simply move one piece from one position to another,
-        # replacing the starting position with a space, and replacing
-        # whatever was in the destination with the moved piece.
-        # Notice here we do not handle a pawn captured in passing, that
-        # gets handled both in the simulated move (board-wise), and
-        # in init_from_parent_game (enemy pieces-wise)
+        ''' Here we simply move one piece from one position to another,
+        replacing the starting position with a space, and replacing
+        whatever was in the destination with the moved piece.
+        Notice here we do not handle a pawn captured in passing, that
+        gets handled both in the simulated move (board-wise), and
+        in init_from_parent_game (enemy pieces-wise)
+        '''
         return newBoard
 
     def _sort_pieces(self, player):
@@ -419,6 +425,7 @@ class ChessGame:
         self._moves = []
         self._valid_children = []
         self._winning_children = {}
+        self._shorter_winner = False
         # moving piece from old square at i0, j0 ...
         oldsq = pmove[0]
         i0 = oldsq[0]
@@ -437,10 +444,11 @@ class ChessGame:
                 # diagonally.) Check if it was an in-passing capture
                 # of another pawn
                 in_passing_capture = pgame._read_board(i1, j1) == ' '
-        # Clone pieces for our soon moving player from parent game's
-        # waiting player, except that one piece (if any) which might
-        # have been in the destination square (such a piece would be
-        # getting captured by this move)
+        ''' Clone pieces for our soon moving player from parent game's
+        waiting player, except that one piece (if any) which might
+        have been in the destination square (such a piece would be
+        getting captured by this move)
+        '''
         castle = False
         if empc in EKINGS:
             # King moving
@@ -952,12 +960,12 @@ class ChessGame:
                 moves.append(newmove)
 
     def tell_parent_iam_awin(self):
-        global n_1st_moves, stop_at_1st_find, smateinx
+        global n_1st_moves, stop_at_1st_find, smateinx, shorter_win
         pgame = self._parent
         if not pgame is None:
             pgame._winning_children[self] = self._depth
             if pgame._parent is None:
-                # pgame is the root node
+                # pgame (self's parent node) is the root node
                 n_1st_moves += 1
                 if stop_at_1st_find:
                     # Fully printout this first solution found, and exit
@@ -969,7 +977,32 @@ class ChessGame:
                     # for other possible solutions
                     print("\nFound " + str(n_1st_moves) + " " + smateinx \
                         + " solution(s)!  Winning first move: ", end="")
+                    self._shorter_winner = \
+                        self.has_shorter_wsubtree(True, max_depth -2)
+                    if (self._shorter_winner):
+                        shorter_win = True
                     self.print_winning_tree("", False)
+
+    def has_shorter_wsubtree(self, all, mdepth):
+        ''' Finds out if a mate-in-Y is possible,
+        with Y < the requested X max_moves
+        '''
+        if (len(self._winning_children) == 0):
+            return True
+        if (mdepth == 1):
+            return False
+        justone = not all
+        mminus1 = mdepth - 1
+        if all:
+            for child in self._winning_children.keys():
+                if (not child.has_shorter_wsubtree((not all), mminus1)):
+                    return False
+            return True
+        else:
+            for child in self._winning_children.keys():
+                if (child.has_shorter_wsubtree((not all), mminus1)):
+                    return True
+            return False
 
     def get_winning_children(self):
         return self._winning_children
@@ -1019,15 +1052,18 @@ class ChessGame:
             elif self._nchks[self._movep] > 0:
                 # Check caused by the move
                 dmove += "+"
+        shwinner = ""
+        if (self._shorter_winner):
+            shwinner = " (-> MATE-IN-" + str(max_moves-1) + "!!!)"
         if all:
             n_nodes_in_sol += 1
             tail_txt = " " * max(2, 30 - len(tabs) - len(dmove)) \
-                        + " (" + str(n_nodes_in_sol) + ")"
+                        + " (" + str(n_nodes_in_sol) + ")" + shwinner
             print(tabs + dmove + tail_txt)
             for kchild in self._winning_children.keys():
                 kchild.print_winning_tree(tabs+"    ", all)
         else:
-            print(tabs + dmove)
+            print(tabs + dmove + shwinner)
 
     def has_winning_children(self):
         return self.get_num_winning_children() > 0
@@ -1115,8 +1151,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.4                         |')
-     print('|      By Raul Saavedra F., 2022-Dec-29        |');
+     print('|      mateinx.py v1.4.1                       |')
+     print('|      By Raul Saavedra F., 2023-Jan-17        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1240,7 +1276,8 @@ def verify(game, children):
         if nchks > 0:
             '''If no moves, and under check, the moving player has
             lost. Notify the parent game that this game is the
-            result of a winning move (in fact a mate-in-1 move.)
+            result of a winning move (in fact a mate-in-1 move
+            for the parent game's moving player.)
             Parent game then will know that at least one of
             his moves was a winning one.
             '''
@@ -1266,6 +1303,7 @@ def verify(game, children):
         game.set_ending(msg)
         if show_end_games: game.show(show_attack_footprints)
         return
+
     # Reaching this point means player had move options
     for child in children:
         if child.get_num_winning_children() == 0:
@@ -1350,7 +1388,7 @@ def process_options(argv):
 
 def show_final_summary(game):
     global ngame, nrec_calls, ngame, wins_per_depth, draws_per_depth
-    global smateinx, n_nodes_in_sol, n_1st_moves, iterative
+    global smateinx, n_nodes_in_sol, n_1st_moves, iterative, shorter_win
     if (game.has_winning_children()):
         print("\n" + smateinx + " tree of moves:")
         game.print_winning_tree("", True)
@@ -1360,8 +1398,11 @@ def show_final_summary(game):
         for ch in game.get_winning_children():
             ch.print_winning_tree("    ", False)
     else:
-        print("\nNo moves for " + game.get_turn() \
-                + " found to " + smateinx)
+        if (wins_per_depth[0] == 1):
+            print("\nInitial board already has a checkmate.")
+        else:
+            print("\nNo moves for " + game.get_turn() \
+                    + " found to " + smateinx)
     print("\nWins  found per depth:", wins_per_depth)
     print("Draws found per depth:", draws_per_depth)
     if iterative:
@@ -1370,6 +1411,9 @@ def show_final_summary(game):
         print("Total recursive calls:", nrec_calls)
     print("Total search trims   :", n_trims)
     print("Total games processed:", ngame)
+    if (shorter_win):
+        print("NOTE: A mate-in-less than " + str(max_moves) + \
+            " moves was found!  Retry with -m" + str(max_moves - 1))
 
 def mateinx_solver(argv):
     global ngame, verbose, nrec_calls, max_moves, wins_per_depth

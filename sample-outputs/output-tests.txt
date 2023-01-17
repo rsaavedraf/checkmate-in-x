@@ -1,7 +1,7 @@
 [H[2J[3J
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -40,8 +40,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -80,8 +80,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -117,8 +117,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -154,8 +154,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -224,8 +224,8 @@ Game #0 (depth 0) OK
 ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -275,8 +275,8 @@ Game #0 (depth 0) OK
 ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -325,8 +325,8 @@ Game #0 (depth 0) OK
 ERROR: invalid scenario: both players are under check simultaneously
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -375,8 +375,8 @@ Game #0 (depth 0) OK
 ERROR: invalid scenario. Player w will move next -> player b can't be in check
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-08.json
@@ -386,8 +386,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-09.json
@@ -397,8 +397,8 @@ Gameplay: ERROR: invalid pawn position b1
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-10.json
@@ -408,8 +408,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-11.json
@@ -419,8 +419,8 @@ Gameplay: ERROR: last move 'a2a1' in conflict with existing pieces, or turn
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 
@@ -430,11 +430,30 @@ Examples available at: github.com/rsaavedraf/checkmate-in-x
 
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
-Using 0 as maximum number of moves (max depth=0)
+Showing json file in the output
+Using 1 as maximum number of moves (max depth=2)
+Searching for ALL solutions (won't stop after 1st find)
 Starting game (json input): json-inputs/game-01.json
+{
+    "chess-game": {
+        "name": "mate-in-0-001",
+        "date": "2022-11-20",
+        "wpcs": [
+            "Kg1",
+            "Qh5",
+            "Bc3"
+        ],
+        "bpcs": [
+            "Ke1"
+        ],
+        "lastMove": null,
+        "turn": "b"
+    }
+}
+
 Initial game configuration is valid:
 
         a      b      c      d      e      f      g      h
@@ -477,10 +496,19 @@ Initial game configuration is valid:
 	To play: b    Checked: w=0 b=1     Move history:
 []
 Game #0 (depth 0) OK
+Searching for ALL Mate-in-1 solutions for json-inputs/game-01.json ...
+
+Initial board already has a checkmate.
+
+Wins  found per depth: [1, 0]
+Draws found per depth: [0, 0]
+Total recursive calls: 1
+Total search trims   : 0
+Total games processed: 1
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Showing json file in the output
 Starting game (json input): json-inputs/game-03.json
@@ -638,8 +666,8 @@ Total search trims   : 2547
 Total games processed: 2650
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -723,8 +751,8 @@ Total search trims   : 11
 Total games processed: 12
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -804,8 +832,8 @@ Total search trims   : 6
 Total games processed: 7
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -896,8 +924,8 @@ Total search trims   : 1930
 Total games processed: 1995
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1018,8 +1046,8 @@ Total search trims   : 3083
 Total games processed: 3241
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1112,8 +1140,8 @@ Total search trims   : 976
 Total games processed: 1017
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Starting game (json input): json-inputs/game-16.json
 Initial game configuration is valid:
@@ -1179,8 +1207,8 @@ Total search trims   : 40
 Total games processed: 45
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Using 1 as maximum number of moves (max depth=2)
 Running in verbose mode
@@ -1249,27 +1277,27 @@ Initial game configuration is valid:
 Game #0 (depth 0) OK
 Searching for 1st Mate-in-1 solution for json-inputs/castles.json ...
 Games explored: 0
-***** K0 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
-***** K1 doing a castle move *****
+***** K0 doing a short castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
+***** K1 doing a long castle move *****
 
 No moves for w found to Mate-in-1
 
@@ -1280,8 +1308,8 @@ Total search trims   : 23
 Total games processed: 24
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1413,8 +1441,8 @@ Total search trims   : 3172
 Total games processed: 3300
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Using 4 as maximum number of moves (max depth=8)
 Starting game (json input): json-inputs/game-18.json
@@ -1495,8 +1523,8 @@ Total search trims   : 10343
 Total games processed: 11422
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Using 4 as maximum number of moves (max depth=8)
 Starting game (json input): json-inputs/game-22.json
@@ -1567,8 +1595,8 @@ Total search trims   : 26
 Total games processed: 63
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Showing json file in the output
 Running in verbose mode
@@ -1666,8 +1694,8 @@ Total search trims   : 0
 Total games processed: 2
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Using 2 as maximum number of moves (max depth=4)
 Searching for ALL solutions (won't stop after 1st find)
@@ -1741,8 +1769,8 @@ Total search trims   : 159
 Total games processed: 179
 
 ================================================
-|      mateinx.py v1.4                         |
-|      By Raul Saavedra F., 2022-Dec-29        |
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
 ================================================
 Using 2 as maximum number of moves (max depth=4)
 Searching for ALL solutions (won't stop after 1st find)
@@ -1815,3 +1843,812 @@ Draws found per depth: [0, 6, 0, 0]
 Total iterations     : 666
 Total search trims   : 159
 Total games processed: 179
+
+================================================
+|      mateinx.py v1.4.1                       |
+|      By Raul Saavedra F., 2023-Jan-17        |
+================================================
+Showing json file in the output
+Using 3 as maximum number of moves (max depth=6)
+Searching for ALL solutions (won't stop after 1st find)
+Starting game (json input): json-inputs/game-02.json
+{
+    "chess-game": {
+        "name": "mate-in-2?-002",
+        "date": "2022-11-19",
+        "wpcs": [
+            "Kg1",
+            "Qh5",
+            "Ba1",
+            "Re8"
+        ],
+        "bpcs": [
+            "Kd2"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[    ]|  R0  |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|  Q0  | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[ K1 ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[ B0 ]|      |[    ]|      |[    ]|      |[ K0 ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Searching for ALL Mate-in-3 solutions for json-inputs/game-02.json ...
+
+Found 1 Mate-in-3 solution(s)!  Winning first move: Q0h5h7
+
+Found 2 Mate-in-3 solution(s)!  Winning first move: Q0h5h8
+
+Found 3 Mate-in-3 solution(s)!  Winning first move: Q0h5h3
+
+Found 4 Mate-in-3 solution(s)!  Winning first move: Q0h5h2+
+
+Found 5 Mate-in-3 solution(s)!  Winning first move: Q0h5f5
+
+Found 6 Mate-in-3 solution(s)!  Winning first move: Q0h5e5
+
+Found 7 Mate-in-3 solution(s)!  Winning first move: Q0h5c5
+
+Found 8 Mate-in-3 solution(s)!  Winning first move: Q0h5b5
+
+Found 9 Mate-in-3 solution(s)!  Winning first move: Q0h5a5+
+
+Found 10 Mate-in-3 solution(s)!  Winning first move: Q0h5g6
+
+Found 11 Mate-in-3 solution(s)!  Winning first move: Q0h5f3
+
+Found 12 Mate-in-3 solution(s)!  Winning first move: Q0h5e2+
+
+Found 13 Mate-in-3 solution(s)!  Winning first move: R0e8e2+
+
+Found 14 Mate-in-3 solution(s)!  Winning first move: R0e8e1 (-> MATE-IN-2!!!)
+
+Found 15 Mate-in-3 solution(s)!  Winning first move: R0e8d8+
+
+Mate-in-3 tree of moves:
+?                              (0)
+    Q0h5h7                     (1)
+        K1d2c1                 (2)
+            B0a1c3             (3)
+                K1c1d1         (4)
+                    Q0h7b1#    (5)
+                    R0e8e1#    (6)
+            R0e8e2             (7)
+                K1c1d1         (8)
+                    Q0h7c2#    (9)
+        K1d2d1                 (10)
+            Q0h7h2             (11)
+                K1d1c1         (12)
+                    R0e8e1#    (13)
+            Q0h7d3+            (14)
+                K1d1c1         (15)
+                    R0e8e1#    (16)
+                    R0e8c8#    (17)
+            B0a1c3             (18)
+                K1d1c1         (19)
+                    R0e8e1#    (20)
+    Q0h5h8                     (21)
+        K1d2c1                 (22)
+            Q0h8c3+            (23)
+                K1c1b1         (24)
+                    Q0c3b2#    (25)
+                K1c1d1         (26)
+                    R0e8e1#    (27)
+            R0e8e1+            (28)
+                K1c1c2         (29)
+                    Q0h8c3#    (30)
+                K1c1d2         (31)
+                    Q0h8c3#    (32)
+            R0e8d8             (33)
+                K1c1b1         (34)
+                    Q0h8b2#    (35)
+                K1c1c2         (36)
+                    Q0h8b2#    (37)
+        K1d2c2                 (38)
+            Q0h8c3+            (39)
+                K1c2b1         (40)
+                    Q0c3b2#    (41)
+                K1c2d1         (42)
+                    R0e8e1#    (43)
+        K1d2d1                 (44)
+            Q0h8h2             (45)
+                K1d1c1         (46)
+                    R0e8e1#    (47)
+        K1d2d3                 (48)
+            Q0h8c3#            (49)
+    Q0h5h3                     (50)
+        K1d2c1                 (51)
+            Q0h3c3+            (52)
+                K1c1b1         (53)
+                    Q0c3b2#    (54)
+                K1c1d1         (55)
+                    R0e8e1#    (56)
+            R0e8e2             (57)
+                K1c1b1         (58)
+                    Q0h3f1#    (59)
+                K1c1d1         (60)
+                    Q0h3f1#    (61)
+            R0e8e1+            (62)
+                K1c1c2         (63)
+                    Q0h3c3#    (64)
+                K1c1d2         (65)
+                    Q0h3c3#    (66)
+        K1d2c2                 (67)
+            Q0h3c3+            (68)
+                K1c2b1         (69)
+                    Q0c3b2#    (70)
+                K1c2d1         (71)
+                    R0e8e1#    (72)
+            R0e8e2+            (73)
+                K1c2b1         (74)
+                    Q0h3f1#    (75)
+                K1c2c1         (76)
+                    Q0h3f1#    (77)
+                K1c2d1         (78)
+                    Q0h3f1#    (79)
+            R0e8e1             (80)
+                K1c2d2         (81)
+                    Q0h3c3#    (82)
+        K1d2d1                 (83)
+            Q0h3h2             (84)
+                K1d1c1         (85)
+                    R0e8e1#    (86)
+            Q0h3d3+            (87)
+                K1d1c1         (88)
+                    R0e8e1#    (89)
+                    R0e8c8#    (90)
+            Q0h3g2             (91)
+                K1d1c1         (92)
+                    R0e8e1#    (93)
+    Q0h5h2+                    (94)
+        K1d2c1                 (95)
+            K0g1f1             (96)
+                K1c1b1         (97)
+                    Q0h2b2#    (98)
+                    R0e8e1#    (99)
+                K1c1d1         (100)
+                    R0e8e1#    (101)
+            Q0h2f2             (102)
+                K1c1b1         (103)
+                    Q0f2b2#    (104)
+                    R0e8e1#    (105)
+                K1c1d1         (106)
+                    R0e8e1#    (107)
+            Q0h2e2             (108)
+                K1c1b1         (109)
+                    Q0e2b2#    (110)
+            B0a1c3             (111)
+                K1c1b1         (112)
+                    Q0h2b2#    (113)
+                    R0e8e1#    (114)
+                K1c1d1         (115)
+                    Q0h2d2#    (116)
+                    R0e8e1#    (117)
+            R0e8e1#            (118)
+            R0e8f8             (119)
+                K1c1b1         (120)
+                    Q0h2b2#    (121)
+                    R0f8f1#    (122)
+                K1c1d1         (123)
+                    R0f8f1#    (124)
+            R0e8d8             (125)
+                K1c1b1         (126)
+                    Q0h2b2#    (127)
+                    R0d8d1#    (128)
+            R0e8b8             (129)
+                K1c1d1         (130)
+                    R0b8b1#    (131)
+        K1d2d1                 (132)
+            K0g1f1             (133)
+                K1d1c1         (134)
+                    R0e8e1#    (135)
+            K0g1h1             (136)
+                K1d1c1         (137)
+                    R0e8e1#    (138)
+            Q0h2g2             (139)
+                K1d1c1         (140)
+                    R0e8e1#    (141)
+            Q0h2f2             (142)
+                K1d1c1         (143)
+                    R0e8e1#    (144)
+            Q0h2a2             (145)
+                K1d1c1         (146)
+                    R0e8e1#    (147)
+            B0a1c3             (148)
+                K1d1c1         (149)
+                    R0e8e1#    (150)
+            B0a1d4             (151)
+                K1d1c1         (152)
+                    R0e8e1#    (153)
+            B0a1f6             (154)
+                K1d1c1         (155)
+                    R0e8e1#    (156)
+            B0a1g7             (157)
+                K1d1c1         (158)
+                    R0e8e1#    (159)
+            B0a1h8             (160)
+                K1d1c1         (161)
+                    R0e8e1#    (162)
+            R0e8e7             (163)
+                K1d1c1         (164)
+                    R0e7e1#    (165)
+            R0e8e6             (166)
+                K1d1c1         (167)
+                    R0e6e1#    (168)
+            R0e8e5             (169)
+                K1d1c1         (170)
+                    R0e5e1#    (171)
+            R0e8e4             (172)
+                K1d1c1         (173)
+                    R0e4e1#    (174)
+            R0e8e3             (175)
+                K1d1c1         (176)
+                    R0e3e1#    (177)
+            R0e8e2             (178)
+                K1d1c1         (179)
+                    R0e2e1#    (180)
+            R0e8f8             (181)
+                K1d1c1         (182)
+                    R0f8f1#    (183)
+                K1d1e1         (184)
+                    R0f8f1#    (185)
+            R0e8d8+            (186)
+                K1d1c1         (187)
+                    Q0h2b2#    (188)
+                K1d1e1         (189)
+                    Q0h2f2#    (190)
+                    Q0h2d2#    (191)
+                    Q0h2e5#    (192)
+                    B0a1c3#    (193)
+            R0e8c8             (194)
+                K1d1e1         (195)
+                    R0c8c1#    (196)
+        K1d2d3                 (197)
+            Q0h2e2#            (198)
+    Q0h5f5                     (199)
+        K1d2c1                 (200)
+            Q0f5f2             (201)
+                K1c1b1         (202)
+                    Q0f2b2#    (203)
+                    R0e8e1#    (204)
+                K1c1d1         (205)
+                    R0e8e1#    (206)
+            B0a1c3             (207)
+                K1c1d1         (208)
+                    Q0f5b1#    (209)
+                    R0e8e1#    (210)
+            R0e8e2             (211)
+                K1c1d1         (212)
+                    Q0f5f1#    (213)
+                    Q0f5c2#    (214)
+        K1d2d1                 (215)
+            Q0f5f2             (216)
+                K1d1c1         (217)
+                    R0e8e1#    (218)
+            Q0f5d3+            (219)
+                K1d1c1         (220)
+                    R0e8e1#    (221)
+                    R0e8c8#    (222)
+            B0a1c3             (223)
+                K1d1c1         (224)
+                    R0e8e1#    (225)
+    Q0h5e5                     (226)
+        K1d2c1                 (227)
+            Q0e5e2             (228)
+                K1c1b1         (229)
+                    Q0e2b2#    (230)
+            Q0e5c3+            (231)
+                K1c1b1         (232)
+                    Q0c3b2#    (233)
+                K1c1d1         (234)
+                    R0e8e1#    (235)
+            R0e8d8             (236)
+                K1c1b1         (237)
+                    Q0e5b2#    (238)
+                K1c1c2         (239)
+                    Q0e5b2#    (240)
+        K1d2c2                 (241)
+            Q0e5c3+            (242)
+                K1c2b1         (243)
+                    Q0c3b2#    (244)
+                K1c2d1         (245)
+                    R0e8e1#    (246)
+        K1d2d1                 (247)
+            Q0e5h2             (248)
+                K1d1c1         (249)
+                    R0e8e1#    (250)
+            R0e8d8+            (251)
+                K1d1c1         (252)
+                    Q0e5b2#    (253)
+                K1d1c2         (254)
+                    Q0e5b2#    (255)
+        K1d2d3                 (256)
+            Q0e5e2#            (257)
+            Q0e5c3#            (258)
+    Q0h5c5                     (259)
+        K1d2d1                 (260)
+            K0g1f1             (261)
+                K1d1d2         (262)
+                    R0e8d8#    (263)
+            K0g1f2             (264)
+                K1d1d2         (265)
+                    R0e8d8#    (266)
+            Q0c5f2             (267)
+                K1d1c1         (268)
+                    R0e8e1#    (269)
+            R0e8d8+            (270)
+                K1d1e1         (271)
+                    Q0c5e5#    (272)
+                    Q0c5e3#    (273)
+                    Q0c5f2#    (274)
+                    Q0c5e7#    (275)
+                K1d1e2         (276)
+                    Q0c5f2#    (277)
+        K1d2d3                 (278)
+            K0g1f1             (279)
+                K1d3d2         (280)
+                    R0e8d8#    (281)
+            K0g1f2             (282)
+                K1d3d2         (283)
+                    R0e8d8#    (284)
+            Q0c5c3#            (285)
+            R0e8e1             (286)
+                K1d3d2         (287)
+                    Q0c5c3#    (288)
+    Q0h5b5                     (289)
+        K1d2c1                 (290)
+            Q0b5e2             (291)
+                K1c1b1         (292)
+                    Q0e2b2#    (293)
+            R0e8d8             (294)
+                K1c1c2         (295)
+                    Q0b5b2#    (296)
+        K1d2c2                 (297)
+            R0e8e1             (298)
+                K1c2d2         (299)
+                    Q0b5e2#    (300)
+            R0e8d8             (301)
+                K1c2c1         (302)
+                    Q0b5b2#    (303)
+        K1d2d1                 (304)
+            Q0b5d3+            (305)
+                K1d1c1         (306)
+                    R0e8e1#    (307)
+                    R0e8c8#    (308)
+            R0e8d8+            (309)
+                K1d1c1         (310)
+                    Q0b5b2#    (311)
+                K1d1c2         (312)
+                    Q0b5b2#    (313)
+                K1d1e1         (314)
+                    Q0b5e5#    (315)
+                    Q0b5f1#    (316)
+                    Q0b5e8#    (317)
+                    B0a1c3#    (318)
+    Q0h5a5+                    (319)
+        K1d2c1                 (320)
+            Q0a5c3+            (321)
+                K1c1b1         (322)
+                    Q0c3b2#    (323)
+                K1c1d1         (324)
+                    R0e8e1#    (325)
+            R0e8e2             (326)
+                K1c1b1         (327)
+                    Q0a5e1#    (328)
+                K1c1d1         (329)
+                    Q0a5d2#    (330)
+                    Q0a5e1#    (331)
+            R0e8e1+            (332)
+                K1c1c2         (333)
+                    Q0a5c3#    (334)
+        K1d2c2                 (335)
+            Q0a5c3+            (336)
+                K1c2b1         (337)
+                    Q0c3b2#    (338)
+                K1c2d1         (339)
+                    R0e8e1#    (340)
+        K1d2d1                 (341)
+            Q0a5a2             (342)
+                K1d1c1         (343)
+                    R0e8e1#    (344)
+            R0e8e1+            (345)
+                K1d1c2         (346)
+                    Q0a5c3#    (347)
+        K1d2d3                 (348)
+            Q0a5c3#            (349)
+    Q0h5g6                     (350)
+        K1d2c1                 (351)
+            B0a1c3             (352)
+                K1c1d1         (353)
+                    Q0g6b1#    (354)
+                    R0e8e1#    (355)
+            R0e8e2             (356)
+                K1c1d1         (357)
+                    Q0g6c2#    (358)
+        K1d2d1                 (359)
+            Q0g6g2             (360)
+                K1d1c1         (361)
+                    R0e8e1#    (362)
+            Q0g6d3+            (363)
+                K1d1c1         (364)
+                    R0e8e1#    (365)
+                    R0e8c8#    (366)
+            B0a1c3             (367)
+                K1d1c1         (368)
+                    R0e8e1#    (369)
+    Q0h5f3                     (370)
+        K1d2c1                 (371)
+            Q0f3f2             (372)
+                K1c1b1         (373)
+                    Q0f2b2#    (374)
+                    R0e8e1#    (375)
+                K1c1d1         (376)
+                    R0e8e1#    (377)
+            Q0f3c3+            (378)
+                K1c1b1         (379)
+                    Q0c3b2#    (380)
+                K1c1d1         (381)
+                    R0e8e1#    (382)
+            Q0f3e2             (383)
+                K1c1b1         (384)
+                    Q0e2b2#    (385)
+            R0e8e2             (386)
+                K1c1b1         (387)
+                    Q0f3f1#    (388)
+                K1c1d1         (389)
+                    Q0f3f1#    (390)
+            R0e8e1+            (391)
+                K1c1c2         (392)
+                    Q0f3c3#    (393)
+                    Q0f3d1#    (394)
+                K1c1d2         (395)
+                    Q0f3c3#    (396)
+                    Q0f3e2#    (397)
+                    Q0f3d1#    (398)
+        K1d2c2                 (399)
+            Q0f3c3+            (400)
+                K1c2b1         (401)
+                    Q0c3b2#    (402)
+                K1c2d1         (403)
+                    R0e8e1#    (404)
+            R0e8e2+            (405)
+                K1c2b1         (406)
+                    Q0f3f1#    (407)
+                K1c2c1         (408)
+                    Q0f3f1#    (409)
+                K1c2d1         (410)
+                    Q0f3f1#    (411)
+            R0e8e1             (412)
+                K1c2d2         (413)
+                    Q0f3c3#    (414)
+                    Q0f3e2#    (415)
+                    Q0f3d1#    (416)
+    Q0h5e2+                    (417)
+        K1d2c1                 (418)
+            K0g1f1             (419)
+                K1c1b1         (420)
+                    Q0e2b2#    (421)
+            K0g1f2             (422)
+                K1c1b1         (423)
+                    Q0e2b2#    (424)
+            K0g1g2             (425)
+                K1c1b1         (426)
+                    Q0e2b2#    (427)
+            K0g1h1             (428)
+                K1c1b1         (429)
+                    Q0e2b2#    (430)
+            K0g1h2             (431)
+                K1c1b1         (432)
+                    Q0e2b2#    (433)
+            Q0e2f2             (434)
+                K1c1b1         (435)
+                    Q0f2b2#    (436)
+                    R0e8e1#    (437)
+                K1c1d1         (438)
+                    R0e8e1#    (439)
+            B0a1c3             (440)
+                K1c1b1         (441)
+                    Q0e2b2#    (442)
+            B0a1d4             (443)
+                K1c1b1         (444)
+                    Q0e2b2#    (445)
+            B0a1e5             (446)
+                K1c1b1         (447)
+                    Q0e2b2#    (448)
+            B0a1f6             (449)
+                K1c1b1         (450)
+                    Q0e2b2#    (451)
+            B0a1g7             (452)
+                K1c1b1         (453)
+                    Q0e2b2#    (454)
+            B0a1h8             (455)
+                K1c1b1         (456)
+                    Q0e2b2#    (457)
+            R0e8e7             (458)
+                K1c1b1         (459)
+                    Q0e2b2#    (460)
+            R0e8e6             (461)
+                K1c1b1         (462)
+                    Q0e2b2#    (463)
+            R0e8e5             (464)
+                K1c1b1         (465)
+                    Q0e2b2#    (466)
+            R0e8e4             (467)
+                K1c1b1         (468)
+                    Q0e2b2#    (469)
+            R0e8e3             (470)
+                K1c1b1         (471)
+                    Q0e2b2#    (472)
+            R0e8f8             (473)
+                K1c1b1         (474)
+                    Q0e2b2#    (475)
+                    R0f8f1#    (476)
+            R0e8g8             (477)
+                K1c1b1         (478)
+                    Q0e2b2#    (479)
+            R0e8h8             (480)
+                K1c1b1         (481)
+                    Q0e2b2#    (482)
+            R0e8d8             (483)
+                K1c1b1         (484)
+                    Q0e2b2#    (485)
+                    R0d8d1#    (486)
+            R0e8c8+            (487)
+                K1c1b1         (488)
+                    Q0e2b2#    (489)
+            R0e8a8             (490)
+                K1c1b1         (491)
+                    Q0e2b2#    (492)
+                    Q0e2d1#    (493)
+    R0e8e2+                    (494)
+        K1d2c1                 (495)
+            K0g1f2             (496)
+                K1c1b1         (497)
+                    Q0h5h1#    (498)
+                K1c1d1         (499)
+                    Q0h5h1#    (500)
+            Q0h5h7             (501)
+                K1c1d1         (502)
+                    Q0h7c2#    (503)
+            Q0h5h4             (504)
+                K1c1b1         (505)
+                    Q0h4e1#    (506)
+                K1c1d1         (507)
+                    Q0h4e1#    (508)
+            Q0h5h3             (509)
+                K1c1b1         (510)
+                    Q0h3f1#    (511)
+                K1c1d1         (512)
+                    Q0h3f1#    (513)
+            Q0h5h1             (514)
+                K1c1b1         (515)
+                    K0g1f2#    (516)
+                    K0g1g2#    (517)
+                    K0g1h2#    (518)
+                K1c1d1         (519)
+                    K0g1f2#    (520)
+            Q0h5f5             (521)
+                K1c1d1         (522)
+                    Q0f5f1#    (523)
+                    Q0f5c2#    (524)
+            Q0h5d5             (525)
+                K1c1b1         (526)
+                    Q0d5d1#    (527)
+            Q0h5a5             (528)
+                K1c1b1         (529)
+                    Q0a5e1#    (530)
+                K1c1d1         (531)
+                    Q0a5d2#    (532)
+                    Q0a5e1#    (533)
+            Q0h5g6             (534)
+                K1c1d1         (535)
+                    Q0g6c2#    (536)
+            Q0h5f7             (537)
+                K1c1b1         (538)
+                    Q0f7f1#    (539)
+                K1c1d1         (540)
+                    Q0f7f1#    (541)
+            Q0h5f3             (542)
+                K1c1b1         (543)
+                    Q0f3f1#    (544)
+                K1c1d1         (545)
+                    Q0f3f1#    (546)
+            R0e2e1+            (547)
+                K1c1c2         (548)
+                    Q0h5d1#    (549)
+                K1c1d2         (550)
+                    Q0h5e2#    (551)
+                    Q0h5d1#    (552)
+            R0e2f2             (553)
+                K1c1b1         (554)
+                    Q0h5d1#    (555)
+            R0e2g2             (556)
+                K1c1b1         (557)
+                    Q0h5d1#    (558)
+            R0e2h2             (559)
+                K1c1b1         (560)
+                    Q0h5d1#    (561)
+        K1d2d1                 (562)
+            K0g1f2             (563)
+                K1d1c1         (564)
+                    Q0h5h1#    (565)
+            K0g1g2             (566)
+                K1d1c1         (567)
+                    Q0h5h1#    (568)
+            Q0h5h2             (569)
+                K1d1c1         (570)
+                    R0e2e1#    (571)
+            Q0h5f3             (572)
+                K1d1c1         (573)
+                    Q0f3f1#    (574)
+            R0e2e1+            (575)
+                K1d1c2         (576)
+                    Q0h5d1#    (577)
+                K1d1d2         (578)
+                    Q0h5e2#    (579)
+                    Q0h5d1#    (580)
+                K1d1xe1        (581)
+                    B0a1c3#    (582)
+        K1d2d3                 (583)
+            Q0h5b5#            (584)
+    R0e8e1                     (585) (-> MATE-IN-2!!!)
+        K1d2c2                 (586)
+            Q0h5h3             (587)
+                K1c2d2         (588)
+                    Q0h3c3#    (589)
+            Q0h5b5             (590)
+                K1c2d2         (591)
+                    Q0b5e2#    (592)
+            Q0h5f3             (593)
+                K1c2d2         (594)
+                    Q0f3c3#    (595)
+                    Q0f3e2#    (596)
+                    Q0f3d1#    (597)
+            Q0h5d1#            (598)
+        K1d2d3                 (599)
+            Q0h5d5+            (600)
+                K1d3c2         (601)
+                    Q0d5d1#    (602)
+            Q0h5c5             (603)
+                K1d3d2         (604)
+                    Q0c5c3#    (605)
+            Q0h5g4             (606)
+                K1d3c2         (607)
+                    Q0g4d1#    (608)
+                K1d3d2         (609)
+                    Q0g4e2#    (610)
+                    Q0g4d1#    (611)
+            Q0h5e2#            (612)
+        K1d2xe1                (613)
+            B0a1c3#            (614)
+    R0e8d8+                    (615)
+        K1d2c1                 (616)
+            Q0h5h8             (617)
+                K1c1b1         (618)
+                    Q0h8b2#    (619)
+                K1c1c2         (620)
+                    Q0h8b2#    (621)
+            Q0h5h2             (622)
+                K1c1b1         (623)
+                    Q0h2b2#    (624)
+                    R0d8d1#    (625)
+            Q0h5e5             (626)
+                K1c1b1         (627)
+                    Q0e5b2#    (628)
+                K1c1c2         (629)
+                    Q0e5b2#    (630)
+            Q0h5b5             (631)
+                K1c1c2         (632)
+                    Q0b5b2#    (633)
+            Q0h5e2             (634)
+                K1c1b1         (635)
+                    Q0e2b2#    (636)
+                    R0d8d1#    (637)
+            Q0h5d1#            (638)
+        K1d2c2                 (639)
+            Q0h5b5             (640)
+                K1c2c1         (641)
+                    Q0b5b2#    (642)
+            Q0h5d1#            (643)
+        K1d2e1                 (644)
+            Q0h5h7             (645)
+                K1e1e2         (646)
+                    Q0h7e4#    (647)
+            Q0h5h4+            (648)
+                K1e1e2         (649)
+                    Q0h4e4#    (650)
+                    Q0h4f2#    (651)
+            Q0h5h1             (652)
+                K1e1e2         (653)
+                    Q0h1e4#    (654)
+            Q0h5f5             (655)
+                K1e1e2         (656)
+                    Q0f5f2#    (657)
+                    Q0f5e4#    (658)
+            Q0h5e5#            (659)
+            Q0h5d5             (660)
+                K1e1e2         (661)
+                    Q0d5e4#    (662)
+                    R0d8e8#    (663)
+            Q0h5c5             (664)
+                K1e1e2         (665)
+                    Q0c5f2#    (666)
+            Q0h5g6             (667)
+                K1e1e2         (668)
+                    Q0g6e4#    (669)
+            Q0h5f7             (670)
+                K1e1e2         (671)
+                    Q0f7f2#    (672)
+            Q0h5e8#            (673)
+            Q0h5d1#            (674)
+            B0a1c3#            (675)
+            R0d8d1#            (676)
+        K1d2e3                 (677)
+            Q0h5f5             (678)
+                K1e3e2         (679)
+                    Q0f5f2#    (680)
+                    Q0f5e4#    (681)
+
+Total number of nodes in solution: 681
+Found 15 first move(s) which can Mate-in-3:
+    Q0h5h7
+    Q0h5h8
+    Q0h5h3
+    Q0h5h2+
+    Q0h5f5
+    Q0h5e5
+    Q0h5c5
+    Q0h5b5
+    Q0h5a5+
+    Q0h5g6
+    Q0h5f3
+    Q0h5e2+
+    R0e8e2+
+    R0e8e1 (-> MATE-IN-2!!!)
+    R0e8d8+
+
+Wins  found per depth: [0, 0, 0, 19, 0, 948]
+Draws found per depth: [0, 0, 0, 54, 0, 2771]
+Total recursive calls: 471046
+Total search trims   : 233091
+Total games processed: 242321
+NOTE: A mate-in-less than 3 moves was found!  Retry with -m2

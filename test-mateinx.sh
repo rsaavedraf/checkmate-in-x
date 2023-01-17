@@ -1,6 +1,7 @@
 #/bin/bash
 
 clear
+# Test different errors
 python3 mateinx.py json-inputs/error-01.json -v -j
 python3 mateinx.py json-inputs/error-02.json -v -j
 python3 mateinx.py json-inputs/error-03.json -v -j
@@ -14,7 +15,10 @@ python3 mateinx.py json-inputs/error-09.json -v
 python3 mateinx.py json-inputs/error-10.json -v
 python3 mateinx.py json-inputs/error-11.json -v
 python3 mateinx.py json-inputs/error-12.json -v
-python3 mateinx.py json-inputs/game-01.json -m0
+
+# Test initial board already having a checkmate
+python3 mateinx.py json-inputs/game-01.json -j -m1 -a
+
 python3 mateinx.py json-inputs/game-03.json -j
 python3 mateinx.py json-inputs/game-10.json -v -j -m1 -a
 python3 mateinx.py json-inputs/game-11.json -v -j -m1 -a
@@ -23,6 +27,7 @@ python3 mateinx.py json-inputs/game-14.json -j -a
 
 # Test problem with more than one 1st move solution
 python3 mateinx.py json-inputs/game-16.json -j -a
+
 # Test stopping at 1st find
 python3 mateinx.py json-inputs/game-16.json
 
@@ -56,3 +61,6 @@ python3 mateinx.py json-inputs/game-25.json -j -v -m1
 # but with the new option -i)
 python3 mateinx.py json-inputs/game-07.json -m2 -a
 python3 mateinx.py json-inputs/game-07.json -m2 -a -i
+
+# Test the detection of mate-in-K < X solutions
+python3 mateinx.py json-inputs/game-02.json -j -m3 -a
