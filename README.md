@@ -87,6 +87,14 @@ exactly the same sequence of games and search trims done by the recursive
 one. Iterative still slightly slower (5-7% more time), but now in the
 same ballpark as the recursive.
 
+## Update 2023-01-17
+v.1.4.1 When using the -a (all) option, the program now will detect if
+there are any mate-in-X solutions with X smaller than the specified
+number of max moves to search solutions for.
+This is useful when for example trying to find all mate-in-3
+solutions for a given board (options -a -m3) not knowing
+there are in fact valid mate-in-2 solutions for it.
+
 ## Next tasks:
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version
