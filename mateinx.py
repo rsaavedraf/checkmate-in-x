@@ -1054,7 +1054,7 @@ class ChessGame:
                 dmove += "+"
         shwinner = ""
         if (self._shorter_winner):
-            shwinner = " (-> MATE-IN-" + str(max_moves-1) + "!!!)"
+            shwinner = " (-> Mate-in-X < " + str(max_moves) + " !!!)"
         if all:
             n_nodes_in_sol += 1
             tail_txt = " " * max(2, 30 - len(tabs) - len(dmove)) \
@@ -1412,8 +1412,9 @@ def show_final_summary(game):
     print("Total search trims   :", n_trims)
     print("Total games processed:", ngame)
     if (shorter_win):
-        print("NOTE: A mate-in-less than " + str(max_moves) + \
-            " moves was found!  Retry with -m" + str(max_moves - 1))
+        print("\nNOTE: Mate-in-X < " + str(max_moves) \
+            + " moves were found!!!  Retry with -m" \
+            + str(max_moves - 1) + "\n")
 
 def mateinx_solver(argv):
     global ngame, verbose, nrec_calls, max_moves, wins_per_depth
