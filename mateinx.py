@@ -1372,7 +1372,7 @@ def process_options(argv):
             print("Using", max_moves, "as maximum number of moves " \
                     + "(max depth=" + str(max_depth) + ")")
             continue
-        if not opt.startswith("-"):
+        if ((not opt.startswith("-")) and (input_file == "")):
             # This should be the file name (.json) to use as input
             fname = opt
             vpath = Path(fname)
