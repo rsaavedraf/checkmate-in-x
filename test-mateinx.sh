@@ -53,6 +53,10 @@ python3 mateinx.py json-inputs/game-22.json -m4
 # has a whopping 190413 nodes
 #python3 mateinx.py json-inputs/game-17.json -v -m5
 
+# And a much tougher one: a mate-in-4 that takes
+# almost 13 hours, explores a total of ~126 M games.
+#python3 mateinx.py json-inputs/game-45.json -m4
+
 # Test the mate-in-1 which was not being found originally
 # (there was a bug with handling in-passing captures, now fixed)
 python3 mateinx.py json-inputs/game-25.json -j -v -m1
