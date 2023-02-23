@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: MIT
+
 """
 mateinx.py
 author : Raul Saavedra ( raul.saavedra@gmail.com )

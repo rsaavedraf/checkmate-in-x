@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
+
 #clear
 
 # Demo to display the changing boards while mateinx
