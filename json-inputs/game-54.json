@@ -1,0 +1,23 @@
+{
+    "chess-game": {
+        "name" : "mate-in-4 from Chess_Strategy",
+        "date" : "2023-02-19",
+
+        "wpcs" : [
+                    "Kh1",
+                    "Qe7",
+                    "Rc1", "Rg7",
+                    "Bd2",
+                    "Nf3",
+                    "a3", "c4", "d3", "f2", "h2"],
+
+        "bpcs" : [
+                    "Kh8",
+                    "Qh6",
+                    "Rd8", "Re8",
+                    "a6", "c6", "d6", "f4", "h5"],
+
+        "lastMove": null,
+        "turn" : "w"
+    }
+}
