@@ -1,7 +1,7 @@
 [H[2J[3J
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -40,8 +40,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -80,8 +80,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -117,8 +117,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -154,8 +154,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -224,8 +224,8 @@ Game #0 (depth 0) OK
 ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -275,8 +275,8 @@ Game #0 (depth 0) OK
 ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -325,8 +325,8 @@ Game #0 (depth 0) OK
 ERROR: invalid scenario: both players are under check simultaneously
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -375,8 +375,8 @@ Game #0 (depth 0) OK
 ERROR: invalid scenario. Player w will move next -> player b can't be in check
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-08.json
@@ -386,8 +386,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-09.json
@@ -397,8 +397,8 @@ Gameplay: ERROR: invalid pawn position b1
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-10.json
@@ -408,8 +408,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-11.json
@@ -419,8 +419,8 @@ Gameplay: ERROR: last move 'a2a1' in conflict with existing pieces, or turn
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 
@@ -430,8 +430,8 @@ Examples available at: github.com/rsaavedraf/checkmate-in-x
 
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Using 1 as maximum number of moves (max depth=2)
@@ -507,8 +507,8 @@ Total search trims   : 0
 Total games processed: 1
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Starting game (json input): json-inputs/game-03.json
@@ -612,62 +612,56 @@ Mate-in-2 tree of moves:
             N0b7c5#            (23)
         Q1d5f7                 (24)
             N0b7d6#            (25)
-            N0b7c5#            (26)
-        Q1d5g8                 (27)
-            N0b7d6#            (28)
-            N0b7c5#            (29)
-        Q1d5c4                 (30)
+        Q1d5g8                 (26)
+            N0b7d6#            (27)
+        Q1d5c4                 (28)
+            N0b7d6#            (29)
+        Q1d5b3                 (30)
             N0b7d6#            (31)
-        Q1d5b3                 (32)
+        Q1d5a2                 (32)
             N0b7d6#            (33)
-            N0b7c5#            (34)
-        Q1d5a2                 (35)
-            N0b7d6#            (36)
-            N0b7c5#            (37)
-        R1c6c7                 (38)
+        R1c6c7                 (34)
+            N0b7d6#            (35)
+        R1c6c8                 (36)
+            N0b7d6#            (37)
+        R1c6c5                 (38)
             N0b7d6#            (39)
-        R1c6c8                 (40)
+        R1c6c4                 (40)
             N0b7d6#            (41)
-        R1c6c5                 (42)
+        R1c6c3                 (42)
             N0b7d6#            (43)
-            N0b7xc5#           (44)
-        R1c6c4                 (45)
-            N0b7d6#            (46)
-        R1c6c3                 (47)
-            N0b7d6#            (48)
-        R1c6c2                 (49)
-            N0b7d6#            (50)
-        R1c6c1                 (51)
-            N0b7d6#            (52)
-        R1c6d6                 (53)
-            N0b7xd6#           (54)
+        R1c6c2                 (44)
+            N0b7d6#            (45)
+        R1c6c1                 (46)
+            N0b7d6#            (47)
+        R1c6d6                 (48)
+            N0b7xd6#           (49)
+        R1c6e6                 (50)
+            N0b7c5#            (51)
+        R1c6f6                 (52)
+            N0b7c5#            (53)
+        R1c6g6                 (54)
             N0b7c5#            (55)
-        R1c6e6                 (56)
+        R1c6h6                 (56)
             N0b7c5#            (57)
-        R1c6f6                 (58)
+        R1c6b6                 (58)
             N0b7c5#            (59)
-        R1c6g6                 (60)
+        R1c6a6                 (60)
             N0b7c5#            (61)
-        R1c6h6                 (62)
-            N0b7c5#            (63)
-        R1c6b6                 (64)
-            N0b7c5#            (65)
-        R1c6a6                 (66)
-            N0b7c5#            (67)
 
-Total number of nodes in solution: 67
+Total number of nodes in solution: 61
 Found 1 first move(s) which can Mate-in-2:
     Q0a4a8
 
-Wins  found per depth: [0, 0, 0, 49]
-Draws found per depth: [0, 0, 0, 2]
-Total recursive calls: 5190
-Total search trims   : 2547
-Total games processed: 2650
+Wins  found per depth: [0, 0, 0, 43]
+Draws found per depth: [0, 0, 0, 1]
+Total recursive calls: 3395
+Total search trims   : 1696
+Total games processed: 1749
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -751,8 +745,8 @@ Total search trims   : 11
 Total games processed: 12
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -832,8 +826,8 @@ Total search trims   : 6
 Total games processed: 7
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -919,13 +913,13 @@ Found 1 first move(s) which can Mate-in-2:
 
 Wins  found per depth: [0, 0, 0, 4]
 Draws found per depth: [0, 0, 0, 17]
-Total recursive calls: 3887
-Total search trims   : 1930
-Total games processed: 1995
+Total recursive calls: 3789
+Total search trims   : 1885
+Total games processed: 1946
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1046,8 +1040,8 @@ Total search trims   : 3083
 Total games processed: 3241
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1140,8 +1134,8 @@ Total search trims   : 976
 Total games processed: 1017
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Starting game (json input): json-inputs/game-16.json
 Initial game configuration is valid:
@@ -1202,13 +1196,13 @@ Found 1 first move(s) which can Mate-in-2:
 
 Wins  found per depth: [0, 0, 0, 1]
 Draws found per depth: [0, 0, 0, 1]
-Total recursive calls: 85
-Total search trims   : 40
-Total games processed: 45
+Total recursive calls: 47
+Total search trims   : 22
+Total games processed: 26
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Using 1 as maximum number of moves (max depth=2)
 Running in verbose mode
@@ -1308,8 +1302,8 @@ Total search trims   : 23
 Total games processed: 24
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1441,8 +1435,8 @@ Total search trims   : 3172
 Total games processed: 3300
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Using 4 as maximum number of moves (max depth=8)
 Starting game (json input): json-inputs/game-18.json
@@ -1516,15 +1510,15 @@ Total number of nodes in solution: 17
 Found 1 first move(s) which can Mate-in-4:
     N0e8f6
 
-Wins  found per depth: [0, 0, 0, 0, 0, 0, 0, 8]
-Draws found per depth: [0, 0, 0, 0, 0, 4, 0, 55]
-Total recursive calls: 20777
-Total search trims   : 10343
-Total games processed: 11422
+Wins  found per depth: [0, 0, 0, 0, 0, 0, 0, 6]
+Draws found per depth: [0, 0, 0, 0, 0, 3, 0, 36]
+Total recursive calls: 19111
+Total search trims   : 9535
+Total games processed: 10500
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Using 4 as maximum number of moves (max depth=8)
 Starting game (json input): json-inputs/game-22.json
@@ -1589,14 +1583,14 @@ Found 1 first move(s) which can Mate-in-4:
     p0e7e8=N0
 
 Wins  found per depth: [0, 0, 0, 0, 0, 0, 0, 1]
-Draws found per depth: [0, 0, 0, 21, 0, 0, 0, 0]
-Total recursive calls: 81
-Total search trims   : 26
-Total games processed: 63
+Draws found per depth: [0, 0, 0, 19, 0, 0, 0, 0]
+Total recursive calls: 65
+Total search trims   : 22
+Total games processed: 53
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Running in verbose mode
@@ -1694,8 +1688,8 @@ Total search trims   : 0
 Total games processed: 2
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Using 2 as maximum number of moves (max depth=4)
 Searching for ALL solutions (won't stop after 1st find)
@@ -1769,8 +1763,8 @@ Total search trims   : 159
 Total games processed: 179
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Using 2 as maximum number of moves (max depth=4)
 Searching for ALL solutions (won't stop after 1st find)
@@ -1845,8 +1839,8 @@ Total search trims   : 159
 Total games processed: 179
 
 ================================================
-|      mateinx.py v1.4.1                       |
-|      By Raul Saavedra F., 2023-Jan-17        |
+|      mateinx.py v1.5                         |
+|      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
 Showing json file in the output
 Using 3 as maximum number of moves (max depth=6)
@@ -1940,7 +1934,7 @@ Found 12 Mate-in-3 solution(s)!  Winning first move: Q0h5e2+
 
 Found 13 Mate-in-3 solution(s)!  Winning first move: R0e8e2+
 
-Found 14 Mate-in-3 solution(s)!  Winning first move: R0e8e1 (-> MATE-IN-2!!!)
+Found 14 Mate-in-3 solution(s)!  Winning first move: R0e8e1 (-> Mate-in-X < 3 !!!)
 
 Found 15 Mate-in-3 solution(s)!  Winning first move: R0e8d8+
 
@@ -2530,7 +2524,7 @@ Mate-in-3 tree of moves:
                     B0a1c3#    (582)
         K1d2d3                 (583)
             Q0h5b5#            (584)
-    R0e8e1                     (585) (-> MATE-IN-2!!!)
+    R0e8e1                     (585) (-> Mate-in-X < 3 !!!)
         K1d2c2                 (586)
             Q0h5h3             (587)
                 K1c2d2         (588)
@@ -2643,7 +2637,7 @@ Found 15 first move(s) which can Mate-in-3:
     Q0h5f3
     Q0h5e2+
     R0e8e2+
-    R0e8e1 (-> MATE-IN-2!!!)
+    R0e8e1 (-> Mate-in-X < 3 !!!)
     R0e8d8+
 
 Wins  found per depth: [0, 0, 0, 19, 0, 948]
@@ -2651,4 +2645,6 @@ Draws found per depth: [0, 0, 0, 54, 0, 2771]
 Total recursive calls: 471046
 Total search trims   : 233091
 Total games processed: 242321
-NOTE: A mate-in-less than 3 moves was found!  Retry with -m2
+
+NOTE: Mate-in-X < 3 moves were found!!!  Retry with -m2
+

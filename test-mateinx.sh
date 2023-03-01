@@ -36,27 +36,35 @@ python3 mateinx.py json-inputs/castles.json -m1 -v -j
 python3 mateinx.py json-inputs/game-19.json -j -a
 
 # Here's a mate-in-3, running quite quickly after
-# the search trimming optimization
+# the first search trimming optimization
 #python3 mateinx.py json-inputs/game-20.json -j -m3
 
 # A moderately difficult mate-in-3:
 # takes ~1m 15s exploring ~387K games.
-# Solution tree has 602 nodes:
+# Solution tree with 602 nodes.
+# After the supertrim was added:
+# takes only ~60K games explored,solution tree with
+# 71 nodes, and takes only ~ 12 seconds!
 #python3 mateinx.py json-inputs/game-21.json -j -m3
 
 # Quick to find mate-in-4 problems
 python3 mateinx.py json-inputs/game-18.json -m4
 python3 mateinx.py json-inputs/game-22.json -m4
 
-# Here's a really tough to complete mate-in-5 problem.
-# Takes ~19 mins exploring 13.5M games.
-# Final solution tree with only one 1st winning move
-# has a whopping 190413 nodes
+# Here's a tough to complete mate-in-5 problem.
+# Before the supertrim it took ~19 mins exploring
+# 13.5M games. The final solution tree with only
+# one 1st winning move was huge, with a whopping
+# 190413 nodes.
+# After implementing the supertrim, it finds a
+# solution with only 5677 nodes exploring only
+# 337K+ games, and taking only ~56 seconds!
 #python3 mateinx.py json-inputs/game-17.json -v -m5
 
-# And a much tougher one: a mate-in-4 that takes
-# almost 13 hours, explores a total of ~126 M games.
-#python3 mateinx.py json-inputs/game-45.json -m4
+# And a much tougher one: a mate-in-4 that even
+# after the supertrim takes ~ 2h 40 mins exploring
+# a total of ~35.6 M games.
+#python3 mateinx.py json-inputs/game-54.json -m4
 
 # Test the mate-in-1 which was not being found originally
 # (there was a bug with handling in-passing captures, now fixed)

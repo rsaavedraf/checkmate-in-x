@@ -1,0 +1,105 @@
+# checkmate-in-x
+
+## Update 2022-12-08:
+* Support castle moves done!
+* Major simple optimization added: no need to explore any additional moves
+for the 'losing' player as soon as we find that one of his possible moves
+guarantees survival within the x number of moves of interest.
+This simple check trims down the search space massively, in fact by
+orders of magnitude.
+
+## Update 2022-12-09:
+Minor changes in the outputs, after realizing how huge the output tree of
+moves can get (i.e. for game-17.json a single 1st move can achieve the
+mate-in-5, but the final tree of moves has a whopping 190413 nodes
+in total)
+
+## Update 2022-12-13
+Usage/help for the script added.
+Calling this version v1.0 proper, pretty much finished for the required 
+functionality.
+
+## Update 2022-12-14
+v1.1 after a bug found and fixed: when a pawn was getting captured in passing,
+it was not getting properly removed from the board and remaining pieces. 
+Also such capturing move was missing the "x" when printed out.
+
+## Update 2022-12-15
+v1.1.1 after another bug found and fixed: when exploring the possibility 
+of in-passing capture, if the last move was unknown (None) the program 
+was crashing checking for last move being () (older representation)
+instead of None. 
+game-10.json modified to test this case and make sure it runs problem-free.
+
+## Update 2022-12-17
+v1.2 with a first iterative implementation (runs using option -i, so
+not a separate program). Runs well but not yet finished, since it still
+does not have the quite significant trimming speed-up that the recursive
+one does.
+
+## Update 2022-12-18
+v.1.3 modified iterative implementation now made depth-first (imitating
+recursive one), and also now including the "speed-up" trimming.
+However at least for now it is massively slower than the recursive one
+(~14x the time)
+
+## Update 2022-12-29
+v.1.4 debugged and fixed iterative implementation, now goes through
+exactly the same sequence of games and search trims done by the recursive
+one. Iterative still slightly slower (5-7% more time), but now in the
+same ballpark as the recursive.
+
+## Update 2023-01-17
+
+v.1.4.1 When using the -a (all) option, the program now will detect 
+if there are any mate-in-X solutions with X smaller than the 
+specified number of max moves to search solutions for. This is 
+useful when for example trying to find all mate-in-3 solutions for 
+a given board (options -a -m3) not knowing there are in fact valid 
+mate-in-2 solutions for it.
+
+## Update 2023-02-23
+Added the MIT license to the repo.
+
+## Update 2023-03-01
+
+This list of updates removed from the README.md and collected here 
+into its own separate file.
+
+v.1.5 A second "supertrim" added: when not trying to find all 
+winning solutions (eg. no -a option, so we are in default mode 
+stopping after 1st find,) if there's a winning child already found 
+for the winning player, then that one can do there. There is no 
+need to keep looking for additional winning children among the 
+siblings of that one, e.g. after that last move by the opponent.
+
+This very simple additional trim alone can further cut down the 
+total execution time once again by orders of magnitude. For game-17 
+(a mate-in-5,) the execution time goes from ~19 mins without this 
+trim, to under a single minute using it! The output is also 
+massively different: from a tree of 190413 nodes to only 5677.
+
+Puzzled that it took me this long to see it, since this trimming 
+is not only possible but in fact also necessary in order to 
+correctly implement the "stop at 1st find" mode. Additional (but 
+unnecessary to find) subtrees of solutions have been there all 
+along in the outputs from mateinx.py ever since some of the 
+earlier input problems I have used -- i.e. that gigantic output of 
+game-17. But only inspecting in detail the output of game-54 I 
+finally noticed them.
+
+With this trimming in place, and under default mode, (stopping 
+after 1st find,) the solution tree now will have (as it should have 
+all along) only one winning move under each move made be the losing 
+player.
+
+For game-54.json (a mate-in-4), the time difference is 13+ hours
+without the trimming vs. ~160 mins (2h 40 mins) with it.
+
+This trim is now added to the recursive version. Pending to add
+it to the iterative one as well.
+
+
+## Next tasks:
+- Implement a single threaded Rust version
+- Implement a multithreaded Rust version

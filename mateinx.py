@@ -12,6 +12,7 @@ v1.2   : 2022.12.17 (1st iterative implementation with option -i)
 v1.3   : 2022.12.18 (2st iterative implementation, depth-1st + trim)
 v1.4   : 2022.12.29 (3st iterative implementation, debugged)
 v1.4.1 : 2023.01.17 (with -a now detects if there are mate-in-Y < X solutions)
+v1.5   : 2023.03.01 (additional "supertrim" added)
 """
 
 import sys
@@ -1153,8 +1154,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.4.1                       |')
-     print('|      By Raul Saavedra F., 2023-Jan-17        |');
+     print('|      mateinx.py v1.5                         |')
+     print('|      By Raul Saavedra F., 2023-Mar-01        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1267,6 +1268,24 @@ def evaluate_recursively(parent, game, depth):
                 '''
                 n_trims += 1
                 return
+
+            if (stop_at_1st_find):
+                ''' And another "super" trimming: Given that we are not
+                trying to find absolutely all alternative winning
+                solutions in this run (no -a option,) if there's a
+                winning child already found by the winning player, then
+                that one can do; we do not need to look for additional
+                ones among its siblings. This trim alone also can cut
+                down the total execution time once again by orders of
+                magnitude, e.g. for game-17.json (a mate-in-5,) now
+                takes < 1 minute, before it took ~19 mins!
+                '''
+                if ((mov_player != losing_player) and
+                    (game.get_num_winning_children() > 0)):
+                    n_trims += 1
+                    return;
+
+    # We verify the game after checking all moves of the moving player
     verify(game, valid_children)
     return
 
@@ -1291,6 +1310,7 @@ def verify(game, children):
             game.tell_parent_iam_awin()
             if show_end_games: game.show(show_attack_footprints)
             return
+
         # No moves and not under check -> Game over: DRAW
         draws_per_depth[depth] += 1
         msg = "DRAW found at game #" + str(ngame) \
@@ -1298,6 +1318,7 @@ def verify(game, children):
         game.set_ending(msg)
         if show_end_games: game.show(show_attack_footprints)
         return
+
     if game.get_npcs(0) + game.get_npcs(1) == 2:
         draws_per_depth[depth] += 1
         msg = "GAME OVER: DRAW (only both Kings remain)," \
