@@ -21,24 +21,25 @@ the chess game and moves are correctly and completely modelled (e.g.
 including also castle moves, pawn promotions, etc.) also making sure 
 the correct mate-in-X solution(s) is/are found, of course.
 
-Once the python version is done as baseline/point of reference,
-the idea is to then write two functionally equivalent implementations
-in the Rust language: one single-threaded, then another multi-threaded.
-Then finally compare their performance, i.e. fill out a table like the
-following with their (relative?) execution times for specific Mate-in-X
-problems, all running on the same machine:
+Once the single-threaded python version is done as baseline/point of reference, 
+the idea is to then write a multi-threaded version, and then two functionally 
+equivalent implementations in the Rust language: one single-threaded, then 
+another multi-threaded. Then finally compare their performance, i.e. fill out a 
+table like the following with their (relative?) execution times for specific 
+Mate-in-X problems, all running on the same machine:
 
 
-|  To find   | Python | Rust-ST | Rust-MT (ie. 4 cores) |
-|:-----------|:------:|:-------:|:-------:|
-| Mate-in-2a | x1     | y1      | z1      |
-| Mate-in-2b | x2     | y2      | z2      |
-| ....       |        |         |         |
-| Mate-in-3a | ...    | ...     | ...     |
-| Mate-in-3b |        |         |         |
-| ....       |        |         |         |
+|  To find   | Python | Python-MT | Rust | Rust-MT |
+|:-----------|:------:|:---------:|:----:|:-------:|
+| Mate-in-2a | x1     | xm1       | y1   | ym1     |
+| Mate-in-2b | x2     | xm2       | y2   | ym2     |
+| ...        | | | | |
+| Mate-in-3a | ... | ... | ... | ... |
+| Mate-in-3b | | | | |
+| ...        | | | | |
 
 ## Next tasks:
+- Implement a multithreaded Python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version
 

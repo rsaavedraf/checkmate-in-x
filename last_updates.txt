@@ -62,7 +62,6 @@ mate-in-2 solutions for it.
 Added the MIT license to the repo.
 
 ## Update 2023-03-01
-
 This list of updates removed from the README.md and collected here 
 into its own separate file.
 
@@ -99,7 +98,13 @@ For game-54.json (a mate-in-4), the time difference is ~584 mins
 This trim is now added to the recursive version. Pending to add
 it to the iterative one as well.
 
+## Update 2023-03-02
+
+Supertrim now also in the iterative version.
+Before the rust ones, inserting a multithreaded python version in
+the todo list.
 
 ## Next tasks:
+- Implement a multithreaded Python version
 - Implement a single threaded Rust version
 - Implement a multithreaded Rust version
