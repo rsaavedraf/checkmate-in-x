@@ -1186,13 +1186,21 @@ def evaluate_iteratively(starting_game):
                 print("Games explored:", ngame)
             ngame += 1
             game.generate_all_moves()
-        if (game.get_mover() == losing_player and
-            game.get_num_valid_children() > 0 and
-            game.get_last_child().get_num_winning_children() == 0):
-            # Speed-up analogous to the one done in the recursive:
-            n_trims += 1
-            main_stack.pop()
-            continue
+        if (game.get_mover() == losing_player):
+            if (game.get_num_valid_children() > 0 and
+                game.get_last_child().get_num_winning_children() == 0):
+                # Speed-up trim analogous to the one done in the recursive:
+                n_trims += 1
+                main_stack.pop()
+                continue
+        else:
+            if (stop_at_1st_find and
+                game.get_num_winning_children() > 0):
+                # "supertrim" analogous to the one in the recursive
+                n_trims += 1
+                main_stack.pop()
+                continue
+
         m = game.get_next_move()
         if m is None:
             # All children of this game already processed, so remove from
@@ -1252,36 +1260,38 @@ def evaluate_recursively(parent, game, depth):
             valid_children.append(child_game)
             child_game.flip_turn()
             evaluate_recursively(game, child_game, next_depth)
-            if (mov_player == losing_player and
-                child_game.get_num_winning_children() == 0):
-                ''' If parent game moving player (mov_player) is the
-                "losing" player (that is, not the 1st moving player in
-                the mate-in-x setup,)
-                and at least one child here has no winning moves for the
-                "winning" player,
-                then this move of the losing player is one survival path.
-                This child game's parent is therefore for sure not in a
-                winning path for the 1st mover, so no need to explore
-                additional moves here.
-                This simple check can trim down the entire search space
-                hugely (e.g. orders of magnitude in some cases)
-                '''
-                n_trims += 1
-                return
-
-            if (stop_at_1st_find):
-                ''' And another "super" trimming: Given that we are not
-                trying to find absolutely all alternative winning
-                solutions in this run (no -a option,) if there's a
-                winning child already found by the winning player, then
-                that one can do; we do not need to look for additional
-                ones among its siblings. This trim alone also can cut
-                down the total execution time once again by orders of
-                magnitude, e.g. for game-17.json (a mate-in-5,) now
-                takes < 1 minute, before it took ~19 mins!
-                '''
-                if ((mov_player != losing_player) and
-                    (game.get_num_winning_children() > 0)):
+            if (mov_player == losing_player):
+                if (child_game.get_num_winning_children() == 0):
+                    ''' If parent game moving player (mov_player) is the
+                    "losing" player (that is, not the 1st moving player in
+                    the mate-in-x setup,)
+                    and at least one child here has no winning moves for the
+                    "winning" player,
+                    then this move of the losing player is one survival path.
+                    This child game's parent is therefore for sure not in a
+                    winning path for the 1st mover, so no need to explore
+                    additional moves here.
+                    This simple check can trim down the entire search space
+                    hugely (e.g. orders of magnitude in some cases)
+                    '''
+                    n_trims += 1
+                    return
+            else:
+                if (stop_at_1st_find and
+                    game.get_num_winning_children() > 0):
+                    ''' And another "supertrim" added: Given that we are
+                    not trying to find absolutely all alternative winning
+                    solutions in this run (no -a option,) if there's a
+                    winning child already found by the winning player,
+                    then that one can do; we do not need to look for
+                    additional ones among its siblings. This trim alone
+                    can also cut down the total execution time once again
+                    by orders of magnitude, e.g. for game-17.json (a
+                    mate-in-5,) now takes < 1 minute, before it took ~19
+                    mins! The output can also be significantly slimmer:
+                    every possible move by the losing player will have
+                    only one direct (winning move) child under it
+                    '''
                     n_trims += 1
                     return;
 

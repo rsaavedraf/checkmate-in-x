@@ -93,8 +93,8 @@ after 1st find,) the solution tree now will have (as it should have
 all along) only one winning move under each move made be the losing 
 player.
 
-For game-54.json (a mate-in-4), the time difference is 13+ hours
-without the trimming vs. ~160 mins (2h 40 mins) with it.
+For game-54.json (a mate-in-4), the time difference is ~584 mins
+(~9h 44min) without the trimming vs. ~160 mins (2h 40 mins) with it.
 
 This trim is now added to the recursive version. Pending to add
 it to the iterative one as well.
