@@ -3,8 +3,8 @@
 |      mateinx.py v1.5                         |
 |      By Raul Saavedra F., 2023-Mar-01        |
 ================================================
-Showing json file in the output
 Using 5 as maximum number of moves (max depth=10)
+Showing json file in the output
 Starting game (json input): json-inputs/game-17.json
 {
     "chess-game": {
@@ -5769,3 +5769,7 @@ Draws found per depth: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Total recursive calls: 626664
 Total search trims   : 313331
 Total games processed: 337386
+
+real	0m55,624s
+user	0m55,629s
+sys	0m0,120s

@@ -104,6 +104,11 @@ Supertrim now also in the iterative version.
 Before the rust ones, inserting a multithreaded python version in
 the todo list.
 
+## Update 2023-04-09
+
+Uploading little script that includes in the output the runtime
+of mateinx.py for a given input game
+
 ## Next tasks:
 - Implement a multithreaded Python version
 - Implement a single threaded Rust version
