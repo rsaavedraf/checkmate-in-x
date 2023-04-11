@@ -106,10 +106,14 @@ the todo list.
 
 ## Update 2023-04-09
 
-Uploading little script that includes in the output the runtime
-of mateinx.py for a given input game
+Uploading little script mt which includes in the output the runtime
+of mateinx
+
+## Update 2023-04-11
+
+Hmm... maybe not Rust for the alternate implementation 
 
 ## Next tasks:
 - Implement a multithreaded Python version
-- Implement a single threaded Rust version
-- Implement a multithreaded Rust version
+- Implement a single threaded version in another (faster) language
+- Implement a multithreaded version in that language
