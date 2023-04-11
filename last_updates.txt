@@ -111,7 +111,8 @@ of mateinx
 
 ## Update 2023-04-11
 
-Hmm... maybe not Rust for the alternate implementation 
+Hmm... maybe not Rust for the alternate implementation, withholding
+this idea.
 
 ## Next tasks:
 - Implement a multithreaded Python version

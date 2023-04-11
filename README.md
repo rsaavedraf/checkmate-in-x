@@ -1,7 +1,7 @@
 # checkmate-in-x
 A coding challenge: Checkmate-in-X finder, first in python, then... some other
 language. (Because of recent trademarking moves done by the Rust Foundation,
-maybe not Rust.)
+withholding the idea of rewriting in Rust for now.)
 By Raul Saavedra F, Nov-2022
 
 A mate-in-x finding program not only is a relatively demanding coding
@@ -25,7 +25,7 @@ the correct mate-in-X solution(s) is/are found, of course.
 
 Once the single-threaded python version is done as baseline/point of reference, 
 the idea is to then write a multi-threaded version, and then two functionally 
-equivalent implementations in another language: one single-threaded, then 
+equivalent implementations in another, faster language: one single-threaded, then 
 another multi-threaded. Then finally compare their performance, i.e. fill out a 
 table like the following with their (relative?) execution times for specific 
 Mate-in-X problems, all running on the same machine:
