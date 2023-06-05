@@ -1,0 +1,20 @@
+{
+    "chess-game": {
+        "name" : "mate-in-2 from JohanSalomon, only solvable if promoting into bishop",
+        "date" : "2023-06-04",
+
+        "wpcs" : [
+                    "Kd8",
+                    "Qf4",
+                    "Ne6",
+                    "e7"
+                    ],
+
+        "bpcs" : [
+                    "Kd5"
+                    ],
+
+        "lastMove" : null,
+        "turn" : "w"
+    }
+}
