@@ -13,6 +13,7 @@ v1.3   : 2022.12.18 (2st iterative implementation, depth-1st + trim)
 v1.4   : 2022.12.29 (3st iterative implementation, debugged)
 v1.4.1 : 2023.01.17 (with -a now detects if there are mate-in-Y < X solutions)
 v1.5   : 2023.03.01 (additional "supertrim" added)
+v1.6   : 2023.06.05 (bishops and rooks included among possible promotions)
 """
 
 import sys
@@ -79,12 +80,15 @@ EN0 = PIECE_ENCODE["N0"]
 EN1 = PIECE_ENCODE["N1"]
 ER0 = PIECE_ENCODE["R0"]
 ER1 = PIECE_ENCODE["R1"]
+EB0 = PIECE_ENCODE["B0"]
+EB1 = PIECE_ENCODE["B1"]
 
 EKINGS=(EK0, EK1)
 EPAWNS=(EP0, EP1)
 EQUEENS=(EQ0, EQ1)
 EKNIGHTS=(EN0, EN1)
 EROOKS=(ER0, ER1)
+EBISHOPS=(EB0, EB1)
 
 # Pawn attacks from perspective of an attacked king
 PATTACKS = {
@@ -328,13 +332,10 @@ class ChessGame:
                     # Check that bishops are in different color squares
                     sqcolor = "b" if ((i + j) % 2 == 0) else "w"
                     if counts.get("B"+sqcolor, 0) != 0:
-                        # Technically not an error if one of them promoted,
-                        # but why would anyone chose a bishop over a queen
-                        # for promotion? So this is most likely an error/typo
-                        # in the input file
-                        st = "ERROR: Two Bishops on same-colored squares"
-                        self._status[player] = st
-                        return
+                        # Technically not an error if one of them promoted, but
+                        # could be error/typo in the input file, print a warning
+                        print("WARNING:", color, "bishops detected on same-colored squares");
+                        counts["B"+sqcolor] += 1
                     else:
                         counts["B"+sqcolor] = 1
                 self._set_piece_from_json(player, ptype, i, j)
@@ -548,10 +549,12 @@ class ChessGame:
 
     def simulate_move(self, m):
         ''' Returns a list of children boards given a move.
-        Typically just 1 board inside that list, but 2 when
-        promoting a pawn: one for promoting into queen, and one into knight.
-        (Never promoting into rooks or bishops, since they are never
-        preferable over a Queen.)
+        Typically just 1 board inside the returned list, but 4 when
+        promoting a pawn (into either Queen, Knight, Bishop, or Rook)
+        Including also bishops and rooks among the possible promotions,
+        since in fact some mate-in-x puzzles can only be solved when
+        using those. For an example with bishops, see:
+        https://twitter.com/RaulSaavedra6/status/1665457909839413248?s=20
         '''
         xold = m[0][0]
         yold = m[0][1]
@@ -566,24 +569,21 @@ class ChessGame:
                 # Pawn reaching a final row, so a promotion applies.
                 prom_q = EQUEENS[self._movep]
                 prom_n = EKNIGHTS[self._movep]
+                prom_b = EBISHOPS[self._movep]
+                prom_r = EROOKS[self._movep]
                 ch_board_q = self._gen_new_board(
-                                self._board,
-                                prom_q,
-                                index_old,
-                                index_new)
+                                self._board, prom_q, index_old, index_new)
                 ch_board_n = self._gen_new_board(
-                                self._board,
-                                prom_n,
-                                index_old,
-                                index_new)
-                return (ch_board_q, ch_board_n)
+                                self._board, prom_n, index_old, index_new)
+                ch_board_b = self._gen_new_board(
+                                self._board, prom_b, index_old, index_new)
+                ch_board_r = self._gen_new_board(
+                                self._board, prom_r, index_old, index_new)
+                return (ch_board_q, ch_board_n, ch_board_b, ch_board_r)
             else:
                 # Simply move the pawn from old to new position
                 ch_board = self._gen_new_board(
-                                self._board,
-                                empc,
-                                index_old,
-                                index_new)
+                                self._board, empc, index_old, index_new)
                 if xnew != xold:
                     # Pawn moved diagonally, so it captured something.
                     # If it was an in-passing capture we must remove
@@ -596,10 +596,7 @@ class ChessGame:
         else:
             # Just move the piece from old to new position
             ch_board = self._gen_new_board(
-                            self._board,
-                            empc,
-                            index_old,
-                            index_new)
+                            self._board, empc, index_old, index_new)
             if empc in EKINGS:
                 j = m[0][1]*8   # Start of king's row on the board
                 deltax = m[1][0] - m[0][0]
@@ -1154,8 +1151,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.5                         |')
-     print('|      By Raul Saavedra F., 2023-Mar-01        |');
+     print('|      mateinx.py v1.6                         |')
+     print('|      By Raul Saavedra F., 2023-Jun-05        |');
      print(BAR)
 
 def load_game_from_json():

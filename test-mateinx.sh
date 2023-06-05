@@ -13,7 +13,7 @@ python3 mateinx.py json-inputs/error-06.json -v -g
 python3 mateinx.py json-inputs/error-07.json -v -g
 python3 mateinx.py json-inputs/error-08.json -v
 python3 mateinx.py json-inputs/error-09.json -v
-python3 mateinx.py json-inputs/error-10.json -v
+python3 mateinx.py json-inputs/error-10.json -v -j -m0
 python3 mateinx.py json-inputs/error-11.json -v
 python3 mateinx.py json-inputs/error-12.json -v
 
@@ -77,3 +77,6 @@ python3 mateinx.py json-inputs/game-07.json -m2 -a -i
 
 # Test the detection of mate-in-K < X solutions
 python3 mateinx.py json-inputs/game-02.json -j -m3 -a
+
+# Test puzzle that requires a promotion into bishop
+python mateinx.py json-inputs/game-65.json -j -m2

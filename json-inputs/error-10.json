@@ -1,6 +1,6 @@
 {
     "chess-game": {
-        "name" : "Error: two bishops of a player on same square color",
+        "name" : "Warning: two bishops of a player on same square color (technically not an error)",
         "date" : "2022-11-29",
         "wpcs" : ["Ka1", "Bh1", "Bg2"],
         "bpcs" : ["Kf7", "d7"],

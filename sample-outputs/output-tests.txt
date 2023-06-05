@@ -1,7 +1,7 @@
 [H[2J[3J
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -40,8 +40,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -80,8 +80,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -117,8 +117,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -154,8 +154,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -224,8 +224,8 @@ Game #0 (depth 0) OK
 ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -275,8 +275,8 @@ Game #0 (depth 0) OK
 ERROR: more than 2 checks simultaneously on w King (K0)
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -325,8 +325,8 @@ Game #0 (depth 0) OK
 ERROR: invalid scenario: both players are under check simultaneously
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing some game boards while searching
@@ -375,8 +375,8 @@ Game #0 (depth 0) OK
 ERROR: invalid scenario. Player w will move next -> player b can't be in check
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-08.json
@@ -386,8 +386,8 @@ Gameplay: OK
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-09.json
@@ -397,19 +397,78 @@ Gameplay: ERROR: invalid pawn position b1
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
+Showing json file in the output
+Using 0 as maximum number of moves (max depth=0)
 Starting game (json input): json-inputs/error-10.json
-Whites  : ERROR: Two Bishops on same-colored squares
-Blacks  : OK
-Gameplay: OK
-Overall : INVALID
+{
+    "chess-game": {
+        "name": "Warning: two bishops of a player on same square color (technically not an error)",
+        "date": "2022-11-29",
+        "wpcs": [
+            "Ka1",
+            "Bh1",
+            "Bg2"
+        ],
+        "bpcs": [
+            "Kf7",
+            "d7"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
+WARNING: w bishops detected on same-colored squares
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|  p1  |[    ]|  K1  |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[    ]|      |[    ]|  B0  |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[ K0 ]|      |[    ]|      |[    ]|      |[    ]|  B0  | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Starting game (json input): json-inputs/error-11.json
@@ -419,8 +478,8 @@ Gameplay: ERROR: last move 'a2a1' in conflict with existing pieces, or turn
 Overall : INVALID
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 
@@ -430,8 +489,8 @@ Examples available at: github.com/rsaavedraf/checkmate-in-x
 
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Using 1 as maximum number of moves (max depth=2)
@@ -507,8 +566,8 @@ Total search trims   : 0
 Total games processed: 1
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Starting game (json input): json-inputs/game-03.json
@@ -660,8 +719,8 @@ Total search trims   : 1696
 Total games processed: 1749
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -735,18 +794,20 @@ Games explored: 0
 ***** After game 1 a promotion into Q1 took place at 5,0 *****
 ***** After game 0 a promotion into Q0 took place at 7,7 *****
 ***** After game 0 a promotion into N0 took place at 7,7 *****
+***** After game 0 a promotion into B0 took place at 7,7 *****
+***** After game 0 a promotion into R0 took place at 7,7 *****
 
 No moves for w found to Mate-in-1
 
 Wins  found per depth: [0, 0]
 Draws found per depth: [0, 0]
-Total recursive calls: 23
-Total search trims   : 11
-Total games processed: 12
+Total recursive calls: 27
+Total search trims   : 13
+Total games processed: 14
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -826,8 +887,8 @@ Total search trims   : 6
 Total games processed: 7
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Running in verbose mode
 Showing json file in the output
@@ -918,8 +979,8 @@ Total search trims   : 1885
 Total games processed: 1946
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1001,47 +1062,51 @@ Mate-in-2 tree of moves:
             R0d1xg1#           (3)
         p1g2g1=N1              (4)
             R0d1xg1#           (5)
-        N1c3a4                 (6)
-            R0d1d5#            (7)
-        N1c3b5                 (8)
-            Q0b1xb5#           (9)
-            R0d1d5#            (10)
-        N1c3d5                 (11)
-            R0d1xd5#           (12)
-        N1c3e4                 (13)
+        p1g2g1=B1              (6)
+            R0d1xg1#           (7)
+        p1g2g1=R1              (8)
+            R0d1xg1#           (9)
+        N1c3a4                 (10)
+            R0d1d5#            (11)
+        N1c3b5                 (12)
+            Q0b1xb5#           (13)
             R0d1d5#            (14)
-        N1c3e2                 (15)
-            Q0b1b5#            (16)
-            R0d1d5#            (17)
-        N1c3xd1                (18)
-            Q0b1b5#            (19)
-        N1c3xb1                (20)
+        N1c3d5                 (15)
+            R0d1xd5#           (16)
+        N1c3e4                 (17)
+            R0d1d5#            (18)
+        N1c3e2                 (19)
+            Q0b1b5#            (20)
             R0d1d5#            (21)
-        N1c3a2                 (22)
+        N1c3xd1                (22)
             Q0b1b5#            (23)
-            R0d1d5#            (24)
-        N1f8h7                 (25)
-            Q0b1g6#            (26)
-        N1f8g6                 (27)
-            Q0b1xg6#           (28)
-        N1f8e6                 (29)
+        N1c3xb1                (24)
+            R0d1d5#            (25)
+        N1c3a2                 (26)
+            Q0b1b5#            (27)
+            R0d1d5#            (28)
+        N1f8h7                 (29)
             Q0b1g6#            (30)
-        N1f8d7                 (31)
-            Q0b1g6#            (32)
+        N1f8g6                 (31)
+            Q0b1xg6#           (32)
+        N1f8e6                 (33)
+            Q0b1g6#            (34)
+        N1f8d7                 (35)
+            Q0b1g6#            (36)
 
-Total number of nodes in solution: 32
+Total number of nodes in solution: 36
 Found 1 first move(s) which can Mate-in-2:
     Q0c1b1
 
-Wins  found per depth: [0, 0, 0, 73]
+Wins  found per depth: [0, 0, 0, 92]
 Draws found per depth: [0, 0, 0, 0]
-Total recursive calls: 6292
-Total search trims   : 3083
-Total games processed: 3241
+Total recursive calls: 7435
+Total search trims   : 3638
+Total games processed: 3829
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1127,15 +1192,15 @@ Found 2 first move(s) which can Mate-in-2:
     p0b7xa8=Q0+
     p0b7b8=Q0+
 
-Wins  found per depth: [0, 0, 0, 5]
+Wins  found per depth: [0, 0, 0, 8]
 Draws found per depth: [0, 0, 0, 1]
-Total recursive calls: 1965
-Total search trims   : 976
-Total games processed: 1017
+Total recursive calls: 2487
+Total search trims   : 1235
+Total games processed: 1284
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Starting game (json input): json-inputs/game-16.json
 Initial game configuration is valid:
@@ -1201,8 +1266,8 @@ Total search trims   : 22
 Total games processed: 26
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Using 1 as maximum number of moves (max depth=2)
 Running in verbose mode
@@ -1302,8 +1367,8 @@ Total search trims   : 23
 Total games processed: 24
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Searching for ALL solutions (won't stop after 1st find)
@@ -1435,8 +1500,8 @@ Total search trims   : 3172
 Total games processed: 3300
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Using 4 as maximum number of moves (max depth=8)
 Starting game (json input): json-inputs/game-18.json
@@ -1517,8 +1582,8 @@ Total search trims   : 9535
 Total games processed: 10500
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Using 4 as maximum number of moves (max depth=8)
 Starting game (json input): json-inputs/game-22.json
@@ -1589,8 +1654,8 @@ Total search trims   : 22
 Total games processed: 53
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Running in verbose mode
@@ -1688,8 +1753,8 @@ Total search trims   : 0
 Total games processed: 2
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Using 2 as maximum number of moves (max depth=4)
 Searching for ALL solutions (won't stop after 1st find)
@@ -1757,14 +1822,14 @@ Found 2 first move(s) which can Mate-in-2:
     K1c1d2
 
 Wins  found per depth: [0, 0, 0, 2]
-Draws found per depth: [0, 6, 0, 0]
-Total recursive calls: 331
-Total search trims   : 159
-Total games processed: 179
+Draws found per depth: [0, 6, 0, 2]
+Total recursive calls: 337
+Total search trims   : 161
+Total games processed: 183
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Using 2 as maximum number of moves (max depth=4)
 Searching for ALL solutions (won't stop after 1st find)
@@ -1833,14 +1898,14 @@ Found 2 first move(s) which can Mate-in-2:
     K1c1d2
 
 Wins  found per depth: [0, 0, 0, 2]
-Draws found per depth: [0, 6, 0, 0]
-Total iterations     : 666
-Total search trims   : 159
-Total games processed: 179
+Draws found per depth: [0, 6, 0, 2]
+Total iterations     : 674
+Total search trims   : 161
+Total games processed: 183
 
 ================================================
-|      mateinx.py v1.5                         |
-|      By Raul Saavedra F., 2023-Mar-01        |
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
 ================================================
 Showing json file in the output
 Using 3 as maximum number of moves (max depth=6)
@@ -2648,3 +2713,90 @@ Total games processed: 242321
 
 NOTE: Mate-in-X < 3 moves were found!!!  Retry with -m2
 
+
+================================================
+|      mateinx.py v1.6                         |
+|      By Raul Saavedra F., 2023-Jun-05        |
+================================================
+Showing json file in the output
+Using 2 as maximum number of moves (max depth=4)
+Starting game (json input): json-inputs/game-65.json
+{
+    "chess-game": {
+        "name": "mate-in-2 from JohanSalomon, only solvable if promoting into bishop",
+        "date": "2023-06-04",
+        "wpcs": [
+            "Kd8",
+            "Qf4",
+            "Ne6",
+            "e7"
+        ],
+        "bpcs": [
+            "Kd5"
+        ],
+        "lastMove": null,
+        "turn": "w"
+    }
+}
+
+Initial game configuration is valid:
+
+        a      b      c      d      e      f      g      h
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  8 |      |[    ]|      |[ K0 ]|      |[    ]|      |[    ]| 7
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  7 |[    ]|      |[    ]|      |[ p0 ]|      |[    ]|      | 6
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  6 |      |[    ]|      |[    ]|  N0  |[    ]|      |[    ]| 5
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  5 |[    ]|      |[    ]|  K1  |[    ]|      |[    ]|      | 4
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  4 |      |[    ]|      |[    ]|      |[ Q0 ]|      |[    ]| 3
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  3 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 2
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+    |      |######|      |######|      |######|      |######|
+  2 |      |[    ]|      |[    ]|      |[    ]|      |[    ]| 1
+    |      |######|      |######|      |######|      |######|
+    +------+------+------+------+------+------+------+------+
+    |######|      |######|      |######|      |######|      |
+  1 |[    ]|      |[    ]|      |[    ]|      |[    ]|      | 0
+    |######|      |######|      |######|      |######|      |
+    +------+------+------+------+------+------+------+------+
+        0      1      2      3      4      5      6      7
+        a      b      c      d      e      f      g      h
+	Possible castle moves: w:   b: 
+	To play: w    Checked: w=0 b=0     Move history:
+[]
+Game #0 (depth 0) OK
+Searching for 1st Mate-in-2 solution for json-inputs/game-65.json ...
+
+Found a Mate-in-2 solution!
+
+Mate-in-2 tree of moves:
+?                              (0)
+    p0e7e8=B0                  (1)
+        K1d5xe6                (2)
+            B0e8f7#            (3)
+
+Total number of nodes in solution: 3
+Found 1 first move(s) which can Mate-in-2:
+    p0e7e8=B0
+
+Wins  found per depth: [0, 0, 0, 1]
+Draws found per depth: [0, 1, 0, 0]
+Total recursive calls: 135
+Total search trims   : 66
+Total games processed: 71
