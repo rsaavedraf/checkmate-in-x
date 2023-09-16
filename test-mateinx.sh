@@ -80,3 +80,6 @@ python3 mateinx.py json-inputs/game-02.json -j -m3 -a
 
 # Test puzzle that requires a promotion into bishop
 python mateinx.py json-inputs/game-65.json -j -m2
+
+# Test puzzle that requires a promotion into rook
+python mateinx.py json-inputs/game-73.json -j -m2

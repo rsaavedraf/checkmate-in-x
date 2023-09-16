@@ -1,0 +1,18 @@
+{
+    "chess-game": {
+        "name" : "mate-in-2, suggested by SeanyyGG to require promotion into rook",
+        "date" : "2023-09-16",
+
+        "wpcs" : [
+                    "Kf6",
+                    "f7"
+                    ],
+
+        "bpcs" : [
+                    "Kh7"
+                    ],
+
+        "lastMove" : null,
+        "turn" : "w"
+    }
+}

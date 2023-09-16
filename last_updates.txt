@@ -114,6 +114,12 @@ of mateinx
 Hmm... maybe not Rust for the alternate implementation, withholding
 this idea.
 
+## Update 2023-09-16
+
+Added a mate-in-2 test case (game-73.json) which requires a
+promotion into rook
+
+
 ## Next tasks:
 - Implement a multithreaded Python version
 - Implement a single threaded version in another (faster) language
