@@ -117,7 +117,7 @@ this idea.
 ## Update 2023-09-16
 
 Added a mate-in-2 test case (game-73.json) which requires a
-promotion into rook
+promotion into rook. After a suggestion from twitter's @SeanyyGG
 
 
 ## Next tasks:

@@ -1,6 +1,6 @@
 {
     "chess-game": {
-        "name" : "mate-in-2, suggested by SeanyyGG to require promotion into rook",
+        "name" : "mate-in-2 requiring promotion into rook",
         "date" : "2023-09-16",
 
         "wpcs" : [
