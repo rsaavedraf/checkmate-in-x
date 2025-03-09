@@ -1,0 +1,22 @@
+{
+    "chess-game": {
+        "name" : "mate-in-x from @ChessifyMe",
+        "date" : "2025-03-04",
+
+        "wpcs" : [
+                    "Kd7",
+                    "Qe6",
+                    "Nd8",
+                    "Na7"
+                    ],
+
+        "bpcs" : [
+                    "Kb8",
+                    "Ra8",
+                    "b7"
+                    ],
+
+        "lastMove" : null,
+        "turn" : "w"
+    }
+}
