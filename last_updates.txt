@@ -119,8 +119,14 @@ this idea.
 Added a mate-in-2 test case (game-73.json) which requires a
 promotion into rook. After a suggestion from twitter's @SeanyyGG
 
+## Update 2025-08-12
+
+Added input file name at the end of the output.
+Aded input file game-29.json which was missing from the repo.
+
 
 ## Next tasks:
 - Implement a multithreaded Python version
 - Implement a single threaded version in another (faster) language
 - Implement a multithreaded version in that language
+- Build a table of comparisons running the 4 versions on different systems

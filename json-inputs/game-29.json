@@ -1,0 +1,10 @@
+{
+    "chess-game": {
+        "name" : "Mate in 3, from mqteishat",
+        "date" : "2022-12-16",
+        "wpcs" : ["Ka1", "Qd2", "Rh7", "Bd8"],
+        "bpcs" : ["Kc6", "Qg2", "Rh2", "Be6", "Nf5", "a6", "b5"],
+        "lastMove": null,
+        "turn" : "w"
+    }
+}

@@ -14,6 +14,7 @@ v1.4   : 2022.12.29 (3st iterative implementation, debugged)
 v1.4.1 : 2023.01.17 (with -a now detects if there are mate-in-Y < X solutions)
 v1.5   : 2023.03.01 (additional "supertrim" added)
 v1.6   : 2023.06.05 (bishops and rooks included among possible promotions)
+v1.6.1 : 2025.08.12 (include input file name at end of the output)
 """
 
 import sys
@@ -1151,8 +1152,8 @@ BAR = '='*48
 
 def starting_banner():
      print("\n"+BAR)
-     print('|      mateinx.py v1.6                         |')
-     print('|      By Raul Saavedra F., 2023-Jun-05        |');
+     print('|      mateinx.py v1.6.1                       |')
+     print('|      By Raul Saavedra F., 2025-Aug-12        |');
      print(BAR)
 
 def load_game_from_json():
@@ -1422,7 +1423,7 @@ def show_final_summary(game):
     if (game.has_winning_children()):
         print("\n" + smateinx + " tree of moves:")
         game.print_winning_tree("", True)
-        print("\nTotal number of nodes in solution:", n_nodes_in_sol)
+        print("\nTotal number of nodes in solution for '"+input_file+"' :", n_nodes_in_sol)
         print("Found " + str(n_1st_moves) + " first move(s) which can " \
                 + smateinx + ":")
         for ch in game.get_winning_children():
