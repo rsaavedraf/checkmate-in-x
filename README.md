@@ -24,14 +24,15 @@ including also castle moves, pawn promotions, etc.) also making sure
 the correct mate-in-X solution(s) is/are found, of course.
 
 Once the single-threaded python version is done as baseline/point of reference, 
-the idea is to then write a multi-threaded version, and then two functionally 
-equivalent implementations in another, faster language: one single-threaded, then 
-another multi-threaded. Then finally compare their performance, i.e. fill out a 
-table like the following with their (relative?) execution times for specific 
-Mate-in-X problems, all running on the same machine:
+the idea is to then write a multi-processing version (by that meaning, with true
+process concurrency/parallel execution in different CPU cores.) Then two
+functionally equivalent implementations but in another, faster language:
+one single-threaded, then another multi-processed. Then finally compare their
+performance, i.e. fill out a table like the following with their (relative?)
+execution times for specific Mate-in-X problems, all running on the same machine:
 
 
-|  To find   | Python | Python-MT | Another lang. | Another lang.-MT |
+|  Puzzle to solve   | Python | Python-MP | Another lang. | Another lang.-MP |
 |:-----------|:------:|:---------:|:----:|:-------:|
 | Mate-in-2a | x1     | xm1       | y1   | ym1     |
 | Mate-in-2b | x2     | xm2       | y2   | ym2     |
@@ -41,9 +42,9 @@ Mate-in-X problems, all running on the same machine:
 | ...        | | | | |
 
 ## Next tasks:
-- Implement a multithreaded Python version
+- Implement a multiprocessing Python version
 - Implement a single threaded version in another language
-- Implement a multithreaded version in that language
+- Implement a multiprocessing version in that language
 
 File last_updates.txt in the repository has a list of important milestones reached 
 during the development.
